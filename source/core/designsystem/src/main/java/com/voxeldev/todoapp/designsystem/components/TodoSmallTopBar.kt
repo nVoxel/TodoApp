@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.designsystem.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ fun TodoSmallTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .background(color = appPalette.backPrimary)
             .padding(vertical = 16.dp, horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
