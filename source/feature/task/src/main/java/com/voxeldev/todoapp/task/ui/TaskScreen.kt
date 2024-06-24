@@ -40,14 +40,14 @@ import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSwitch
 import com.voxeldev.todoapp.designsystem.components.TodoTextField
 import com.voxeldev.todoapp.designsystem.components.conditional
-import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
+import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
 import com.voxeldev.todoapp.task.R
-import com.voxeldev.todoapp.task.ui.extensions.calculateTopBarElevation
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayColor
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayText
+import com.voxeldev.todoapp.task.ui.extensions.scrollPercentage
 import com.voxeldev.todoapp.task.ui.preview.TaskScreenPreviewData
 import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
 
@@ -114,7 +114,7 @@ private fun TaskScreen(
 
     Scaffold(
         topBar = {
-            Surface(shadowElevation = scrollState.calculateTopBarElevation()) {
+            Surface(shadowElevation = calculateTopBarElevation(scrollState = scrollState)) {
                 TodoSmallTopBar(
                     buttonText = stringResource(id = if (editTask) R.string.save else R.string.create),
                     isButtonActive = saveButtonActive,
@@ -281,18 +281,32 @@ private fun ImportanceDropdown(
     }
 }
 
+private fun calculateTopBarElevation(
+    scrollState: ScrollState,
+    maxElevation: Dp = 8.dp,
+    thresholdScrollPercentage: Float = 0.2f,
+): Dp {
+    val scrollPercentage = scrollState.scrollPercentage()
+    val animateElevation = scrollPercentage < thresholdScrollPercentage
+
+    return if (animateElevation) {
+        maxElevation * (scrollPercentage / thresholdScrollPercentage)
+    } else {
+        maxElevation
+    }
+}
+
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ru")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ru")
 @Composable
 private fun TaskScreenPreview() {
-    PreviewBase {
+    TodoAppTheme {
         TaskScreen(
             editTask = true,
             text = TaskScreenPreviewData.text,
             importance = TaskScreenPreviewData.importance,
             deadlineTimestamp = TaskScreenPreviewData.deadlineTimestamp,
             deadlineTimestampString = TaskScreenPreviewData.deadlineTimestampString,
-            saveButtonActive = true,
             onTextChanged = {},
             onImportanceChanged = {},
             onDeadlineTimestampChanged = {},
