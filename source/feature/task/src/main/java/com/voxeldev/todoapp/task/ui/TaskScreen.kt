@@ -1,6 +1,7 @@
 package com.voxeldev.todoapp.task.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItemImportance
@@ -40,10 +42,10 @@ import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSwitch
 import com.voxeldev.todoapp.designsystem.components.TodoTextField
 import com.voxeldev.todoapp.designsystem.components.conditional
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
-import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
 import com.voxeldev.todoapp.task.R
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayColor
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayText
@@ -300,13 +302,14 @@ private fun calculateTopBarElevation(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ru")
 @Composable
 private fun TaskScreenPreview() {
-    TodoAppTheme {
+    PreviewBase {
         TaskScreen(
             editTask = true,
             text = TaskScreenPreviewData.text,
             importance = TaskScreenPreviewData.importance,
             deadlineTimestamp = TaskScreenPreviewData.deadlineTimestamp,
             deadlineTimestampString = TaskScreenPreviewData.deadlineTimestampString,
+            saveButtonActive = true,
             onTextChanged = {},
             onImportanceChanged = {},
             onDeadlineTimestampChanged = {},

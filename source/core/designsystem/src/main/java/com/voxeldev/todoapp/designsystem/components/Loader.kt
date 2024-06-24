@@ -9,6 +9,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
@@ -18,15 +19,14 @@ import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
  */
 @Composable
 fun Loader(
-    modifier: Modifier = Modifier,
     progress: (() -> Float)? = null,
 ) {
     val appPalette = LocalAppPalette.current
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(color = appPalette.backPrimary),
+            .background(color = Color.Transparent),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
