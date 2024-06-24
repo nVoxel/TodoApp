@@ -45,6 +45,9 @@ class TaskViewModel @AssistedInject constructor(
     private val _deadlineTimestampString: MutableStateFlow<String?> = MutableStateFlow(value = null)
     val deadlineTimestampString: StateFlow<String?> = _deadlineTimestampString
 
+    private val _saveButtonActive: MutableStateFlow<Boolean> = MutableStateFlow(value = false)
+    val saveButtonActive: StateFlow<Boolean> = _saveButtonActive
+
     private var loadedTodoItem: TodoItem? = null
 
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
@@ -86,6 +89,7 @@ class TaskViewModel @AssistedInject constructor(
 
     fun updateText(text: String) {
         _text.value = text
+        updateSaveButton()
     }
 
     fun updateImportance(importance: TodoItemImportance) {
@@ -102,8 +106,12 @@ class TaskViewModel @AssistedInject constructor(
         _deadlineTimestampString.value = null
     }
 
+    private fun updateSaveButton() {
+        _saveButtonActive.value = canSaveItem()
+    }
+
     fun saveItem(callback: () -> Unit) {
-        if (_text.value.isBlank()) return
+        if (!canSaveItem()) return
 
         loadedTodoItem?.let {
             updateItem(callback = callback)
@@ -180,4 +188,6 @@ class TaskViewModel @AssistedInject constructor(
     }
 
     private fun getTimestamp() = System.currentTimeMillis() / 1000
+
+    private fun canSaveItem(): Boolean = _text.value.isNotBlank()
 }

@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.designsystem.components
 
+import android.content.res.Configuration
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -8,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
@@ -55,5 +58,21 @@ fun TodoDatePicker(
                 colors = DatePickerDefaults.colors(selectedDayContainerColor = appPalette.colorBlue),
             )
         }
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun Preview() {
+    PreviewBase {
+        TodoDatePicker(
+            isVisible = true,
+            initialSelectedDateMillis = 1_000_000_000_000,
+            confirmButtonText = "done",
+            onConfirm = {},
+            dismissButtonText = "cancel",
+            onDismiss = {},
+        )
     }
 }

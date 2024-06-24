@@ -33,7 +33,7 @@ import com.voxeldev.todoapp.list.R
 import kotlinx.coroutines.delay
 import kotlin.math.roundToLong
 
-private const val DEFAULT_ITEM_ANIMATION_DELAY = 250L
+private const val DEFAULT_ITEM_ANIMATION_DELAY = 300L
 
 /**
  * @author nvoxel

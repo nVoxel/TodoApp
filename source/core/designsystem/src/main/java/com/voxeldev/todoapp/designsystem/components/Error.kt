@@ -3,6 +3,7 @@ package com.voxeldev.todoapp.designsystem.components
 /**
  * @author nvoxel
  */
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,14 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RestartAlt
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 
 /**
  * @author nvoxel
@@ -42,7 +44,7 @@ fun Error(
             text = "Error: $message",
         )
         if (shouldShowRetry) {
-            Button(
+            TodoButton(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = { retryCallback() },
             ) {
@@ -57,5 +59,17 @@ fun Error(
                 )
             }
         }
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun Preview() {
+    PreviewBase {
+        Error(
+            message = "Error while loading something...",
+            shouldShowRetry = true,
+        )
     }
 }

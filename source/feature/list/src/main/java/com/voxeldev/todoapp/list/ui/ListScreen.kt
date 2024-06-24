@@ -52,10 +52,10 @@ import com.voxeldev.todoapp.designsystem.components.TodoCheckbox
 import com.voxeldev.todoapp.designsystem.components.TodoLargeTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSmallFAB
 import com.voxeldev.todoapp.designsystem.icons.AdditionalIcons
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
-import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
 import com.voxeldev.todoapp.list.R
 import com.voxeldev.todoapp.list.ui.components.SwipeableListItem
 import com.voxeldev.todoapp.list.ui.components.TodoItemInfoDialog
@@ -327,7 +327,7 @@ private fun NewListItem(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ru")
 @Composable
 private fun ListScreenPreview() {
-    TodoAppTheme {
+    PreviewBase {
         ListScreen(
             lazyColumnState = rememberLazyListState(),
             topBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState()),
