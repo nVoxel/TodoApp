@@ -12,11 +12,15 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.UUID
@@ -27,6 +31,7 @@ import java.util.UUID
 @HiltViewModel(assistedFactory = TaskViewModel.Factory::class)
 class TaskViewModel @AssistedInject constructor(
     @Assisted val taskId: String?,
+    @Assisted val scopeDispatcher: CoroutineDispatcher,
     private val createTodoItemUseCase: CreateTodoItemUseCase,
     private val deleteTodoItemUseCase: DeleteTodoItemUseCase,
     private val getSingleTodoItemUseCase: GetSingleTodoItemUseCase,
@@ -37,26 +42,29 @@ class TaskViewModel @AssistedInject constructor(
     val text: StateFlow<String> = _text
 
     private val _importance: MutableStateFlow<TodoItemImportance> = MutableStateFlow(value = TodoItemImportance.Normal)
-    val importance: StateFlow<TodoItemImportance> = _importance
+    val importance: StateFlow<TodoItemImportance> = _importance.asStateFlow()
 
     private val _deadlineTimestamp: MutableStateFlow<Long?> = MutableStateFlow(value = null)
-    val deadlineTimestamp: StateFlow<Long?> = _deadlineTimestamp
+    val deadlineTimestamp: StateFlow<Long?> = _deadlineTimestamp.asStateFlow()
 
     private val _deadlineTimestampString: MutableStateFlow<String?> = MutableStateFlow(value = null)
-    val deadlineTimestampString: StateFlow<String?> = _deadlineTimestampString
+    val deadlineTimestampString: StateFlow<String?> = _deadlineTimestampString.asStateFlow()
 
     private val _saveButtonActive: MutableStateFlow<Boolean> = MutableStateFlow(value = false)
-    val saveButtonActive: StateFlow<Boolean> = _saveButtonActive
+    val saveButtonActive: StateFlow<Boolean> = _saveButtonActive.asStateFlow()
 
     private var loadedTodoItem: TodoItem? = null
 
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scope = CoroutineScope(SupervisorJob() + scopeDispatcher)
 
     @AssistedFactory
     interface Factory {
-        fun create(taskId: String?): TaskViewModel
+        fun create(
+            taskId: String?,
+            scopeDispatcher: CoroutineDispatcher = Dispatchers.IO,
+        ): TaskViewModel
     }
 
     init {
@@ -65,7 +73,8 @@ class TaskViewModel @AssistedInject constructor(
 
     fun getTodoItem() {
         taskId?.let {
-            _loading.value = true
+            _loading.update { true }
+            _exception.update { null }
 
             getSingleTodoItemUseCase(
                 params = taskId,
@@ -79,7 +88,7 @@ class TaskViewModel @AssistedInject constructor(
                             updateDeadlineTimestamp(deadlineTimestamp = it)
                         }
                         loadedTodoItem = todoItem
-                        _loading.value = false
+                        _loading.update { false }
                     },
                     onFailure = ::handleException,
                 )
@@ -88,26 +97,26 @@ class TaskViewModel @AssistedInject constructor(
     }
 
     fun updateText(text: String) {
-        _text.value = text
+        _text.update { text }
         updateSaveButton()
     }
 
     fun updateImportance(importance: TodoItemImportance) {
-        _importance.value = importance
+        _importance.update { importance }
     }
 
     fun updateDeadlineTimestamp(deadlineTimestamp: Long) {
-        _deadlineTimestamp.value = deadlineTimestamp
-        _deadlineTimestampString.value = deadlineTimestamp.formatTimestamp(format = format)
+        _deadlineTimestamp.update { deadlineTimestamp }
+        _deadlineTimestampString.update { deadlineTimestamp.formatTimestamp(format = format) }
     }
 
     fun resetDeadlineTimestamp() {
-        _deadlineTimestamp.value = null
-        _deadlineTimestampString.value = null
+        _deadlineTimestamp.update { null }
+        _deadlineTimestampString.update { null }
     }
 
     private fun updateSaveButton() {
-        _saveButtonActive.value = canSaveItem()
+        _saveButtonActive.update { canSaveItem() }
     }
 
     fun saveItem(callback: () -> Unit) {
@@ -129,14 +138,14 @@ class TaskViewModel @AssistedInject constructor(
             modifiedTimestamp = null,
         )
 
-        _loading.value = true
+        _loading.update { true }
         createTodoItemUseCase(
             params = newItem,
             scope = scope,
         ) { result ->
             result.fold(
                 onSuccess = {
-                    _loading.value = false
+                    _loading.update { false }
                     callback()
                 },
                 onFailure = ::handleException,
@@ -153,14 +162,14 @@ class TaskViewModel @AssistedInject constructor(
         )
 
         updatedItem?.let {
-            _loading.value = true
+            _loading.update { true }
             updateTodoItemUseCase(
                 params = updatedItem,
                 scope = scope,
             ) { result ->
                 result.fold(
                     onSuccess = {
-                        _loading.value = false
+                        _loading.update { false }
                         callback()
                     },
                     onFailure = ::handleException,
@@ -171,14 +180,14 @@ class TaskViewModel @AssistedInject constructor(
 
     fun deleteItem(callback: () -> Unit) {
         loadedTodoItem?.let { todoItem ->
-            _loading.value = true
+            _loading.update { true }
             deleteTodoItemUseCase(
                 params = todoItem.id,
                 scope = scope,
             ) { result ->
                 result.fold(
                     onSuccess = {
-                        _loading.value = false
+                        _loading.update { false }
                         callback()
                     },
                     onFailure = ::handleException,
@@ -190,4 +199,9 @@ class TaskViewModel @AssistedInject constructor(
     private fun getTimestamp() = System.currentTimeMillis() / 1000
 
     private fun canSaveItem(): Boolean = _text.value.isNotBlank()
+
+    override fun onCleared() {
+        scope.coroutineContext.cancelChildren()
+        super.onCleared()
+    }
 }
