@@ -1,7 +1,6 @@
 package com.voxeldev.todoapp.task.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItemImportance
@@ -47,9 +45,9 @@ import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import com.voxeldev.todoapp.task.R
+import com.voxeldev.todoapp.task.ui.extensions.calculateTopBarElevation
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayColor
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayText
-import com.voxeldev.todoapp.task.ui.extensions.scrollPercentage
 import com.voxeldev.todoapp.task.ui.preview.TaskScreenPreviewData
 import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
 
@@ -116,7 +114,7 @@ private fun TaskScreen(
 
     Scaffold(
         topBar = {
-            Surface(shadowElevation = calculateTopBarElevation(scrollState = scrollState)) {
+            Surface(shadowElevation = scrollState.calculateTopBarElevation()) {
                 TodoSmallTopBar(
                     buttonText = stringResource(id = if (editTask) R.string.save else R.string.create),
                     isButtonActive = saveButtonActive,
@@ -280,21 +278,6 @@ private fun ImportanceDropdown(
                 onClick = { onImportanceClicked(importance) },
             )
         }
-    }
-}
-
-private fun calculateTopBarElevation(
-    scrollState: ScrollState,
-    maxElevation: Dp = 8.dp,
-    thresholdScrollPercentage: Float = 0.2f,
-): Dp {
-    val scrollPercentage = scrollState.scrollPercentage()
-    val animateElevation = scrollPercentage < thresholdScrollPercentage
-
-    return if (animateElevation) {
-        maxElevation * (scrollPercentage / thresholdScrollPercentage)
-    } else {
-        maxElevation
     }
 }
 

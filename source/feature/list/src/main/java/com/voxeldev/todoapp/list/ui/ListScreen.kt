@@ -229,6 +229,12 @@ private fun ListItem(
 
     var isInfoDialogVisible by rememberSaveable { mutableStateOf(false) }
 
+    val deadlineTimestamp = remember(todoItem) {
+        todoItem.deadlineTimestamp?.let { deadlineTimestamp ->
+            onRequestFormattedTimestamp(deadlineTimestamp)
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -270,11 +276,11 @@ private fun ListItem(
                     style = if (todoItem.isComplete) AppTypography.bodyStrikethrough else AppTypography.body,
                 )
 
-                if (todoItem.deadlineTimestamp != null) {
+                deadlineTimestamp?.let {
                     Spacer(modifier = Modifier.height(height = 4.dp))
 
                     Text(
-                        text = onRequestFormattedTimestamp(todoItem.deadlineTimestamp!!),
+                        text = deadlineTimestamp,
                         color = appPalette.labelTertiary,
                         style = AppTypography.subhead,
                     )
