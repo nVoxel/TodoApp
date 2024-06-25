@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="save">Save</string>
+    <string name="create">Create</string>
+    <string name="todo_placeholder">TODO description…</string>
+    <string name="importance">Importance</string>
+    <string name="deadline">Deadline</string>
+    <string name="delete">Delete</string>
+    <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="low_importance">Low</string>
+    <string name="normal_importance">No</string>
+    <string name="high_importance">!! High</string>
+</resources>

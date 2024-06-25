@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_todos">My TODOs</string>
+    <string name="completed">Completed — %1$s</string>
+    <string name="toggle_complete">Toggle complete</string>
+    <string name="task_actions">Task actions</string>
+    <string name="importance">Importance</string>
+    <string name="info">Info</string>
+    <string name="new_task">New task</string>
+    <string name="task_info">Task Info</string>
+    <string name="done">Done</string>
+    <string name="task_id">Task ID</string>
+    <string name="creation_date">Created at</string>
+    <string name="modification_date">Modified at</string>
+</resources>
