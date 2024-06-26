@@ -4,11 +4,13 @@ import android.content.res.Configuration
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
@@ -30,6 +32,10 @@ fun TodoDatePicker(
     val appPalette = LocalAppPalette.current
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialSelectedDateMillis)
+
+    // Fixes DatePicker not fully visible in landscape orientation
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    if (isLandscape) datePickerState.displayMode = DisplayMode.Input
 
     if (isVisible) {
         DatePickerDialog(
@@ -56,13 +62,24 @@ fun TodoDatePicker(
             DatePicker(
                 state = datePickerState,
                 colors = DatePickerDefaults.colors(selectedDayContainerColor = appPalette.colorBlue),
+                showModeToggle = !isLandscape,
             )
         }
     }
 }
 
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light Portrait", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark Portrait", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Light Landscape",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    device = "spec:parent=pixel_8_pro,orientation=landscape",
+)
+@Preview(
+    name = "Dark Landscape",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    device = "spec:parent=pixel_8_pro,orientation=landscape",
+)
 @Composable
 private fun Preview() {
     PreviewBase {
