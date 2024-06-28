@@ -1,6 +1,7 @@
 package com.voxeldev.todoapp.designsystem.theme
 
 import android.app.Activity
+import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -10,7 +11,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import com.voxeldev.todoapp.designsystem.preview.ThemePreview
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -110,5 +114,14 @@ fun TodoAppTheme(
             colorScheme = colorScheme,
             content = content,
         )
+    }
+}
+
+@Preview(name = "Theme colors (Light)", widthDp = 1200, heightDp = 1420, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Theme colors (Dark)", widthDp = 1200, heightDp = 1420, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun Preview() {
+    PreviewBase {
+        ThemePreview()
     }
 }

@@ -11,8 +11,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -29,10 +32,10 @@ class ListViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private var _todoItems: MutableStateFlow<List<TodoItem>> = MutableStateFlow(value = emptyList())
-    val todoItems: StateFlow<List<TodoItem>> = _todoItems
+    val todoItems: StateFlow<List<TodoItem>> = _todoItems.asStateFlow()
 
     private val _completedItemsCount: MutableStateFlow<Int> = MutableStateFlow(value = 0)
-    val completedItemsCount: StateFlow<Int> = _completedItemsCount
+    val completedItemsCount: StateFlow<Int> = _completedItemsCount.asStateFlow()
 
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
 
@@ -43,8 +46,8 @@ class ListViewModel @Inject constructor(
     }
 
     fun getTodoItems() {
-        _loading.value = true
-        _exception.value = null
+        _loading.update { true }
+        _exception.update { null }
 
         getAllTodoItemsFlowUseCase(
             params = BaseUseCase.NoParams,
@@ -54,11 +57,11 @@ class ListViewModel @Inject constructor(
                 onSuccess = { flow ->
                     scope.launch {
                         flow.collect { todoItems ->
-                            _todoItems.value = todoItems
-                            _completedItemsCount.value = todoItems.count { it.isComplete }
+                            _todoItems.update { todoItems }
+                            _completedItemsCount.update { todoItems.count { it.isComplete } }
                         }
                     }
-                    _loading.value = false
+                    _loading.update { false }
                 },
                 onFailure = ::handleException,
             )
@@ -69,7 +72,7 @@ class ListViewModel @Inject constructor(
         val item = todoItems.value.find { item -> item.id == id }
         item?.let {
             // not used for stub repository
-            // _loading.value = true
+            // _loading.update { true }
 
             val newItem = item.copy(isComplete = isChecked)
             updateTodoItemUseCase(
@@ -77,7 +80,7 @@ class ListViewModel @Inject constructor(
                 scope = scope,
             ) { result ->
                 result.fold(
-                    onSuccess = { /*_loading.value = false*/ },
+                    onSuccess = { /*_loading.update { false }*/ },
                     onFailure = ::handleException,
                 )
             }
@@ -86,14 +89,14 @@ class ListViewModel @Inject constructor(
 
     fun deleteTodoItem(id: String) {
         // not used for stub repository
-        // _loading.value = true
+        // _loading.update { true }
 
         deleteTodoItemUseCase(
             params = id,
             scope = scope,
         ) { result ->
             result.fold(
-                onSuccess = { /*_loading.value = false*/ },
+                onSuccess = { /*_loading.update { false }*/ },
                 onFailure = ::handleException,
             )
         }
@@ -101,4 +104,9 @@ class ListViewModel @Inject constructor(
 
     fun getFormattedTimestamp(timestamp: Long): String =
         timestamp.formatTimestamp(format = format)
+
+    override fun onCleared() {
+        scope.coroutineContext.cancelChildren()
+        super.onCleared()
+    }
 }

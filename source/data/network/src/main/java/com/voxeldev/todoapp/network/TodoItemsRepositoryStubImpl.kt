@@ -6,6 +6,7 @@ import com.voxeldev.todoapp.api.repository.TodoItemsRepository
 import com.voxeldev.todoapp.utils.exceptions.ItemNotFoundException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
@@ -14,7 +15,7 @@ import javax.inject.Inject
 class TodoItemsRepositoryStubImpl @Inject constructor() : TodoItemsRepository {
 
     override fun createItem(item: TodoItem): Result<Unit> = runCatching {
-        todoItemsFlow.value += item
+        todoItemsFlow.update { it + item }
     }
 
     override fun getAllFlow(): Result<Flow<List<TodoItem>>> {
@@ -26,11 +27,11 @@ class TodoItemsRepositoryStubImpl @Inject constructor() : TodoItemsRepository {
     }
 
     override fun updateItem(item: TodoItem): Result<Unit> = runCatching {
-        todoItemsFlow.value = todoItemsFlow.value.map { listItem -> if (listItem.id == item.id) item else listItem }
+        todoItemsFlow.update { it.map { listItem -> if (listItem.id == item.id) item else listItem } }
     }
 
     override fun deleteItem(id: String): Result<Unit> = runCatching {
-        todoItemsFlow.value = todoItemsFlow.value.filter { listItem -> listItem.id != id }
+        todoItemsFlow.update { it.filter { listItem -> listItem.id != id } }
     }
 
     // Items stub

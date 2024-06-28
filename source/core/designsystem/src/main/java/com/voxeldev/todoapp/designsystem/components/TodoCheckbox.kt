@@ -1,5 +1,8 @@
 package com.voxeldev.todoapp.designsystem.components
 
+import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -9,7 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
+import com.voxeldev.todoapp.designsystem.preview.components.PreviewSectionSpacer
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
 /**
@@ -46,5 +52,44 @@ fun TodoCheckbox(
                 disabledIndeterminateBoxColor = Color.Transparent,
             ),
         )
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun Preview() {
+    PreviewBase {
+        Column(modifier = Modifier.padding(all = 8.dp)) {
+            TodoCheckbox(
+                isChecked = false,
+                onCheckedChange = {},
+                isImportant = false,
+            )
+
+            PreviewSectionSpacer()
+
+            TodoCheckbox(
+                isChecked = false,
+                onCheckedChange = {},
+                isImportant = true,
+            )
+
+            PreviewSectionSpacer()
+
+            TodoCheckbox(
+                isChecked = true,
+                onCheckedChange = {},
+                isImportant = false,
+            )
+
+            PreviewSectionSpacer()
+
+            TodoCheckbox(
+                isChecked = true,
+                onCheckedChange = {},
+                isImportant = true,
+            )
+        }
     }
 }

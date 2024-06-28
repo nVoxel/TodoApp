@@ -11,6 +11,7 @@ complexity:
     active: true
     excludes: [ '**/test/**', '**/*.Test.kt', '**/*.Spec.kt' ]
   TooManyFunctions:
+    thresholdInClasses: 15
     excludes: [ '**/test/**', '**/functionalTest/**', '**/*Mapper.kt', '**/components/swipedismiss/**' ]
   LongMethod:
     threshold: 70
@@ -132,7 +133,7 @@ potential-bugs:
     active: true
   ImplicitDefaultLocale:
     active: true
-    excludes: ['**/SummariesMapper.kt']
+    excludes: ['**/Preview**.kt']
   ImplicitUnitReturnType:
     active: true
   MapGetWithNotNullAssertionOperator:
@@ -216,7 +217,7 @@ style:
   ForbiddenVoid:
     active: true
   MagicNumber:
-    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt', '**/TodoLargeTopBar.kt', '**/components/swipedismiss/**']
+    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt', '**/TodoLargeTopBar.kt', '**/components/swipedismiss/**', '**/Preview**.kt']
     ignorePropertyDeclaration: true
     ignoreAnnotation: true
     ignoreEnums: true

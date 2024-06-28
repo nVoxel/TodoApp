@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,15 @@ internal fun TodoItemInfoDialog(
     onRequestFormattedTimestamp: (Long) -> String,
 ) {
     val appPalette = LocalAppPalette.current
+
+    val creationTimestamp = remember(todoItem) {
+        onRequestFormattedTimestamp(todoItem.creationTimestamp)
+    }
+    val modifiedTimestamp = remember(todoItem) {
+        todoItem.modifiedTimestamp?.let { modifiedTimestamp ->
+            onRequestFormattedTimestamp(modifiedTimestamp)
+        }
+    }
 
     TodoInfoDialog(
         isVisible = isVisible,
@@ -64,15 +74,15 @@ internal fun TodoItemInfoDialog(
 
         TableRow(
             titleColumnText = stringResource(id = R.string.creation_date),
-            contentColumnText = onRequestFormattedTimestamp(todoItem.creationTimestamp),
+            contentColumnText = creationTimestamp,
         )
 
-        todoItem.modifiedTimestamp?.let { modifiedTimestamp ->
+        modifiedTimestamp?.let {
             Spacer(modifier = Modifier.height(height = 12.dp))
 
             TableRow(
                 titleColumnText = stringResource(id = R.string.modification_date),
-                contentColumnText = onRequestFormattedTimestamp(modifiedTimestamp),
+                contentColumnText = modifiedTimestamp,
             )
         }
     }
