@@ -3,7 +3,6 @@ package com.voxeldev.todoapp.designsystem.components
 /**
  * @author nvoxel
  */
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,10 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.voxeldev.todoapp.designsystem.R
+import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
+import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
 /**
  * @author nvoxel
@@ -31,6 +33,8 @@ fun Error(
     shouldShowRetry: Boolean,
     retryCallback: () -> Unit = {},
 ) {
+    val appPalette = LocalAppPalette.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,7 +45,8 @@ fun Error(
         Text(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            text = "Error: $message",
+            color = appPalette.labelPrimary,
+            text = stringResource(id = R.string.error, message),
         )
         if (shouldShowRetry) {
             TodoButton(
@@ -55,15 +60,14 @@ fun Error(
                 )
                 Text(
                     modifier = Modifier.padding(start = 4.dp, end = 2.dp),
-                    text = "Retry",
+                    text = stringResource(id = R.string.retry),
                 )
             }
         }
     }
 }
 
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentDayNightPreviews
 @Composable
 private fun Preview() {
     PreviewBase {

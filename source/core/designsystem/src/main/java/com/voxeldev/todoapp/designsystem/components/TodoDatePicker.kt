@@ -12,6 +12,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
@@ -68,8 +69,7 @@ fun TodoDatePicker(
     }
 }
 
-@Preview(name = "Light Portrait", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark Portrait", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentDayNightPreviews
 @Preview(
     name = "Light Landscape",
     uiMode = Configuration.UI_MODE_NIGHT_NO,

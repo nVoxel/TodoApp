@@ -275,7 +275,7 @@ style:
   UnusedPrivateMember:
     active: true
     allowedNames: '(_|ignored|expected)'
-    ignoreAnnotated: [ 'Preview' ]
+    ignoreAnnotated: [ '*Preview*' ]
   UseAnyOrNoneInsteadOfFind:
     active: true
   UseCheckOrError:

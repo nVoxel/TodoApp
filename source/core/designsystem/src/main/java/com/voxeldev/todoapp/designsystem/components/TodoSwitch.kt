@@ -1,6 +1,5 @@
 package com.voxeldev.todoapp.designsystem.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
@@ -8,9 +7,11 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
+import com.voxeldev.todoapp.designsystem.preview.providers.BooleanPreviewParameterProvider
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
 /**
@@ -36,28 +37,16 @@ fun TodoSwitch(
     )
 }
 
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentDayNightPreviews
 @Composable
-private fun PreviewUnchecked() {
+private fun Preview(
+    @PreviewParameter(BooleanPreviewParameterProvider::class)
+    checked: Boolean,
+) {
     PreviewBase {
         Box(modifier = Modifier.padding(all = 8.dp)) {
             TodoSwitch(
-                checked = false,
-                onCheckedChange = {},
-            )
-        }
-    }
-}
-
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewChecked() {
-    PreviewBase {
-        Box(modifier = Modifier.padding(all = 8.dp)) {
-            TodoSwitch(
-                checked = true,
+                checked = checked,
                 onCheckedChange = {},
             )
         }
