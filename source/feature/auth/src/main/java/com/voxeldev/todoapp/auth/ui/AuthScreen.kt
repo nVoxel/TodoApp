@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.auth.ui
 
+import android.app.Activity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
@@ -7,23 +8,30 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.auth.R
+import com.voxeldev.todoapp.auth.extensions.setTranslucentBars
+import com.voxeldev.todoapp.auth.extensions.setTransparentBars
 import com.voxeldev.todoapp.auth.ui.components.AuthCard
 import com.voxeldev.todoapp.auth.ui.components.AuthContrastButton
 import com.voxeldev.todoapp.auth.ui.components.AuthTextField
@@ -67,6 +78,8 @@ fun AuthScreen(
     val authScreenState by viewModel.state.collectAsStateWithLifecycle()
     val showLoading by viewModel.loading.collectAsStateWithLifecycle()
     val error by viewModel.exception.collectAsStateWithLifecycle()
+
+    ManageSystemBars()
 
     // on close card
     var reverseAnimation by rememberSaveable { mutableStateOf(false) }
@@ -140,57 +153,61 @@ private fun AuthScreen(
                     .padding(all = 8.dp),
                 contentAlignment = Alignment.BottomCenter,
             ) {
-                AnimatedContent(
-                    targetState = state,
-                    transitionSpec = {
-                        getCardsTransition(reverseAnimation = reverseAnimation)
-                    },
-                    contentKey = { targetState -> targetState.stateKey },
-                    contentAlignment = Alignment.BottomCenter,
-                ) { targetState ->
-                    when (targetState) {
-                        is AuthScreenState.ChooseMethod -> {
-                            ChooseMethodCard(
-                                onCredentialsMethodClicked = onCredentialsMethodClicked,
-                                onOAuthMethodClicked = onOAuthMethodClicked,
-                            )
-                        }
+                Column {
+                    AnimatedContent(
+                        targetState = state,
+                        transitionSpec = {
+                            getCardsTransition(reverseAnimation = reverseAnimation)
+                        },
+                        contentKey = { targetState -> targetState.stateKey },
+                        contentAlignment = Alignment.BottomCenter,
+                    ) { targetState ->
+                        when (targetState) {
+                            is AuthScreenState.ChooseMethod -> {
+                                ChooseMethodCard(
+                                    onCredentialsMethodClicked = onCredentialsMethodClicked,
+                                    onOAuthMethodClicked = onOAuthMethodClicked,
+                                )
+                            }
 
-                        is AuthScreenState.BearerMethod -> {
-                            PasswordMethodCard(
-                                loginText = targetState.login,
-                                passwordText = targetState.password,
-                                onUpdateLoginText = onUpdateLoginText,
-                                onUpdatePasswordText = onUpdatePasswordText,
-                                showLoading = showLoading,
-                                error = error,
-                                onRetryClicked = onRetryClicked,
-                                onCheckAuthClicked = onCheckAuthClicked,
-                                onCloseClicked = onChooseMethodClicked,
-                            )
-                        }
+                            is AuthScreenState.BearerMethod -> {
+                                PasswordMethodCard(
+                                    loginText = targetState.login,
+                                    passwordText = targetState.password,
+                                    onUpdateLoginText = onUpdateLoginText,
+                                    onUpdatePasswordText = onUpdatePasswordText,
+                                    showLoading = showLoading,
+                                    error = error,
+                                    onRetryClicked = onRetryClicked,
+                                    onCheckAuthClicked = onCheckAuthClicked,
+                                    onCloseClicked = onChooseMethodClicked,
+                                )
+                            }
 
-                        is AuthScreenState.OAuthMethodInfo -> {
-                            OAuthMethodInfoCard(
-                                onContinueClicked = onOAuthMethodContinueClicked,
-                                onCloseClicked = onChooseMethodClicked,
-                            )
-                        }
+                            is AuthScreenState.OAuthMethodInfo -> {
+                                OAuthMethodInfoCard(
+                                    onContinueClicked = onOAuthMethodContinueClicked,
+                                    onCloseClicked = onChooseMethodClicked,
+                                )
+                            }
 
-                        is AuthScreenState.OAuthMethod -> {
-                            OAuthMethodCard(
-                                tokenText = targetState.token,
-                                onUpdateTokenText = onUpdateTokenText,
-                                showLoading = showLoading,
-                                error = error,
-                                onRetryClicked = onRetryClicked,
-                                onCheckAuthClicked = onCheckAuthClicked,
-                                onCloseClicked = onChooseMethodClicked,
-                            )
-                        }
+                            is AuthScreenState.OAuthMethod -> {
+                                OAuthMethodCard(
+                                    tokenText = targetState.token,
+                                    onUpdateTokenText = onUpdateTokenText,
+                                    showLoading = showLoading,
+                                    error = error,
+                                    onRetryClicked = onRetryClicked,
+                                    onCheckAuthClicked = onCheckAuthClicked,
+                                    onCloseClicked = onChooseMethodClicked,
+                                )
+                            }
 
-                        else -> {}
+                            else -> {}
+                        }
                     }
+
+                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.ime))
                 }
             }
         }
@@ -431,6 +448,24 @@ private fun OAuthMethodCard(
                 text = stringResource(id = R.string.sign_in),
                 fontSize = 18.sp,
                 style = AppTypography.button,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ManageSystemBars() {
+    val window = (LocalContext.current as Activity).window
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+
+    LaunchedEffect(key1 = Unit) {
+        window.setTransparentBars()
+    }
+
+    DisposableEffect(key1 = Unit) {
+        onDispose {
+            window.setTranslucentBars(
+                isSystemInDarkTheme = isSystemInDarkTheme,
             )
         }
     }

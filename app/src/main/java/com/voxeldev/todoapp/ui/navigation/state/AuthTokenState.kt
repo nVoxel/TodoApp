@@ -1,9 +1,9 @@
-package com.voxeldev.todoapp.ui.navigation
+package com.voxeldev.todoapp.ui.navigation.state
 
 /**
  * @author nvoxel
  */
-sealed interface AuthTokenState {
+internal sealed interface AuthTokenState {
     data object Loading : AuthTokenState
     data object Found : AuthTokenState
     data object NotFound : AuthTokenState

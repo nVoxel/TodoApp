@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Настройки</string>
+    <string name="auto_refresh_interval">Интервал автообновления</string>
+    <string name="auto_refresh_interval_description">Изменить интервал автообновления списка</string>
+    <string name="log_out">Выход</string>
+    <string name="log_out_description">Выйти из активного аккаунта</string>
+</resources>

@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -37,6 +40,7 @@ import com.voxeldev.todoapp.designsystem.components.TodoDivider
 import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSwitch
 import com.voxeldev.todoapp.designsystem.components.TodoTextField
+import com.voxeldev.todoapp.designsystem.components.clipShadow
 import com.voxeldev.todoapp.designsystem.components.conditional
 import com.voxeldev.todoapp.designsystem.extensions.calculateTopBarElevation
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
@@ -113,7 +117,12 @@ private fun TaskScreen(
 
     Scaffold(
         topBar = {
-            Surface(shadowElevation = scrollState.calculateTopBarElevation()) {
+            Surface(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .clipShadow(),
+                shadowElevation = scrollState.calculateTopBarElevation(),
+            ) {
                 TodoSmallTopBar(
                     onCloseClicked = onCloseClicked,
                     displayButton = true,
@@ -128,22 +137,26 @@ private fun TaskScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues = paddingValues)
-                .padding(horizontal = 16.dp)
                 .verticalScroll(state = scrollState),
         ) {
             Spacer(modifier = Modifier.height(height = 8.dp))
 
             TodoTextField(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .heightIn(max = 260.dp),
                 text = text,
                 onTextChanged = onTextChanged,
                 placeholderText = stringResource(id = R.string.todo_placeholder),
             )
 
+            Spacer(modifier = Modifier.height(height = 12.dp))
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { importanceDropdownVisible = true }
-                    .padding(top = 28.dp, bottom = 16.dp),
+                    .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
             ) {
                 Text(
                     text = stringResource(id = R.string.importance),
@@ -175,7 +188,7 @@ private fun TaskScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { datePickerDialogVisible = true }
-                    .padding(top = 16.dp, bottom = 24.dp),
+                    .padding(top = 16.dp, bottom = 24.dp, start = 16.dp, end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -230,7 +243,7 @@ private fun TaskScreen(
                         condition = editTask,
                         conditionMetModifier = Modifier.clickable(onClick = onDeleteClicked),
                     )
-                    .padding(vertical = 20.dp),
+                    .padding(vertical = 20.dp, horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
@@ -247,6 +260,8 @@ private fun TaskScreen(
                     style = AppTypography.body,
                 )
             }
+
+            Spacer(modifier = Modifier.imePadding())
         }
     }
 }

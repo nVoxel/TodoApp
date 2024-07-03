@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.domain.usecase.token.GetAuthTokenUseCase
+import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,7 @@ import javax.inject.Inject
  * @author nvoxel
  */
 @HiltViewModel
-class NavigationViewModel @Inject constructor(
+internal class NavigationViewModel @Inject constructor(
     private val getAuthTokenUseCase: GetAuthTokenUseCase,
 ) : ViewModel() {
 

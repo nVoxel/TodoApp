@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.designsystem.components
 
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
@@ -27,7 +28,9 @@ fun TodoNetworkNotification(
 
     BottomAnimatedVisibility(isVisible = isVisible) {
         ExtendedFloatingActionButton(
-            modifier = modifier.padding(all = 18.dp),
+            modifier = modifier
+                .padding(all = 18.dp)
+                .navigationBarsPadding(),
             text = {
                 Text(
                     text = stringResource(id = R.string.network_lost),

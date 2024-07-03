@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -192,8 +193,9 @@ private fun ListScreen(
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
-                .padding(paddingValues = paddingValues)
-                .padding(start = 8.dp, end = 8.dp, top = 2.dp)
+                .padding(top = paddingValues.calculateTopPadding())
+                .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 4.dp)
+                .navigationBarsPadding()
                 .shadow(
                     elevation = 2.dp,
                     shape = RoundedCornerShape(size = 8.dp),
@@ -203,10 +205,7 @@ private fun ListScreen(
                     shape = RoundedCornerShape(size = 8.dp),
                 ),
             state = lazyColumnState,
-            contentPadding = PaddingValues(
-                top = 8.dp,
-                bottom = 24.dp,
-            ),
+            contentPadding = PaddingValues(vertical = 8.dp),
         ) {
             items(items = todoItems, key = { it.id }) { todoItem ->
                 if (isOnlyUncompletedVisible && todoItem.isComplete) return@items
@@ -337,7 +336,7 @@ private fun NewListItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClicked)
-            .padding(horizontal = 48.dp, vertical = 12.dp),
+            .padding(horizontal = 48.dp, vertical = 16.dp),
     ) {
         Text(
             text = stringResource(id = R.string.new_task),

@@ -26,6 +26,7 @@ import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
  */
 @Composable
 fun TodoTextField(
+    modifier: Modifier = Modifier,
     text: String,
     onTextChanged: (String) -> Unit,
     placeholderText: String? = null,
@@ -33,7 +34,7 @@ fun TodoTextField(
     val appPalette = LocalAppPalette.current
 
     OutlinedTextField(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 104.dp)
             .shadow(

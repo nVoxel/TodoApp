@@ -25,6 +25,7 @@ data class AppPalette(
     val labelSupport: Color = Color.Unspecified,
 
     val colorRed: Color = Color.Unspecified,
+    val colorRedSecondary: Color = Color.Unspecified,
     val colorRedBack: Color = Color.Unspecified,
     val colorGreen: Color = Color.Unspecified,
     val colorBlue: Color = Color.Unspecified,
@@ -55,6 +56,7 @@ internal val lightAppPalette = AppPalette(
     labelSupport = Color(0xFFB3B8CC),
 
     colorRed = Color(0xFFFF3B30),
+    colorRedSecondary = Color(0xFFFF6D64),
     colorRedBack = Color(0x14FF3B30),
     colorGreen = Color(0xFF34C759),
     colorBlue = Color(0xFF007AFF),
@@ -83,6 +85,7 @@ internal val darkAppPalette = AppPalette(
     labelSupport = Color(0xFFB3B8CC),
 
     colorRed = Color(0xFFFF453A),
+    colorRedSecondary = Color(0xFFCC251B),
     colorRedBack = Color(0x14FF453A),
     colorGreen = Color(0xFF32D74B),
     colorBlue = Color(0xFF0A84FF),

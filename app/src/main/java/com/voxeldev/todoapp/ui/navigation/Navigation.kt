@@ -19,6 +19,7 @@ import com.voxeldev.todoapp.list.ui.ListScreen
 import com.voxeldev.todoapp.settings.ui.SettingsScreen
 import com.voxeldev.todoapp.task.ui.TaskScreen
 import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
+import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
 
 /**
  * @author nvoxel
