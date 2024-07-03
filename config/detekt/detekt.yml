@@ -255,6 +255,7 @@ style:
     active: true
     max: 3
     excludeGuardClauses: true
+    excludedFunctions: ['getResponse']
   TrimMultilineRawString:
     active: true
   UnderscoresInNumericLiterals:

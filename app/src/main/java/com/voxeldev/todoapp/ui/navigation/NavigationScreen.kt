@@ -8,6 +8,10 @@ internal sealed class NavigationScreen(
     val routeWithArguments: String,
 ) {
 
+    data object Auth : NavigationScreen(
+        routeWithArguments = "auth",
+    )
+
     data object List : NavigationScreen(
         routeWithArguments = "list",
     )
@@ -15,6 +19,10 @@ internal sealed class NavigationScreen(
     data object Task : NavigationScreen(
         route = "task",
         routeWithArguments = "task/{$TASK_ID_ARG}",
+    )
+
+    data object Settings : NavigationScreen(
+        routeWithArguments = "settings",
     )
 
     companion object {

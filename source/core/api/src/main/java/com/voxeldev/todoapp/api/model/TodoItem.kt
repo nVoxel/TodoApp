@@ -10,5 +10,5 @@ data class TodoItem(
     val deadlineTimestamp: Long? = null,
     val isComplete: Boolean,
     val creationTimestamp: Long,
-    val modifiedTimestamp: Long? = null,
+    val modifiedTimestamp: Long,
 )

@@ -38,13 +38,13 @@ import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSwitch
 import com.voxeldev.todoapp.designsystem.components.TodoTextField
 import com.voxeldev.todoapp.designsystem.components.conditional
+import com.voxeldev.todoapp.designsystem.extensions.calculateTopBarElevation
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import com.voxeldev.todoapp.task.R
-import com.voxeldev.todoapp.task.ui.extensions.calculateTopBarElevation
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayColor
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayText
 import com.voxeldev.todoapp.task.ui.preview.TaskScreenPreviewData
@@ -115,10 +115,11 @@ private fun TaskScreen(
         topBar = {
             Surface(shadowElevation = scrollState.calculateTopBarElevation()) {
                 TodoSmallTopBar(
+                    onCloseClicked = onCloseClicked,
+                    displayButton = true,
                     buttonText = stringResource(id = if (editTask) R.string.save else R.string.create),
                     isButtonActive = saveButtonActive,
                     onButtonClicked = onSaveClicked,
-                    onCloseClicked = onCloseClicked,
                 )
             }
         },

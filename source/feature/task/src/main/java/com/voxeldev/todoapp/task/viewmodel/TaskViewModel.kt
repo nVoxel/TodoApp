@@ -2,25 +2,23 @@ package com.voxeldev.todoapp.task.viewmodel
 
 import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.api.model.TodoItemImportance
-import com.voxeldev.todoapp.domain.usecase.CreateTodoItemUseCase
-import com.voxeldev.todoapp.domain.usecase.DeleteTodoItemUseCase
-import com.voxeldev.todoapp.domain.usecase.GetSingleTodoItemUseCase
-import com.voxeldev.todoapp.domain.usecase.UpdateTodoItemUseCase
+import com.voxeldev.todoapp.domain.usecase.todoitem.CreateTodoItemUseCase
+import com.voxeldev.todoapp.domain.usecase.todoitem.DeleteTodoItemUseCase
+import com.voxeldev.todoapp.domain.usecase.todoitem.GetSingleTodoItemUseCase
+import com.voxeldev.todoapp.domain.usecase.todoitem.UpdateTodoItemUseCase
 import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.extensions.formatTimestamp
+import com.voxeldev.todoapp.utils.platform.NetworkObserver
+import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.UUID
@@ -31,12 +29,16 @@ import java.util.UUID
 @HiltViewModel(assistedFactory = TaskViewModel.Factory::class)
 class TaskViewModel @AssistedInject constructor(
     @Assisted val taskId: String?,
-    @Assisted val scopeDispatcher: CoroutineDispatcher,
     private val createTodoItemUseCase: CreateTodoItemUseCase,
     private val deleteTodoItemUseCase: DeleteTodoItemUseCase,
     private val getSingleTodoItemUseCase: GetSingleTodoItemUseCase,
     private val updateTodoItemUseCase: UpdateTodoItemUseCase,
-) : BaseViewModel() {
+    networkObserver: NetworkObserver,
+    coroutineDispatcherProvider: CoroutineDispatcherProvider,
+) : BaseViewModel(
+    networkObserver = networkObserver,
+    coroutineDispatcherProvider = coroutineDispatcherProvider,
+) {
 
     private val _text: MutableStateFlow<String> = MutableStateFlow(value = "")
     val text: StateFlow<String> = _text
@@ -57,18 +59,19 @@ class TaskViewModel @AssistedInject constructor(
 
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
 
-    private val scope = CoroutineScope(SupervisorJob() + scopeDispatcher)
-
     @AssistedFactory
     interface Factory {
-        fun create(
-            taskId: String?,
-            scopeDispatcher: CoroutineDispatcher = Dispatchers.IO,
-        ): TaskViewModel
+        fun create(taskId: String?): TaskViewModel
     }
 
     init {
         getTodoItem()
+
+        scope.launch {
+            networkObserver.networkAvailability.collect { networkAvailable ->
+                _networkNotification.update { !networkAvailable }
+            }
+        }
     }
 
     fun getTodoItem() {
@@ -128,14 +131,16 @@ class TaskViewModel @AssistedInject constructor(
     }
 
     private fun createItem(callback: () -> Unit) {
+        val timestamp = getTimestamp()
+
         val newItem = TodoItem(
             id = UUID.randomUUID().toString(),
             text = _text.value,
             importance = _importance.value,
             deadlineTimestamp = _deadlineTimestamp.value,
             isComplete = false,
-            creationTimestamp = getTimestamp(),
-            modifiedTimestamp = null,
+            creationTimestamp = timestamp,
+            modifiedTimestamp = timestamp,
         )
 
         _loading.update { true }
@@ -196,12 +201,9 @@ class TaskViewModel @AssistedInject constructor(
         }
     }
 
+    override fun onNetworkConnected() = getTodoItem()
+
     private fun getTimestamp() = System.currentTimeMillis() / 1000
 
     private fun canSaveItem(): Boolean = _text.value.isNotBlank()
-
-    override fun onCleared() {
-        scope.coroutineContext.cancelChildren()
-        super.onCleared()
-    }
 }

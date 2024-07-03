@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Info
@@ -69,6 +70,7 @@ import com.voxeldev.todoapp.list.viewmodel.ListViewModel
 @Composable
 fun ListScreen(
     onNavigateToTask: (String?) -> Unit,
+    onNavigateToSettings: () -> Unit,
     viewModel: ListViewModel,
 ) {
     val lazyColumnState = rememberLazyListState()
@@ -105,6 +107,7 @@ fun ListScreen(
             onDeleteClicked = { id ->
                 viewModel.deleteTodoItem(id = id)
             },
+            onSettingsClicked = onNavigateToSettings,
             onRequestFormattedTimestamp = viewModel::getFormattedTimestamp,
         )
     }
@@ -124,6 +127,7 @@ private fun ListScreen(
     onItemClicked: (String?) -> Unit,
     onCheckClicked: (String, Boolean) -> Unit,
     onDeleteClicked: (String) -> Unit,
+    onSettingsClicked: () -> Unit,
     onRequestFormattedTimestamp: (Long) -> String,
 ) {
     val appPalette = LocalAppPalette.current
@@ -161,6 +165,17 @@ private fun ListScreen(
                             .clickable { onUncompletedVisibilityChanged(!isOnlyUncompletedVisible) },
                         imageVector = if (isOnlyUncompletedVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                         contentDescription = stringResource(id = R.string.toggle_complete),
+                        tint = appPalette.colorBlue,
+                    )
+
+                    Spacer(modifier = Modifier.width(width = 16.dp))
+
+                    Icon(
+                        modifier = Modifier
+                            .clip(shape = CircleShape)
+                            .clickable(onClick = onSettingsClicked),
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Settings",
                         tint = appPalette.colorBlue,
                     )
                 },
@@ -349,6 +364,7 @@ private fun ListScreenPreview() {
             onItemClicked = {},
             onCheckClicked = { _, _ -> },
             onDeleteClicked = {},
+            onSettingsClicked = {},
             onRequestFormattedTimestamp = { "дата" },
         )
     }

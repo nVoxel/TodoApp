@@ -63,6 +63,13 @@ internal fun AppTypographyPreview() {
                 text = "Subhead — 14/20",
                 style = AppTypography.subhead,
             )
+
+            PreviewSectionSpacer()
+
+            Text(
+                text = "Primary Text Field — 24/32",
+                style = AppTypography.primaryTextField,
+            )
         }
     }
 }

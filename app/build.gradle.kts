@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.runtime.livedata)
@@ -66,8 +67,11 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     implementation(projects.source.core.designsystem)
+    implementation(projects.source.core.domain)
     implementation(projects.source.core.utils)
+    implementation(projects.source.feature.auth)
     implementation(projects.source.feature.list)
+    implementation(projects.source.feature.settings)
     implementation(projects.source.feature.task)
 
     debugImplementation(libs.androidx.ui.tooling)

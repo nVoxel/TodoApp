@@ -1,6 +1,10 @@
 package com.voxeldev.todoapp.utils.extensions
 
+import androidx.compose.runtime.Composable
+import com.voxeldev.todoapp.utils.exceptions.base.DisplayableException
+
 /**
  * @author nvoxel
  */
-fun Throwable.getMessage() = message ?: toString()
+@Composable
+fun Throwable.getDisplayMessage(): String = if (this is DisplayableException) getDisplayMessage() else message ?: toString()

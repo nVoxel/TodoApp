@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="field_not_filled_exception">All fields must be filled</string>
+    <string name="failed_to_authenticate_exception">Failed to authenticate, provided credentials may be not valid</string>
+    <string name="auth_header">TodoApp</string>
+    <string name="choose_method">Choose authentication method</string>
+    <string name="password_method">Sign in using password</string>
+    <string name="password_method_using">Enter credentials</string>
+    <string name="methods_divider">or</string>
+    <string name="yandex_method">Sign in with Yandex ID</string>
+    <string name="yandex_method_info">You will need to go through the authentication procedure in the browser, then close it and enter the received token into the application form</string>
+    <string name="yandex_method_using">Enter displayed token</string>
+    <string name="password_visibility">Password visibility</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="token">Token</string>
+    <string name="sign_in">Sign In</string>
+    <string name="continue_label">Continue</string>
+    <string name="close">Close</string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="field_not_filled_exception">Все поля должны быть заполнены</string>
+    <string name="failed_to_authenticate_exception">Не удалось войти, введенные данные могут быть неверными</string>
+    <string name="auth_header">TodoApp</string>
+    <string name="choose_method">Выберите способ входа</string>
+    <string name="password_method">Войти с помощью пароля</string>
+    <string name="password_method_using">Введите данные для входа</string>
+    <string name="methods_divider">или</string>
+    <string name="yandex_method">Войти с Яндекс ID</string>
+    <string name="yandex_method_info">Вам потребуется пройти процедуру аутентификации в браузере, после чего закрыть его и ввести полученный токен в форму приложения</string>
+    <string name="yandex_method_using">Введите полученный токен</string>
+    <string name="password_visibility">Видимость пароля</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="token">Токен</string>
+    <string name="sign_in">Войти</string>
+    <string name="continue_label">Продолжить</string>
+    <string name="close">Закрыть</string>
+</resources>

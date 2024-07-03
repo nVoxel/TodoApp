@@ -1,7 +1,9 @@
 package com.voxeldev.todoapp.network.di
 
-import com.voxeldev.todoapp.api.repository.TodoItemsRepository
-import com.voxeldev.todoapp.network.TodoItemsRepositoryStubImpl
+import com.voxeldev.todoapp.api.repository.TodoItemListRepository
+import com.voxeldev.todoapp.api.repository.TodoItemRepository
+import com.voxeldev.todoapp.network.todoapi.TodoItemRepositoryDefaultImpl
+import com.voxeldev.todoapp.network.todoapi.TodoItemsListRepositoryDefaultImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,7 +23,13 @@ internal interface InternalRepositoryModule {
 
     @Binds
     @Singleton
-    fun bindTodoItems(
-        todoItemsRepositoryStubImpl: TodoItemsRepositoryStubImpl,
-    ): TodoItemsRepository
+    fun bindTodoItemListRepository(
+        todoItemsListRepositoryDefaultImpl: TodoItemsListRepositoryDefaultImpl,
+    ): TodoItemListRepository
+
+    @Binds
+    @Singleton
+    fun bindTodoItemRepository(
+        todoItemRepositoryDefaultImpl: TodoItemRepositoryDefaultImpl,
+    ): TodoItemRepository
 }

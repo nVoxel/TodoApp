@@ -1,9 +1,8 @@
 package com.voxeldev.todoapp.domain.usecase.base
 
+import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -11,18 +10,19 @@ import kotlinx.coroutines.launch
  * @author nvoxel
  */
 abstract class BaseUseCase<in Params, out Type>(
-    private val asyncDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    coroutineDispatcherProvider: CoroutineDispatcherProvider,
+    private val mainDispatcher: CoroutineDispatcher = coroutineDispatcherProvider.mainDispatcher,
+    private val asyncDispatcher: CoroutineDispatcher = coroutineDispatcherProvider.ioDispatcher,
 ) where Type : Any {
 
-    abstract fun run(params: Params): Result<Type>
+    abstract suspend fun run(params: Params): Result<Type>
 
     operator fun invoke(
         params: Params,
-        scope: CoroutineScope = GlobalScope,
-        asyncDispatcher: CoroutineDispatcher = this.asyncDispatcher,
+        scope: CoroutineScope,
         onResult: suspend (Result<Type>) -> Unit = {},
     ) {
-        scope.launch(Dispatchers.Main) {
+        scope.launch(mainDispatcher) {
             val deferred = async(asyncDispatcher) {
                 run(params)
             }
