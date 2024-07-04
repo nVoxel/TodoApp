@@ -13,7 +13,6 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
 
         resValue("string", "todo_api_base_url", extra["TODO_API_BASE_URL"].toString())
-        resValue("string", "todo_oauth_url", extra["TODO_OAUTH_URL"].toString())
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

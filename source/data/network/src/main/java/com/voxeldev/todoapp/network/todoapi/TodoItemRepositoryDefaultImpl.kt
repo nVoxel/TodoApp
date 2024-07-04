@@ -2,9 +2,11 @@ package com.voxeldev.todoapp.network.todoapi
 
 import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.api.repository.TodoItemRepository
+import com.voxeldev.todoapp.api.request.TodoItemModifyRequest
 import com.voxeldev.todoapp.network.base.BaseNetworkRepository
 import com.voxeldev.todoapp.network.todoapi.datasource.URIs.LIST_URI
 import com.voxeldev.todoapp.network.todoapi.datasource.response.TodoSingleResponse
+import com.voxeldev.todoapp.network.todoapi.mapper.TodoItemRequestMapper
 import com.voxeldev.todoapp.network.todoapi.mapper.TodoSingleMapper
 import com.voxeldev.todoapp.utils.extensions.url
 import com.voxeldev.todoapp.utils.platform.NetworkHandler
@@ -27,19 +29,20 @@ import javax.inject.Inject
 internal class TodoItemRepositoryDefaultImpl @Inject constructor(
     networkHandler: NetworkHandler,
     private val httpClient: HttpClient,
+    private val todoItemRequestMapper: TodoItemRequestMapper,
     private val todoSingleMapper: TodoSingleMapper,
 ) : TodoItemRepository, BaseNetworkRepository<TodoItem>(networkHandler = networkHandler) {
 
-    override suspend fun createItem(item: TodoItem, revision: Int): Result<Unit> =
+    override suspend fun createItem(request: TodoItemModifyRequest): Result<Unit> =
         doRequest(
             request = httpClient.preparePost {
                 url(urlString = LIST_URI)
 
                 contentType(ContentType.Application.Json)
-                setBody(todoSingleMapper.toRequest(model = item))
+                setBody(todoItemRequestMapper.toRequest(model = request))
 
                 headers {
-                    append(REVISION_HEADER_NAME, revision.toString())
+                    append(REVISION_HEADER_NAME, request.revision.toString())
                 }
             },
         )
@@ -54,18 +57,18 @@ internal class TodoItemRepositoryDefaultImpl @Inject constructor(
             transform = { todoSingleMapper.toModel(response = this) },
         )
 
-    override suspend fun updateItem(item: TodoItem, revision: Int): Result<Unit> =
+    override suspend fun updateItem(request: TodoItemModifyRequest): Result<Unit> =
         doRequest(
             request = httpClient.preparePut {
                 url(urlString = LIST_URI) {
-                    appendPathSegments(item.id)
+                    appendPathSegments(request.todoItem.id)
                 }
 
                 contentType(ContentType.Application.Json)
-                setBody(todoSingleMapper.toRequest(model = item))
+                setBody(todoItemRequestMapper.toRequest(model = request))
 
                 headers {
-                    append(REVISION_HEADER_NAME, revision.toString())
+                    append(REVISION_HEADER_NAME, request.revision.toString())
                 }
             },
         )

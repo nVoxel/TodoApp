@@ -1,6 +1,8 @@
 package com.voxeldev.todoapp.local.di
 
 import com.voxeldev.todoapp.api.repository.AuthTokenRepository
+import com.voxeldev.todoapp.api.repository.PreferencesRepository
+import com.voxeldev.todoapp.local.preferences.PreferencesRepositoryDefaultImpl
 import com.voxeldev.todoapp.local.token.AuthTokenRepositoryPrefsImpl
 import dagger.Binds
 import dagger.Module
@@ -18,6 +20,12 @@ interface LocalModule
 @Module
 @InstallIn(SingletonComponent::class)
 internal interface InternalLocalModule {
+
+    @Binds
+    @Singleton
+    fun bindPreferencesRepository(
+        preferencesRepositoryDefaultImpl: PreferencesRepositoryDefaultImpl,
+    ): PreferencesRepository
 
     @Binds
     @Singleton

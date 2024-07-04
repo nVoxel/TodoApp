@@ -14,12 +14,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.voxeldev.todoapp.auth.ui.AuthScreen
+import com.voxeldev.todoapp.auth.viewmodel.AuthViewModel
 import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
 import com.voxeldev.todoapp.list.ui.ListScreen
 import com.voxeldev.todoapp.settings.ui.SettingsScreen
 import com.voxeldev.todoapp.task.ui.TaskScreen
 import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
 import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
+import com.yandex.authsdk.YandexAuthResult
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @author nvoxel
@@ -27,6 +30,9 @@ import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
 @Composable
 internal fun MainNavHost(
     navHostController: NavHostController = rememberNavController(),
+    authResultFlow: StateFlow<YandexAuthResult?>,
+    onRequestOAuth: () -> Unit,
+    onAuthSuccess: () -> Unit,
 ) {
     val navigationViewModel: NavigationViewModel = hiltViewModel()
     val authTokenState by navigationViewModel.authTokenState.collectAsStateWithLifecycle()
@@ -37,6 +43,9 @@ internal fun MainNavHost(
         MainNavHost(
             navHostController = navHostController,
             startDestination = if (authTokenState is AuthTokenState.Found) NavigationScreen.List else NavigationScreen.Auth,
+            authResultFlow = authResultFlow,
+            onRequestOAuth = onRequestOAuth,
+            onAuthSuccess = onAuthSuccess,
         )
     }
 }
@@ -45,6 +54,9 @@ internal fun MainNavHost(
 private fun MainNavHost(
     navHostController: NavHostController,
     startDestination: NavigationScreen,
+    authResultFlow: StateFlow<YandexAuthResult?>,
+    onRequestOAuth: () -> Unit,
+    onAuthSuccess: () -> Unit,
 ) {
     NavHost(
         navController = navHostController,
@@ -69,8 +81,16 @@ private fun MainNavHost(
     ) {
         composable(route = NavigationScreen.Auth.routeWithArguments) {
             AuthScreen(
-                onAuthSuccess = { navHostController.navigateToList() },
-                viewModel = hiltViewModel(),
+                onRequestOAuth = onRequestOAuth,
+                onAuthSuccess = {
+                    navHostController.navigateToList()
+                    onAuthSuccess()
+                },
+                viewModel = hiltViewModel<AuthViewModel, AuthViewModel.Factory>(
+                    creationCallback = { factory ->
+                        factory.create(yandexAuthResultFlow = authResultFlow)
+                    },
+                ),
             )
         }
 

@@ -6,6 +6,4 @@ package com.voxeldev.todoapp.utils.providers
 interface StringResourceProvider {
 
     fun getTodoApiBaseUrl(): String
-
-    fun getTodoOAuthUrl(): String
 }

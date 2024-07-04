@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    implementation(libs.yandex.authsdk)
+
     debugImplementation(libs.androidx.ui.tooling)
 
     implementation(projects.source.core.api)

@@ -11,6 +11,4 @@ internal class StringResourceProviderContextImpl(context: Context) : StringResou
     private val resources = context.resources
 
     override fun getTodoApiBaseUrl(): String = resources.getString(R.string.todo_api_base_url)
-
-    override fun getTodoOAuthUrl(): String = resources.getString(R.string.todo_oauth_url)
 }

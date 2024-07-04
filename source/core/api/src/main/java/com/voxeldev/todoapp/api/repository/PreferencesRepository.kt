@@ -5,7 +5,8 @@ package com.voxeldev.todoapp.api.repository
  */
 interface PreferencesRepository {
 
-    fun getDeviceID(): String
+    fun getDeviceID(): Result<String>
 
-    fun getAutoRefreshInterval(): Long
+    fun getAutoRefreshInterval(): Result<Long>
+    fun setAutoRefreshInterval(autoRefreshInterval: Long): Result<Unit>
 }

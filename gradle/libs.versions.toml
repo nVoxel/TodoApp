@@ -17,6 +17,7 @@ navigation-compose = "2.7.7"
 runtime-livedata = "1.6.8"
 security-crypto = "1.1.0-alpha06"
 ui-tooling = "1.6.8"
+yandex-authsdk = "3.1.0"
 
 agp = "8.5.0"
 jvm-target = "1.8"
@@ -69,6 +70,9 @@ ktor-client-serialization = { group = "io.ktor", name = "ktor-serialization-kotl
 # Navigation
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
+
+# Yandex
+yandex-authsdk = { group = "com.yandex.android", name = "authsdk", version.ref = "yandex-authsdk" }
 
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "ui-tooling" }
 

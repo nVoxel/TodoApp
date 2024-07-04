@@ -11,27 +11,28 @@ import com.voxeldev.todoapp.domain.usecase.token.ClearAuthTokenUseCase
 import com.voxeldev.todoapp.domain.usecase.token.SetAuthTokenUseCase
 import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.exceptions.TokenNotFoundException
-import com.voxeldev.todoapp.utils.platform.LinkHandler
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
-import com.voxeldev.todoapp.utils.providers.StringResourceProvider
+import com.yandex.authsdk.YandexAuthResult
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 /**
  * @author nvoxel
  */
-@HiltViewModel
-class AuthViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = AuthViewModel.Factory::class)
+class AuthViewModel @AssistedInject constructor(
+    @Assisted val yandexAuthResultFlow: StateFlow<YandexAuthResult?>,
     private val setAuthTokenUseCase: SetAuthTokenUseCase,
     private val clearAuthTokenUseCase: ClearAuthTokenUseCase,
     private val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase, // there is no other way to check auth
-    private val linkHandler: LinkHandler,
-    stringResourceProvider: StringResourceProvider,
     networkObserver: NetworkObserver,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : BaseViewModel(
@@ -39,38 +40,44 @@ class AuthViewModel @Inject constructor(
     coroutineDispatcherProvider = coroutineDispatcherProvider,
 ) {
 
-    private val oauthUrl = stringResourceProvider.getTodoOAuthUrl()
-
-    private val _state: MutableStateFlow<AuthScreenState> = MutableStateFlow(value = AuthScreenState.ChooseMethod)
+    private val _state: MutableStateFlow<AuthScreenState> = MutableStateFlow(value = AuthScreenState.ChooseMethod())
     val state: StateFlow<AuthScreenState> = _state.asStateFlow()
 
-    fun onRetryClicked() {
-        if (exception.value is FailedToAuthenticateException) {
-            when (state.value) {
-                is AuthScreenState.BearerMethod -> onBearerMethodClicked()
-                is AuthScreenState.OAuthMethod -> onOAuthMethodContinueClicked()
-                else -> {}
+    @AssistedFactory
+    interface Factory {
+        fun create(yandexAuthResultFlow: StateFlow<YandexAuthResult?>): AuthViewModel
+    }
+
+    init {
+        scope.launch {
+            yandexAuthResultFlow.collect { authResult ->
+                when (authResult) {
+                    is YandexAuthResult.Success -> {
+                        _state.update { AuthScreenState.ChooseMethod(oauthToken = authResult.token.value) }
+                        _loading.update { true }
+                        checkAuth()
+                    }
+
+                    is YandexAuthResult.Failure -> {
+                        _exception.update { authResult.exception }
+                    }
+
+                    else -> {}
+                }
             }
         }
+    }
 
+    fun onRetryClicked() {
         _exception.update { null }
     }
 
     fun onChooseMethodClicked() {
-        _state.update { AuthScreenState.ChooseMethod }
+        _state.update { AuthScreenState.ChooseMethod() }
     }
 
     fun onBearerMethodClicked() {
         _state.update { AuthScreenState.BearerMethod() }
-    }
-
-    fun onOAuthMethodClicked() {
-        _state.update { AuthScreenState.OAuthMethodInfo }
-    }
-
-    fun onOAuthMethodContinueClicked() {
-        linkHandler.openLink(oauthUrl)
-        _state.update { AuthScreenState.OAuthMethod() }
     }
 
     fun onUpdateLoginText(loginText: String) {
@@ -87,51 +94,21 @@ class AuthViewModel @Inject constructor(
         _state.update { screenState.copy(password = passwordText) }
     }
 
-    fun onUpdateTokenText(tokenText: String) {
-        val screenState = state.value
-        if (screenState !is AuthScreenState.OAuthMethod) return
-
-        _state.update { screenState.copy(token = tokenText) }
-    }
-
     fun checkAuth() {
         _loading.update { true }
-
-        setToken {
-            getAllTodoItemsFlowUseCase(
-                params = BaseUseCase.NoParams,
-                scope = scope,
-            ) { result ->
-                result.fold(
-                    onSuccess = {
-                        _state.update { AuthScreenState.Success }
-                        _loading.update { false }
-                    },
-                    onFailure = { exception ->
-                        _exception.update {
-                            if (exception is TokenNotFoundException) {
-                                FailedToAuthenticateException()
-                            } else {
-                                exception
-                            }
-                        }
-                        clearToken()
-                    },
-                )
-            }
-        }
+        setToken(successCallback = ::checkAuthInternal)
     }
 
     private fun setToken(successCallback: () -> Unit) {
         val authToken = when (val screenState = state.value) {
+            is AuthScreenState.ChooseMethod -> AuthToken(
+                token = screenState.oauthToken ?: return,
+                type = AuthTokenType.OAuth,
+            )
+
             is AuthScreenState.BearerMethod -> AuthToken(
                 token = screenState.password,
                 type = AuthTokenType.Bearer,
-            )
-
-            is AuthScreenState.OAuthMethod -> AuthToken(
-                token = screenState.token,
-                type = AuthTokenType.OAuth,
             )
 
             else -> {
@@ -153,6 +130,30 @@ class AuthViewModel @Inject constructor(
                 onSuccess = { successCallback() },
                 onFailure = { exception ->
                     handleException(exception = exception)
+                },
+            )
+        }
+    }
+
+    private fun checkAuthInternal() {
+        getAllTodoItemsFlowUseCase(
+            params = BaseUseCase.NoParams,
+            scope = scope,
+        ) { result ->
+            result.fold(
+                onSuccess = {
+                    _state.update { AuthScreenState.Success }
+                    _loading.update { false }
+                },
+                onFailure = { exception ->
+                    _exception.update {
+                        if (exception is TokenNotFoundException) {
+                            FailedToAuthenticateException()
+                        } else {
+                            exception
+                        }
+                    }
+                    clearToken()
                 },
             )
         }

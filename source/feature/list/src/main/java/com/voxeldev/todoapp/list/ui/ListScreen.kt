@@ -335,6 +335,7 @@ private fun NewListItem(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .background(color = appPalette.backSecondary)
             .clickable(onClick = onClicked)
             .padding(horizontal = 48.dp, vertical = 16.dp),
     ) {

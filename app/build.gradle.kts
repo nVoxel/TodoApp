@@ -17,6 +17,8 @@ android {
         versionCode = libs.versions.version.code.get().toInt()
         versionName = libs.versions.version.name.get()
 
+        manifestPlaceholders["YANDEX_CLIENT_ID"] = extra["YANDEX_CLIENT_ID"].toString()
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -65,6 +67,8 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    implementation(libs.yandex.authsdk)
 
     implementation(projects.source.core.designsystem)
     implementation(projects.source.core.domain)

@@ -8,7 +8,7 @@ import com.voxeldev.todoapp.auth.ui.AuthScreenState
  */
 internal class AuthScreenPreviewParameterProvider : PreviewParameterProvider<AuthScreenState> {
     override val values: Sequence<AuthScreenState> = sequenceOf(
-        AuthScreenState.ChooseMethod,
+        AuthScreenState.ChooseMethod(),
         AuthScreenState.BearerMethod(
             login = "",
             password = "",
@@ -17,8 +17,5 @@ internal class AuthScreenPreviewParameterProvider : PreviewParameterProvider<Aut
             login = "nVoxel",
             password = "mypassword",
         ),
-        AuthScreenState.OAuthMethodInfo,
-        AuthScreenState.OAuthMethod(token = ""),
-        AuthScreenState.OAuthMethod(token = "very_very_very_very_very_long_token"),
     )
 }

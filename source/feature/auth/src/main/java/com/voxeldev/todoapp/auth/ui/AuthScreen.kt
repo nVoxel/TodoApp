@@ -43,7 +43,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,6 +71,7 @@ private const val FADE_DURATION_MILLIS = 150
  */
 @Composable
 fun AuthScreen(
+    onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
     viewModel: AuthViewModel,
 ) {
@@ -102,18 +102,10 @@ fun AuthScreen(
             reverseAnimation = false
             viewModel.onBearerMethodClicked()
         },
-        onOAuthMethodClicked = {
-            reverseAnimation = false
-            viewModel.onOAuthMethodClicked()
-        },
-        onOAuthMethodContinueClicked = {
-            reverseAnimation = false
-            viewModel.onOAuthMethodContinueClicked()
-        },
+        onOAuthMethodClicked = onRequestOAuth,
         onCheckAuthClicked = viewModel::checkAuth,
         onUpdateLoginText = viewModel::onUpdateLoginText,
         onUpdatePasswordText = viewModel::onUpdatePasswordText,
-        onUpdateTokenText = viewModel::onUpdateTokenText,
     )
 }
 
@@ -127,11 +119,9 @@ private fun AuthScreen(
     onChooseMethodClicked: () -> Unit,
     onCredentialsMethodClicked: () -> Unit,
     onOAuthMethodClicked: () -> Unit,
-    onOAuthMethodContinueClicked: () -> Unit,
     onCheckAuthClicked: () -> Unit,
     onUpdateLoginText: (String) -> Unit,
     onUpdatePasswordText: (String) -> Unit,
-    onUpdateTokenText: (String) -> Unit,
 ) {
     val appPalette = LocalAppPalette.current
 
@@ -167,6 +157,9 @@ private fun AuthScreen(
                                 ChooseMethodCard(
                                     onCredentialsMethodClicked = onCredentialsMethodClicked,
                                     onOAuthMethodClicked = onOAuthMethodClicked,
+                                    showLoading = showLoading,
+                                    error = error,
+                                    onRetryClicked = onRetryClicked,
                                 )
                             }
 
@@ -176,25 +169,6 @@ private fun AuthScreen(
                                     passwordText = targetState.password,
                                     onUpdateLoginText = onUpdateLoginText,
                                     onUpdatePasswordText = onUpdatePasswordText,
-                                    showLoading = showLoading,
-                                    error = error,
-                                    onRetryClicked = onRetryClicked,
-                                    onCheckAuthClicked = onCheckAuthClicked,
-                                    onCloseClicked = onChooseMethodClicked,
-                                )
-                            }
-
-                            is AuthScreenState.OAuthMethodInfo -> {
-                                OAuthMethodInfoCard(
-                                    onContinueClicked = onOAuthMethodContinueClicked,
-                                    onCloseClicked = onChooseMethodClicked,
-                                )
-                            }
-
-                            is AuthScreenState.OAuthMethod -> {
-                                OAuthMethodCard(
-                                    tokenText = targetState.token,
-                                    onUpdateTokenText = onUpdateTokenText,
                                     showLoading = showLoading,
                                     error = error,
                                     onRetryClicked = onRetryClicked,
@@ -218,10 +192,17 @@ private fun AuthScreen(
 private fun ChooseMethodCard(
     onCredentialsMethodClicked: () -> Unit,
     onOAuthMethodClicked: () -> Unit,
+    showLoading: Boolean,
+    error: Throwable?,
+    onRetryClicked: () -> Unit,
 ) {
     val appPalette = LocalAppPalette.current
 
-    AuthCard {
+    AuthCard(
+        showLoading = showLoading,
+        error = error,
+        retryCallback = onRetryClicked,
+    ) {
         Text(
             text = stringResource(id = R.string.choose_method),
             color = appPalette.labelSecondary,
@@ -362,98 +343,6 @@ private fun PasswordMethodCard(
 }
 
 @Composable
-private fun OAuthMethodInfoCard(
-    onContinueClicked: () -> Unit,
-    onCloseClicked: () -> Unit,
-) {
-    val appPalette = LocalAppPalette.current
-
-    AuthCard(
-        showClose = true,
-        onCloseClicked = onCloseClicked,
-    ) {
-        Text(
-            text = stringResource(id = R.string.yandex_method),
-            color = appPalette.labelSecondary,
-            style = AppTypography.body,
-        )
-
-        Spacer(modifier = Modifier.height(height = 24.dp))
-
-        Text(
-            text = stringResource(id = R.string.yandex_method_info),
-            textAlign = TextAlign.Center,
-            color = appPalette.labelPrimary,
-            style = AppTypography.body,
-        )
-
-        Spacer(modifier = Modifier.height(height = 24.dp))
-
-        AuthContrastButton(onClick = onContinueClicked) {
-            Text(
-                modifier = Modifier.padding(all = 8.dp),
-                text = stringResource(id = R.string.continue_label),
-                fontSize = 18.sp,
-                style = AppTypography.button,
-            )
-        }
-    }
-}
-
-@Composable
-private fun OAuthMethodCard(
-    tokenText: String,
-    onUpdateTokenText: (String) -> Unit,
-    showLoading: Boolean,
-    error: Throwable?,
-    onRetryClicked: () -> Unit,
-    onCheckAuthClicked: () -> Unit,
-    onCloseClicked: () -> Unit,
-) {
-    val appPalette = LocalAppPalette.current
-
-    AuthCard(
-        showClose = true,
-        onCloseClicked = onCloseClicked,
-        showLoading = showLoading,
-        error = error,
-        retryCallback = onRetryClicked,
-    ) { isForegroundVisible ->
-        Text(
-            text = stringResource(id = R.string.yandex_method_using),
-            color = appPalette.labelSecondary,
-            style = AppTypography.body,
-        )
-
-        Spacer(modifier = Modifier.height(height = 24.dp))
-
-        AuthTextField(
-            modifier = Modifier.fillMaxWidth(),
-            text = tokenText,
-            onTextChanged = onUpdateTokenText,
-            placeholderText = stringResource(id = R.string.token),
-            enabled = isForegroundVisible,
-            secure = true,
-            onDoneClicked = onCheckAuthClicked,
-        )
-
-        Spacer(modifier = Modifier.height(height = 16.dp))
-
-        AuthContrastButton(
-            onClick = onCheckAuthClicked,
-            enabled = isForegroundVisible,
-        ) {
-            Text(
-                modifier = Modifier.padding(all = 8.dp),
-                text = stringResource(id = R.string.sign_in),
-                fontSize = 18.sp,
-                style = AppTypography.button,
-            )
-        }
-    }
-}
-
-@Composable
 private fun ManageSystemBars() {
     val window = (LocalContext.current as Activity).window
     val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -497,11 +386,9 @@ private fun AuthScreenPreview(
             onChooseMethodClicked = {},
             onCredentialsMethodClicked = {},
             onOAuthMethodClicked = {},
-            onOAuthMethodContinueClicked = {},
             onCheckAuthClicked = {},
             onUpdateLoginText = {},
             onUpdatePasswordText = {},
-            onUpdateTokenText = {},
         )
     }
 }
