@@ -74,6 +74,8 @@ dependencies {
 
     implementation(libs.yandex.authsdk)
 
+    implementation(libs.yandex.authsdk)
+
     implementation(projects.source.core.designsystem)
     implementation(projects.source.core.domain)
     implementation(projects.source.core.utils)
