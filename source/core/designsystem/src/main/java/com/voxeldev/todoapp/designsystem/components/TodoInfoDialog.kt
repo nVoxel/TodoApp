@@ -1,6 +1,5 @@
 package com.voxeldev.todoapp.designsystem.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -14,9 +13,9 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 
 /**
@@ -61,8 +60,7 @@ fun TodoInfoDialog(
     }
 }
 
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentDayNightPreviews
 @Composable
 private fun Preview() {
     PreviewBase {

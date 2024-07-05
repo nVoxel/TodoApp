@@ -2,4 +2,6 @@
 <resources>
     <string name="add_task">Add task</string>
     <string name="close">Close</string>
+    <string name="error">Error: %1$s</string>
+    <string name="retry">Retry</string>
 </resources>

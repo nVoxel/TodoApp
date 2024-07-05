@@ -1,6 +1,5 @@
 package com.voxeldev.todoapp.designsystem.components
 
-import android.content.res.Configuration
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.CubicBezierEasing
@@ -54,13 +53,15 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
+import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
+import com.voxeldev.todoapp.designsystem.preview.providers.BooleanPreviewParameterProvider
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import kotlin.math.abs
@@ -570,35 +571,11 @@ private val TopAppBarHorizontalPadding = 4.dp
 private val TopAppBarTitleInset = 16.dp - TopAppBarHorizontalPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentDayNightPreviews
 @Composable
-private fun PreviewFull() {
-    PreviewBase {
-        Box(modifier = Modifier.padding(all = 8.dp)) {
-            TodoLargeTopBar(
-                titlePrimary = {
-                    Text(text = "Title Primary")
-                },
-                titleSecondary = {
-                    Text(
-                        text = "Title Secondary",
-                        style = AppTypography.body,
-                    )
-                },
-                actions = { Icon(imageVector = Icons.Default.Settings, contentDescription = null) },
-                scrollBehavior = TopAppBarDefaults
-                    .exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState()),
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewCollapsed() {
+private fun Preview(
+    @PreviewParameter(BooleanPreviewParameterProvider::class) collapsedByDefault: Boolean,
+) {
     PreviewBase {
         Box(modifier = Modifier.padding(all = 8.dp)) {
             LargeTopAppBar(
@@ -612,10 +589,9 @@ private fun PreviewCollapsed() {
                     )
                 },
                 actions = { Icon(imageVector = Icons.Default.Settings, contentDescription = null) },
-                scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-                    state = rememberTopAppBarState(),
-                ),
-                collapsedByDefault = true,
+                scrollBehavior = TopAppBarDefaults
+                    .exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState()),
+                collapsedByDefault = collapsedByDefault,
             )
         }
     }

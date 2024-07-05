@@ -1,6 +1,6 @@
 package com.voxeldev.todoapp.list.ui
 
-import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -43,7 +43,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItem
@@ -52,6 +51,7 @@ import com.voxeldev.todoapp.designsystem.components.TodoCheckbox
 import com.voxeldev.todoapp.designsystem.components.TodoLargeTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSmallFAB
 import com.voxeldev.todoapp.designsystem.icons.AdditionalIcons
+import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
@@ -110,7 +110,7 @@ fun ListScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun ListScreen(
     lazyColumnState: LazyListState,
@@ -211,7 +211,10 @@ private fun ListScreen(
             }
 
             item {
-                NewListItem(onClicked = { onItemClicked(null) })
+                NewListItem(
+                    modifier = Modifier.animateItemPlacement(),
+                    onClicked = { onItemClicked(null) },
+                )
             }
         }
     }
@@ -310,12 +313,13 @@ private fun ListItem(
 
 @Composable
 private fun NewListItem(
+    modifier: Modifier = Modifier,
     onClicked: () -> Unit,
 ) {
     val appPalette = LocalAppPalette.current
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClicked)
             .padding(horizontal = 48.dp, vertical = 12.dp),
@@ -329,8 +333,7 @@ private fun NewListItem(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ru")
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ru")
+@ScreenDayNightPreviews
 @Composable
 private fun ListScreenPreview() {
     PreviewBase {

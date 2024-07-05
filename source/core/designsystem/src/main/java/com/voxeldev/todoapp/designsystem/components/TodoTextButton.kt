@@ -1,6 +1,5 @@
 package com.voxeldev.todoapp.designsystem.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
@@ -13,9 +12,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
+import com.voxeldev.todoapp.designsystem.preview.providers.BooleanPreviewParameterProvider
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
@@ -54,30 +55,17 @@ fun TodoTextButton(
     }
 }
 
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentDayNightPreviews
 @Composable
-private fun PreviewDisabled() {
+private fun Preview(
+    @PreviewParameter(BooleanPreviewParameterProvider::class)
+    enabled: Boolean,
+) {
     PreviewBase {
         Box(modifier = Modifier.padding(all = 8.dp)) {
             TodoTextButton(
                 text = "Text Button",
-                enabled = false,
-                onClick = {},
-            )
-        }
-    }
-}
-
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewEnabled() {
-    PreviewBase {
-        Box(modifier = Modifier.padding(all = 8.dp)) {
-            TodoTextButton(
-                text = "Text Button",
-                enabled = true,
+                enabled = enabled,
                 onClick = {},
             )
         }

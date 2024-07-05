@@ -1,6 +1,5 @@
 package com.voxeldev.todoapp.designsystem.components
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -15,9 +14,9 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.designsystem.R
+import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
@@ -53,8 +52,7 @@ fun TodoSmallFAB(
     }
 }
 
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentDayNightPreviews
 @Composable
 private fun Preview() {
     PreviewBase {
