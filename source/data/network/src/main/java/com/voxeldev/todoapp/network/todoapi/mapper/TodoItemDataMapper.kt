@@ -22,5 +22,6 @@ internal class TodoItemDataMapper @Inject constructor() : ResponseMapper<TodoIte
             isComplete = response.isComplete,
             creationTimestamp = response.creationTimestamp,
             modifiedTimestamp = response.modifiedTimestamp,
+            lastUpdatedBy = response.lastUpdatedBy,
         )
 }

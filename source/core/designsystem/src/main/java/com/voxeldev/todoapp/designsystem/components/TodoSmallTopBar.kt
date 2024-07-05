@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,39 +53,69 @@ fun TodoSmallTopBar(
             .padding(vertical = 16.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            modifier = Modifier
-                .size(size = 24.dp)
-                .clip(shape = CircleShape)
-                .clickable(onClick = onCloseClicked),
-            imageVector = Icons.Default.Close,
-            tint = appPalette.labelPrimary,
-            contentDescription = stringResource(id = R.string.close),
+        TodoSmallTopBarContent(
+            onCloseClicked = onCloseClicked,
+            displayTitle = displayTitle,
+            titleText = titleText,
         )
 
-        Spacer(modifier = Modifier.width(width = 16.dp))
+        TodoSmallTopBarButton(
+            displayButton = displayButton,
+            buttonText = buttonText,
+            isButtonActive = isButtonActive,
+            onButtonClicked = onButtonClicked,
+        )
+    }
+}
 
-        Row(modifier = Modifier.weight(weight = 1f)) {
-            if (displayTitle) {
-                Text(
-                    text = titleText,
-                    color = appPalette.labelPrimary,
-                    style = AppTypography.title,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                )
-            }
-        }
+@Composable
+private fun RowScope.TodoSmallTopBarContent(
+    onCloseClicked: () -> Unit,
+    displayTitle: Boolean,
+    titleText: String,
+) {
+    val appPalette = LocalAppPalette.current
 
-        Spacer(modifier = Modifier.width(width = 16.dp))
+    Icon(
+        modifier = Modifier
+            .size(size = 24.dp)
+            .clip(shape = CircleShape)
+            .clickable(onClick = onCloseClicked),
+        imageVector = Icons.Default.Close,
+        tint = appPalette.labelPrimary,
+        contentDescription = stringResource(id = R.string.close),
+    )
 
-        if (displayButton) {
-            TodoTextButton(
-                text = buttonText,
-                onClick = onButtonClicked,
-                enabled = isButtonActive,
+    Spacer(modifier = Modifier.width(width = 16.dp))
+
+    Row(modifier = Modifier.weight(weight = 1f)) {
+        if (displayTitle) {
+            Text(
+                text = titleText,
+                color = appPalette.labelPrimary,
+                style = AppTypography.title,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
             )
         }
+    }
+}
+
+@Composable
+private fun TodoSmallTopBarButton(
+    displayButton: Boolean,
+    buttonText: String,
+    isButtonActive: Boolean,
+    onButtonClicked: () -> Unit,
+) {
+    Spacer(modifier = Modifier.width(width = 16.dp))
+
+    if (displayButton) {
+        TodoTextButton(
+            text = buttonText,
+            onClick = onButtonClicked,
+            enabled = isButtonActive,
+        )
     }
 }
 

@@ -102,8 +102,8 @@ internal val darkAppPalette = AppPalette(
     backContrast = Color(0xFFFAFAFF),
 )
 
-@Preview(name = "Component colors (Light)", widthDp = 1440, heightDp = 460, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Component colors (Dark)", widthDp = 1440, heightDp = 460, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Component colors (Light)", widthDp = 1440, heightDp = 560, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Component colors (Dark)", widthDp = 1440, heightDp = 560, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview() {
     PreviewBase {

@@ -47,6 +47,6 @@ internal class PreferencesRepositoryDefaultImpl @Inject constructor(
         const val DEVICE_ID_PREF_NAME = "device_id"
         const val AUTO_REFRESH_INTERVAL_PREF_NAME = "auto_refresh_interval"
 
-        const val DEFAULT_AUTO_REFRESH_INTERVAL = 28_800_000L
+        const val DEFAULT_AUTO_REFRESH_INTERVAL = 28_800L
     }
 }

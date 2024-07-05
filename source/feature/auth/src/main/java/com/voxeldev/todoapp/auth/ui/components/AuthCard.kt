@@ -3,6 +3,7 @@ package com.voxeldev.todoapp.auth.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -60,65 +61,113 @@ internal fun AuthCard(
             .verticalScroll(state = scrollState),
         contentAlignment = Alignment.Center,
     ) {
-        if (showLoading) {
-            Loader()
-        } else if (error != null) {
-            Box(modifier = Modifier.zIndex(zIndex = 1f)) {
-                Error(
-                    message = error.getDisplayMessage(),
-                    shouldShowRetry = true,
-                    retryCallback = retryCallback,
-                )
-            }
+        AuthCardNonContentStates(
+            showLoading = showLoading,
+            error = error,
+            retryCallback = retryCallback,
+        )
+
+        AuthCardContentState(
+            isForegroundVisible = isForegroundVisible,
+            showClose = showClose,
+            onCloseClicked = onCloseClicked,
+            cardContent = cardContent,
+        )
+    }
+}
+
+@Composable
+private fun AuthCardNonContentStates(
+    showLoading: Boolean,
+    error: Throwable?,
+    retryCallback: () -> Unit,
+) {
+    if (showLoading) {
+        Loader()
+    } else if (error != null) {
+        Box(modifier = Modifier.zIndex(zIndex = 1f)) {
+            Error(
+                message = error.getDisplayMessage(),
+                shouldShowRetry = true,
+                retryCallback = retryCallback,
+            )
+        }
+    }
+}
+
+@Composable
+private fun AuthCardContentState(
+    isForegroundVisible: Boolean,
+    showClose: Boolean,
+    onCloseClicked: () -> Unit,
+    cardContent: @Composable ColumnScope.(isForegroundVisible: Boolean) -> Unit,
+) {
+    Box(modifier = Modifier.alpha(if (isForegroundVisible) 1f else 0f)) {
+        if (showClose) {
+            CloseButton(
+                isEnabled = isForegroundVisible,
+                onClick = onCloseClicked,
+            )
         }
 
-        Box(modifier = Modifier.alpha(if (isForegroundVisible) 1f else 0f)) {
-            if (showClose) {
-                Icon(
-                    modifier = Modifier
-                        .align(alignment = Alignment.TopEnd)
-                        .padding(all = 12.dp)
-                        .clip(shape = CircleShape)
-                        .clickable(enabled = isForegroundVisible, onClick = onCloseClicked)
-                        .padding(all = 12.dp),
-                    imageVector = Icons.Default.Close,
-                    contentDescription = stringResource(id = R.string.close),
-                    tint = appPalette.labelPrimary,
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(height = 8.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Spacer(modifier = Modifier.height(height = 8.dp))
+            AuthCardHeader()
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier
-                            .clip(shape = CircleShape)
-                            .background(color = appPalette.colorBlue)
-                            .padding(all = 8.dp),
-                        imageVector = Icons.Default.DoneAll,
-                        contentDescription = stringResource(id = R.string.auth_header),
-                        tint = appPalette.colorWhite,
-                    )
+            Spacer(modifier = Modifier.height(height = 24.dp))
 
-                    Spacer(modifier = Modifier.width(width = 16.dp))
-
-                    Text(
-                        text = stringResource(id = R.string.auth_header),
-                        color = appPalette.labelPrimary,
-                        style = AppTypography.title,
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(height = 24.dp))
-
-                cardContent(isForegroundVisible)
-            }
+            cardContent(isForegroundVisible)
         }
+    }
+}
+
+@Composable
+private fun BoxScope.CloseButton(
+    isEnabled: Boolean,
+    onClick: () -> Unit,
+) {
+    val appPalette = LocalAppPalette.current
+
+    Icon(
+        modifier = Modifier
+            .align(alignment = Alignment.TopEnd)
+            .padding(all = 12.dp)
+            .clip(shape = CircleShape)
+            .clickable(enabled = isEnabled, onClick = onClick)
+            .padding(all = 12.dp),
+        imageVector = Icons.Default.Close,
+        contentDescription = stringResource(id = R.string.close),
+        tint = appPalette.labelPrimary,
+    )
+}
+
+@Composable
+private fun AuthCardHeader() {
+    val appPalette = LocalAppPalette.current
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            modifier = Modifier
+                .clip(shape = CircleShape)
+                .background(color = appPalette.colorBlue)
+                .padding(all = 8.dp),
+            imageVector = Icons.Default.DoneAll,
+            contentDescription = stringResource(id = R.string.auth_header),
+            tint = appPalette.colorWhite,
+        )
+
+        Spacer(modifier = Modifier.width(width = 16.dp))
+
+        Text(
+            text = stringResource(id = R.string.auth_header),
+            color = appPalette.labelPrimary,
+            style = AppTypography.title,
+        )
     }
 }

@@ -31,15 +31,11 @@ internal fun TodoItemInfoDialog(
     todoItem: TodoItem,
     onRequestFormattedTimestamp: (Long) -> String,
 ) {
-    val appPalette = LocalAppPalette.current
-
     val creationTimestamp = remember(todoItem) {
         onRequestFormattedTimestamp(todoItem.creationTimestamp)
     }
     val modifiedTimestamp = remember(todoItem) {
-        todoItem.modifiedTimestamp?.let { modifiedTimestamp ->
-            onRequestFormattedTimestamp(modifiedTimestamp)
-        }
+        onRequestFormattedTimestamp(todoItem.modifiedTimestamp)
     }
 
     TodoInfoDialog(
@@ -47,44 +43,69 @@ internal fun TodoItemInfoDialog(
         onDismiss = onDismiss,
         confirmButtonText = stringResource(id = R.string.done),
         onConfirmButtonClicked = onDismiss,
-        titleContent = {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = stringResource(id = R.string.task_info),
-                    tint = appPalette.labelSecondary,
-                )
-
-                Spacer(modifier = Modifier.width(width = 12.dp))
-
-                Text(
-                    text = stringResource(id = R.string.task_info),
-                    color = appPalette.labelPrimary,
-                    style = AppTypography.title,
-                )
-            }
-        },
+        titleContent = { DialogTitle() },
     ) {
-        TableRow(
-            titleColumnText = stringResource(id = R.string.task_id),
-            contentColumnText = todoItem.id,
+        DialogContent(
+            todoItem = todoItem,
+            creationTimestamp = creationTimestamp,
+            modifiedTimestamp = modifiedTimestamp,
+        )
+    }
+}
+
+@Composable
+private fun DialogTitle() {
+    val appPalette = LocalAppPalette.current
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Icon(
+            imageVector = Icons.Outlined.Info,
+            contentDescription = stringResource(id = R.string.task_info),
+            tint = appPalette.labelSecondary,
         )
 
+        Spacer(modifier = Modifier.width(width = 12.dp))
+
+        Text(
+            text = stringResource(id = R.string.task_info),
+            color = appPalette.labelPrimary,
+            style = AppTypography.title,
+        )
+    }
+}
+
+@Composable
+private fun DialogContent(
+    todoItem: TodoItem,
+    creationTimestamp: String,
+    modifiedTimestamp: String,
+) {
+    TableRow(
+        titleColumnText = stringResource(id = R.string.task_id),
+        contentColumnText = todoItem.id,
+    )
+
+    Spacer(modifier = Modifier.height(height = 12.dp))
+
+    TableRow(
+        titleColumnText = stringResource(id = R.string.creation_date),
+        contentColumnText = creationTimestamp,
+    )
+
+    Spacer(modifier = Modifier.height(height = 12.dp))
+
+    TableRow(
+        titleColumnText = stringResource(id = R.string.modification_date),
+        contentColumnText = modifiedTimestamp,
+    )
+
+    todoItem.lastUpdatedBy?.let { lastUpdatedBy ->
         Spacer(modifier = Modifier.height(height = 12.dp))
 
         TableRow(
-            titleColumnText = stringResource(id = R.string.creation_date),
-            contentColumnText = creationTimestamp,
+            titleColumnText = stringResource(id = R.string.modified_by),
+            contentColumnText = lastUpdatedBy,
         )
-
-        modifiedTimestamp?.let {
-            Spacer(modifier = Modifier.height(height = 12.dp))
-
-            TableRow(
-                titleColumnText = stringResource(id = R.string.modification_date),
-                contentColumnText = modifiedTimestamp,
-            )
-        }
     }
 }
 

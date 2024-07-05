@@ -42,21 +42,32 @@ fun TodoInfoDialog(
                         dialogContent()
                     }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                        horizontalArrangement = Arrangement.End,
-                    ) {
-                        TodoTextButton(
-                            text = confirmButtonText,
-                            onClick = onConfirmButtonClicked,
-                            contentPadding = PaddingValues(all = 12.dp),
-                        )
-                    }
+                    Footer(
+                        confirmButtonText = confirmButtonText,
+                        onConfirmButtonClicked = onConfirmButtonClicked,
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun Footer(
+    confirmButtonText: String,
+    onConfirmButtonClicked: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+        horizontalArrangement = Arrangement.End,
+    ) {
+        TodoTextButton(
+            text = confirmButtonText,
+            onClick = onConfirmButtonClicked,
+            contentPadding = PaddingValues(all = 12.dp),
+        )
     }
 }
 

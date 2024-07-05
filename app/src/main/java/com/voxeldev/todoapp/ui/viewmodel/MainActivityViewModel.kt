@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 /**
  * @author nvoxel
  */
-class MainActivityViewModel : ViewModel() {
+internal class MainActivityViewModel : ViewModel() {
 
     private val _authResultFlow: MutableStateFlow<YandexAuthResult?> = MutableStateFlow(value = null)
     val authResultFlow: StateFlow<YandexAuthResult?> = _authResultFlow.asStateFlow()

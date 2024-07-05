@@ -26,6 +26,11 @@ import javax.inject.Singleton
 class NetworkModule {
 
     @OptIn(ExperimentalSerializationApi::class)
+    private val json = Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }
+
     @Provides
     @Singleton
     fun provideHttpClient(
@@ -42,12 +47,7 @@ class NetworkModule {
         }
 
         install(ContentNegotiation) {
-            json(
-                json = Json {
-                    ignoreUnknownKeys = true
-                    explicitNulls = false
-                },
-            )
+            json(json = json)
         }
 
         install(HttpRequestRetry) {

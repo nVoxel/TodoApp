@@ -1,6 +1,5 @@
 package com.voxeldev.todoapp.auth.ui
 
-import android.app.Activity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
@@ -8,59 +7,35 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.auth.R
-import com.voxeldev.todoapp.auth.extensions.setTranslucentBars
-import com.voxeldev.todoapp.auth.extensions.setTransparentBars
-import com.voxeldev.todoapp.auth.ui.components.AuthCard
-import com.voxeldev.todoapp.auth.ui.components.AuthContrastButton
-import com.voxeldev.todoapp.auth.ui.components.AuthTextField
+import com.voxeldev.todoapp.auth.ui.components.ChooseMethodCard
+import com.voxeldev.todoapp.auth.ui.components.ManageSystemBars
+import com.voxeldev.todoapp.auth.ui.components.PasswordMethodCard
 import com.voxeldev.todoapp.auth.ui.preview.AuthScreenPreviewParameterProvider
 import com.voxeldev.todoapp.auth.viewmodel.AuthViewModel
-import com.voxeldev.todoapp.designsystem.components.TodoButton
-import com.voxeldev.todoapp.designsystem.components.TodoDivider
-import com.voxeldev.todoapp.designsystem.icons.AdditionalIcons
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
-import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
 private const val SLIDE_DURATION_MILLIS = 400
@@ -184,178 +159,6 @@ private fun AuthScreen(
                     Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.ime))
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun ChooseMethodCard(
-    onCredentialsMethodClicked: () -> Unit,
-    onOAuthMethodClicked: () -> Unit,
-    showLoading: Boolean,
-    error: Throwable?,
-    onRetryClicked: () -> Unit,
-) {
-    val appPalette = LocalAppPalette.current
-
-    AuthCard(
-        showLoading = showLoading,
-        error = error,
-        retryCallback = onRetryClicked,
-    ) {
-        Text(
-            text = stringResource(id = R.string.choose_method),
-            color = appPalette.labelSecondary,
-            style = AppTypography.body,
-        )
-
-        Spacer(modifier = Modifier.height(height = 24.dp))
-
-        TodoButton(
-            modifier = Modifier
-                .defaultMinSize(minHeight = 58.dp)
-                .fillMaxWidth(),
-            onClick = onCredentialsMethodClicked,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = appPalette.colorGrayLight.copy(alpha = 0.5f),
-                contentColor = appPalette.labelPrimary,
-            ),
-            shape = RoundedCornerShape(size = 24.dp),
-        ) {
-            Text(
-                modifier = Modifier.padding(all = 8.dp),
-                text = stringResource(id = R.string.password_method),
-                fontSize = 18.sp,
-                style = AppTypography.button,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(height = 12.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Spacer(modifier = Modifier.width(width = 24.dp))
-
-            TodoDivider(modifier = Modifier.weight(weight = 0.5f))
-
-            Spacer(modifier = Modifier.width(width = 24.dp))
-
-            Text(
-                text = stringResource(id = R.string.methods_divider),
-                color = appPalette.labelTertiary,
-            )
-
-            Spacer(modifier = Modifier.width(width = 24.dp))
-
-            TodoDivider(modifier = Modifier.weight(weight = 0.5f))
-
-            Spacer(modifier = Modifier.width(width = 24.dp))
-        }
-
-        Spacer(modifier = Modifier.height(height = 12.dp))
-
-        AuthContrastButton(onClick = onOAuthMethodClicked) {
-            Image(
-                modifier = Modifier
-                    .size(size = 24.dp)
-                    .clip(shape = CircleShape),
-                imageVector = AdditionalIcons.YandexLogo,
-                contentDescription = stringResource(id = R.string.yandex_method),
-            )
-
-            Spacer(modifier = Modifier.width(width = 4.dp))
-
-            Text(
-                modifier = Modifier.padding(all = 8.dp),
-                text = stringResource(id = R.string.yandex_method),
-                fontSize = 18.sp,
-                style = AppTypography.button,
-            )
-        }
-    }
-}
-
-@Composable
-private fun PasswordMethodCard(
-    loginText: String,
-    passwordText: String,
-    onUpdateLoginText: (String) -> Unit,
-    onUpdatePasswordText: (String) -> Unit,
-    showLoading: Boolean,
-    error: Throwable?,
-    onRetryClicked: () -> Unit,
-    onCheckAuthClicked: () -> Unit,
-    onCloseClicked: () -> Unit,
-) {
-    val appPalette = LocalAppPalette.current
-
-    AuthCard(
-        showClose = true,
-        onCloseClicked = onCloseClicked,
-        showLoading = showLoading,
-        error = error,
-        retryCallback = onRetryClicked,
-    ) { isForegroundVisible ->
-        Text(
-            text = stringResource(id = R.string.password_method_using),
-            color = appPalette.labelSecondary,
-            style = AppTypography.body,
-        )
-
-        Spacer(modifier = Modifier.height(height = 24.dp))
-
-        AuthTextField(
-            modifier = Modifier.fillMaxWidth(),
-            text = loginText,
-            onTextChanged = onUpdateLoginText,
-            placeholderText = stringResource(id = R.string.login),
-            enabled = isForegroundVisible,
-        )
-
-        Spacer(modifier = Modifier.height(height = 16.dp))
-
-        AuthTextField(
-            modifier = Modifier.fillMaxWidth(),
-            text = passwordText,
-            onTextChanged = onUpdatePasswordText,
-            placeholderText = stringResource(id = R.string.password),
-            enabled = isForegroundVisible,
-            secure = true,
-            onDoneClicked = onCheckAuthClicked,
-        )
-
-        Spacer(modifier = Modifier.height(height = 16.dp))
-
-        AuthContrastButton(
-            onClick = onCheckAuthClicked,
-            enabled = isForegroundVisible,
-        ) {
-            Text(
-                modifier = Modifier.padding(all = 8.dp),
-                text = stringResource(id = R.string.sign_in),
-                fontSize = 18.sp,
-                style = AppTypography.button,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ManageSystemBars() {
-    val window = (LocalContext.current as Activity).window
-    val isSystemInDarkTheme = isSystemInDarkTheme()
-
-    LaunchedEffect(key1 = Unit) {
-        window.setTransparentBars()
-    }
-
-    DisposableEffect(key1 = Unit) {
-        onDispose {
-            window.setTranslucentBars(
-                isSystemInDarkTheme = isSystemInDarkTheme,
-            )
         }
     }
 }

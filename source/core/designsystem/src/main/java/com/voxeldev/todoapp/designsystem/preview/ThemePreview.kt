@@ -1,10 +1,10 @@
 package com.voxeldev.todoapp.designsystem.preview
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import com.voxeldev.todoapp.designsystem.preview.components.PreviewColorCard
+import androidx.compose.ui.graphics.Color
+import com.voxeldev.todoapp.designsystem.preview.components.ColorsPreview
 import com.voxeldev.todoapp.designsystem.preview.components.PreviewSectionSpacer
 
 /**
@@ -13,225 +13,111 @@ import com.voxeldev.todoapp.designsystem.preview.components.PreviewSectionSpacer
 @Composable
 internal fun ThemePreview() {
     Column {
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.primary,
-                colorNameLabel = "Primary",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onPrimary,
-                colorNameLabel = "On Primary",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                colorNameLabel = "Primary Container",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                colorNameLabel = "On Primary Container",
-            )
-        }
-
+        ColorsPreview(colors = primaryColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.secondary,
-                colorNameLabel = "Secondary",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onSecondary,
-                colorNameLabel = "On Secondary",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                colorNameLabel = "Secondary Container",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                colorNameLabel = "On Secondary Container",
-            )
-        }
-
+        ColorsPreview(colors = secondaryColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.tertiary,
-                colorNameLabel = "Tertiary",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onTertiary,
-                colorNameLabel = "On Tertiary",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.tertiaryContainer,
-                colorNameLabel = "Tertiary Container",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
-                colorNameLabel = "On Tertiary Container",
-            )
-        }
-
+        ColorsPreview(colors = tertiaryColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.error,
-                colorNameLabel = "Error",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onError,
-                colorNameLabel = "On Error",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.errorContainer,
-                colorNameLabel = "Error Container",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onErrorContainer,
-                colorNameLabel = "On Error Container",
-            )
-        }
-
+        ColorsPreview(colors = errorColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.background,
-                colorNameLabel = "Background",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onBackground,
-                colorNameLabel = "On Background",
-            )
-        }
-
+        ColorsPreview(colors = backgroundColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surface,
-                colorNameLabel = "Surface",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onSurface,
-                colorNameLabel = "On Surface",
-            )
-        }
-
+        ColorsPreview(colors = surfaceColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                colorNameLabel = "Surface Variant",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                colorNameLabel = "On Surface Variant",
-            )
-        }
-
+        ColorsPreview(colors = surfaceVariantColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.outline,
-                colorNameLabel = "Outline",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                colorNameLabel = "Outline Variant",
-            )
-        }
-
+        ColorsPreview(colors = outlineColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.scrim,
-                colorNameLabel = "Scrim",
-            )
-        }
-
+        ColorsPreview(colors = scrimColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.inverseSurface,
-                colorNameLabel = "Inverse Surface",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.inverseOnSurface,
-                colorNameLabel = "Inverse On Surface",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.inversePrimary,
-                colorNameLabel = "Inverse Primary",
-            )
-        }
-
+        ColorsPreview(colors = inverseColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surfaceDim,
-                colorNameLabel = "Surface Dim",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surfaceBright,
-                colorNameLabel = "Surface Bright",
-            )
-        }
-
+        ColorsPreview(colors = surfaceShadeColors())
         PreviewSectionSpacer()
-
-        Row {
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surfaceContainerLowest,
-                colorNameLabel = "Surface Container Lowest",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surfaceContainerLow,
-                colorNameLabel = "Surface Container Low",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                colorNameLabel = "Surface Container",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                colorNameLabel = "Surface Container High",
-            )
-
-            PreviewColorCard(
-                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                colorNameLabel = "Surface Container Highest",
-            )
-        }
+        ColorsPreview(colors = surfaceContainerColors())
     }
+}
+
+@Composable
+private fun primaryColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.primary to "Primary")
+    add(MaterialTheme.colorScheme.onPrimary to "On Primary")
+    add(MaterialTheme.colorScheme.primaryContainer to "Primary Container")
+    add(MaterialTheme.colorScheme.onPrimaryContainer to "On Primary Container")
+}
+
+@Composable
+private fun secondaryColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.secondary to "Secondary")
+    add(MaterialTheme.colorScheme.onSecondary to "On Secondary")
+    add(MaterialTheme.colorScheme.secondaryContainer to "Secondary Container")
+    add(MaterialTheme.colorScheme.onSecondaryContainer to "On Secondary Container")
+}
+
+@Composable
+private fun tertiaryColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.tertiary to "Tertiary")
+    add(MaterialTheme.colorScheme.onTertiary to "On Tertiary")
+    add(MaterialTheme.colorScheme.tertiaryContainer to "Tertiary Container")
+    add(MaterialTheme.colorScheme.onTertiaryContainer to "On Tertiary Container")
+}
+
+@Composable
+private fun errorColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.error to "Error")
+    add(MaterialTheme.colorScheme.onError to "On Error")
+    add(MaterialTheme.colorScheme.errorContainer to "Error Container")
+    add(MaterialTheme.colorScheme.onErrorContainer to "On Error Container")
+}
+
+@Composable
+private fun backgroundColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.background to "Background")
+    add(MaterialTheme.colorScheme.onBackground to "On Background")
+}
+
+@Composable
+private fun surfaceColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.surface to "Surface")
+    add(MaterialTheme.colorScheme.onSurface to "On Surface")
+}
+
+@Composable
+private fun surfaceVariantColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.surfaceVariant to "Surface Variant")
+    add(MaterialTheme.colorScheme.onSurfaceVariant to "On Surface Variant")
+}
+
+@Composable
+private fun outlineColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.outline to "Outline")
+    add(MaterialTheme.colorScheme.outlineVariant to "Outline Variant")
+}
+
+@Composable
+private fun scrimColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.scrim to "Scrim")
+}
+
+@Composable
+private fun inverseColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.inverseSurface to "Inverse Surface")
+    add(MaterialTheme.colorScheme.inverseOnSurface to "Inverse On Surface")
+    add(MaterialTheme.colorScheme.inversePrimary to "Inverse Primary")
+}
+
+@Composable
+private fun surfaceShadeColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.surfaceDim to "Surface Dim")
+    add(MaterialTheme.colorScheme.surfaceBright to "Surface Bright")
+}
+
+@Composable
+private fun surfaceContainerColors(): List<Pair<Color, String>> = buildList {
+    add(MaterialTheme.colorScheme.surfaceContainerLowest to "Surface Container Lowest")
+    add(MaterialTheme.colorScheme.surfaceContainerLow to "Surface Container Low")
+    add(MaterialTheme.colorScheme.surfaceContainer to "Surface Container")
+    add(MaterialTheme.colorScheme.surfaceContainerHigh to "Surface Container High")
+    add(MaterialTheme.colorScheme.surfaceContainerHighest to "Surface Container Highest")
 }

@@ -12,4 +12,6 @@
     <string name="task_id">Идентификатор</string>
     <string name="creation_date">Создана</string>
     <string name="modification_date">Изменена</string>
+    <string name="modified_by">Кем изменена</string>
+    <string name="settings">Настройки</string>
 </resources>

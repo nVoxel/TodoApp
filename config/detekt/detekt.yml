@@ -9,13 +9,15 @@ complexity:
     ignoreSingleWhenExpression: true
   LargeClass:
     active: true
+    threshold: 300
     excludes: [ '**/test/**', '**/*.Test.kt', '**/*.Spec.kt' ]
   TooManyFunctions:
     thresholdInClasses: 15
-    excludes: [ '**/test/**', '**/functionalTest/**', '**/*Mapper.kt', '**/components/swipedismiss/**' ]
+    excludes: [ '**/test/**', '**/functionalTest/**', '**/*Mapper.kt', '**/components/swipedismiss/**', '**/*ThemePreview.kt' ]
   LongMethod:
-    threshold: 70
+    threshold: 30
     ignoreAnnotated: ['Composable']
+    excludes: [ '**/designsystem/components/**' ]
   LongParameterList:
     constructorThreshold: 8
     functionThreshold: 15

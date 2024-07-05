@@ -24,28 +24,39 @@ fun TodoNetworkNotification(
     isVisible: Boolean,
     onClick: () -> Unit,
 ) {
-    val appPalette = LocalAppPalette.current
-
     BottomAnimatedVisibility(isVisible = isVisible) {
-        ExtendedFloatingActionButton(
-            modifier = modifier
-                .padding(all = 18.dp)
-                .navigationBarsPadding(),
-            text = {
-                Text(
-                    text = stringResource(id = R.string.network_lost),
-                    color = appPalette.labelPrimary,
-                    style = AppTypography.button,
-                )
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.WifiOff,
-                    contentDescription = stringResource(id = R.string.network_lost),
-                    tint = appPalette.colorRed,
-                )
-            },
+        NetworkNotification(
+            modifier = modifier,
             onClick = onClick,
         )
     }
+}
+
+@Composable
+private fun NetworkNotification(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val appPalette = LocalAppPalette.current
+
+    ExtendedFloatingActionButton(
+        modifier = modifier
+            .padding(all = 18.dp)
+            .navigationBarsPadding(),
+        text = {
+            Text(
+                text = stringResource(id = R.string.network_lost),
+                color = appPalette.labelPrimary,
+                style = AppTypography.button,
+            )
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Default.WifiOff,
+                contentDescription = stringResource(id = R.string.network_lost),
+                tint = appPalette.colorRed,
+            )
+        },
+        onClick = onClick,
+    )
 }

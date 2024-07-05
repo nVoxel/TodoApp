@@ -2,31 +2,16 @@ package com.voxeldev.todoapp.list.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
@@ -37,30 +22,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItem
-import com.voxeldev.todoapp.api.model.TodoItemImportance
-import com.voxeldev.todoapp.designsystem.components.TodoCheckbox
-import com.voxeldev.todoapp.designsystem.components.TodoLargeTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSmallFAB
-import com.voxeldev.todoapp.designsystem.icons.AdditionalIcons
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
-import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
-import com.voxeldev.todoapp.list.R
+import com.voxeldev.todoapp.list.ui.components.ListItem
+import com.voxeldev.todoapp.list.ui.components.ListScreenTopBar
+import com.voxeldev.todoapp.list.ui.components.NewListItem
 import com.voxeldev.todoapp.list.ui.components.SwipeableListItem
-import com.voxeldev.todoapp.list.ui.components.TodoItemInfoDialog
 import com.voxeldev.todoapp.list.ui.preview.ListScreenPreviewData
 import com.voxeldev.todoapp.list.viewmodel.ListViewModel
 
@@ -148,39 +126,12 @@ private fun ListScreen(
             .nestedScroll(connection = topBarScrollBehavior.nestedScrollConnection)
             .nestedScroll(connection = fabNestedScrollConnection),
         topBar = {
-            TodoLargeTopBar(
-                titlePrimary = {
-                    Text(text = stringResource(id = R.string.my_todos))
-                },
-                titleSecondary = {
-                    Text(
-                        text = stringResource(id = R.string.completed, completedItemsCount),
-                        style = AppTypography.body,
-                        color = appPalette.labelTertiary,
-                    )
-                },
-                actions = {
-                    Icon(
-                        modifier = Modifier
-                            .clip(shape = CircleShape)
-                            .clickable { onUncompletedVisibilityChanged(!isOnlyUncompletedVisible) },
-                        imageVector = if (isOnlyUncompletedVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        contentDescription = stringResource(id = R.string.toggle_complete),
-                        tint = appPalette.colorBlue,
-                    )
-
-                    Spacer(modifier = Modifier.width(width = 16.dp))
-
-                    Icon(
-                        modifier = Modifier
-                            .clip(shape = CircleShape)
-                            .clickable(onClick = onSettingsClicked),
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings",
-                        tint = appPalette.colorBlue,
-                    )
-                },
-                scrollBehavior = topBarScrollBehavior,
+            ListScreenTopBar(
+                topBarScrollBehavior = topBarScrollBehavior,
+                completedItemsCount = completedItemsCount,
+                isOnlyUncompletedVisible = isOnlyUncompletedVisible,
+                onUncompletedVisibilityChanged = onUncompletedVisibilityChanged,
+                onSettingsClicked = onSettingsClicked,
             )
         },
         floatingActionButton = {
@@ -231,119 +182,6 @@ private fun ListScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun ListItem(
-    modifier: Modifier = Modifier,
-    todoItem: TodoItem,
-    onClicked: (String) -> Unit,
-    onCheckClicked: (String, Boolean) -> Unit,
-    onRequestFormattedTimestamp: (Long) -> String,
-) {
-    val appPalette = LocalAppPalette.current
-
-    var isInfoDialogVisible by rememberSaveable { mutableStateOf(false) }
-
-    val deadlineTimestamp = remember(todoItem) {
-        todoItem.deadlineTimestamp?.let { deadlineTimestamp ->
-            onRequestFormattedTimestamp(deadlineTimestamp)
-        }
-    }
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(color = appPalette.backSecondary)
-            .clickable { onClicked(todoItem.id) }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-    ) {
-        TodoCheckbox(
-            isChecked = todoItem.isComplete,
-            onCheckedChange = { checked -> onCheckClicked(todoItem.id, checked) },
-            isImportant = todoItem.importance == TodoItemImportance.Urgent,
-        )
-
-        Spacer(modifier = Modifier.width(width = 12.dp))
-
-        Row(
-            modifier = Modifier
-                .weight(weight = 1f),
-        ) {
-            if (todoItem.importance != TodoItemImportance.Normal && !todoItem.isComplete) {
-                Icon(
-                    modifier = Modifier.padding(end = 8.dp),
-                    imageVector = if (todoItem.importance == TodoItemImportance.Urgent) {
-                        AdditionalIcons.ImportanceHigh
-                    } else {
-                        AdditionalIcons.ImportanceLow
-                    },
-                    contentDescription = stringResource(id = R.string.importance),
-                    tint = if (todoItem.importance == TodoItemImportance.Urgent) appPalette.colorRed else appPalette.colorGray,
-                )
-            }
-
-            Column {
-                Text(
-                    text = todoItem.text,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    color = if (todoItem.isComplete) appPalette.labelTertiary else appPalette.labelPrimary,
-                    style = if (todoItem.isComplete) AppTypography.bodyStrikethrough else AppTypography.body,
-                )
-
-                deadlineTimestamp?.let {
-                    Spacer(modifier = Modifier.height(height = 4.dp))
-
-                    Text(
-                        text = deadlineTimestamp,
-                        color = appPalette.labelTertiary,
-                        style = AppTypography.subhead,
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.width(width = 12.dp))
-
-        Icon(
-            modifier = Modifier
-                .clip(shape = CircleShape)
-                .clickable { isInfoDialogVisible = true },
-            imageVector = Icons.Outlined.Info,
-            contentDescription = stringResource(id = R.string.info),
-            tint = appPalette.labelTertiary,
-        )
-    }
-
-    TodoItemInfoDialog(
-        isVisible = isInfoDialogVisible,
-        onDismiss = { isInfoDialogVisible = false },
-        todoItem = todoItem,
-        onRequestFormattedTimestamp = onRequestFormattedTimestamp,
-    )
-}
-
-@Composable
-private fun NewListItem(
-    modifier: Modifier = Modifier,
-    onClicked: () -> Unit,
-) {
-    val appPalette = LocalAppPalette.current
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(color = appPalette.backSecondary)
-            .clickable(onClick = onClicked)
-            .padding(horizontal = 48.dp, vertical = 16.dp),
-    ) {
-        Text(
-            text = stringResource(id = R.string.new_task),
-            color = appPalette.labelTertiary,
-            style = AppTypography.body,
-        )
     }
 }
 

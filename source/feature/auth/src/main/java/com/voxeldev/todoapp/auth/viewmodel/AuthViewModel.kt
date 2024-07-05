@@ -59,7 +59,7 @@ class AuthViewModel @AssistedInject constructor(
                     }
 
                     is YandexAuthResult.Failure -> {
-                        _exception.update { authResult.exception }
+                        _exception.update { FailedToAuthenticateException() }
                     }
 
                     else -> {}
@@ -100,22 +100,7 @@ class AuthViewModel @AssistedInject constructor(
     }
 
     private fun setToken(successCallback: () -> Unit) {
-        val authToken = when (val screenState = state.value) {
-            is AuthScreenState.ChooseMethod -> AuthToken(
-                token = screenState.oauthToken ?: return,
-                type = AuthTokenType.OAuth,
-            )
-
-            is AuthScreenState.BearerMethod -> AuthToken(
-                token = screenState.password,
-                type = AuthTokenType.Bearer,
-            )
-
-            else -> {
-                _loading.update { false }
-                return
-            }
-        }
+        val authToken = getAuthToken() ?: return
 
         if (authToken.token.isBlank()) {
             handleException(exception = FieldNotFilledException())
@@ -132,6 +117,25 @@ class AuthViewModel @AssistedInject constructor(
                     handleException(exception = exception)
                 },
             )
+        }
+    }
+
+    private fun getAuthToken(): AuthToken? {
+        return when (val screenState = state.value) {
+            is AuthScreenState.ChooseMethod -> AuthToken(
+                token = screenState.oauthToken ?: return null,
+                type = AuthTokenType.OAuth,
+            )
+
+            is AuthScreenState.BearerMethod -> AuthToken(
+                token = screenState.password,
+                type = AuthTokenType.Bearer,
+            )
+
+            else -> {
+                _loading.update { false }
+                return null
+            }
         }
     }
 

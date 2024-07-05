@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.preview.providers.TextPreviewParameterProvider
+import com.voxeldev.todoapp.designsystem.theme.AppPalette
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
@@ -43,32 +45,43 @@ fun TodoTextField(
             ),
         value = text,
         onValueChange = onTextChanged,
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedTextColor = appPalette.labelPrimary,
-            focusedTextColor = appPalette.labelPrimary,
-            unfocusedContainerColor = appPalette.backSecondary,
-            focusedContainerColor = appPalette.backSecondary,
-            unfocusedBorderColor = Color.Transparent,
-            focusedBorderColor = Color.Transparent,
-            cursorColor = appPalette.labelPrimary,
-            selectionColors = TextSelectionColors(
-                handleColor = appPalette.colorBlue,
-                backgroundColor = appPalette.colorBlueSelection,
-            ),
-        ),
+        colors = todoTextFieldColors(appPalette = appPalette),
         placeholder = {
             placeholderText?.let {
-                Text(
-                    text = placeholderText,
-                    color = appPalette.labelTertiary,
-                    style = AppTypography.body,
-                )
+                PlaceholderText(placeholderText = placeholderText)
             }
         },
         textStyle = AppTypography.body,
         shape = RoundedCornerShape(size = 8.dp),
     )
 }
+
+@Composable
+private fun PlaceholderText(placeholderText: String) {
+    val appPalette = LocalAppPalette.current
+
+    Text(
+        text = placeholderText,
+        color = appPalette.labelTertiary,
+        style = AppTypography.body,
+    )
+}
+
+@Composable
+private fun todoTextFieldColors(appPalette: AppPalette): TextFieldColors =
+    OutlinedTextFieldDefaults.colors(
+        unfocusedTextColor = appPalette.labelPrimary,
+        focusedTextColor = appPalette.labelPrimary,
+        unfocusedContainerColor = appPalette.backSecondary,
+        focusedContainerColor = appPalette.backSecondary,
+        unfocusedBorderColor = Color.Transparent,
+        focusedBorderColor = Color.Transparent,
+        cursorColor = appPalette.labelPrimary,
+        selectionColors = TextSelectionColors(
+            handleColor = appPalette.colorBlue,
+            backgroundColor = appPalette.colorBlueSelection,
+        ),
+    )
 
 @ComponentDayNightPreviews
 @Composable

@@ -11,4 +11,5 @@ data class TodoItem(
     val isComplete: Boolean,
     val creationTimestamp: Long,
     val modifiedTimestamp: Long,
+    val lastUpdatedBy: String? = null,
 )

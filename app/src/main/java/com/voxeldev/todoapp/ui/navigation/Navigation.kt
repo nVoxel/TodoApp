@@ -7,19 +7,9 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import androidx.navigation.navOptions
-import com.voxeldev.todoapp.auth.ui.AuthScreen
-import com.voxeldev.todoapp.auth.viewmodel.AuthViewModel
 import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
-import com.voxeldev.todoapp.list.ui.ListScreen
-import com.voxeldev.todoapp.settings.ui.SettingsScreen
-import com.voxeldev.todoapp.task.ui.TaskScreen
-import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
 import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
 import com.yandex.authsdk.YandexAuthResult
 import kotlinx.coroutines.flow.StateFlow
@@ -61,94 +51,32 @@ private fun MainNavHost(
     NavHost(
         navController = navHostController,
         startDestination = startDestination.routeWithArguments,
-        enterTransition = {
-            slideInHorizontally { fullWidth ->
-                if (navHostController.currentDestination?.route == NavigationScreen.List.routeWithArguments) 0 else fullWidth
-            }
-        },
-        exitTransition = {
-            slideOutHorizontally { fullWidth ->
-                if (
-                    navHostController.currentDestination?.route == NavigationScreen.Task.routeWithArguments ||
-                    navHostController.currentDestination?.route == NavigationScreen.Settings.routeWithArguments
-                ) {
-                    0
-                } else {
-                    fullWidth
-                }
-            }
-        },
+        enterTransition = { enterTransition(navHostController = navHostController) },
+        exitTransition = { exitTransition(navHostController = navHostController) },
     ) {
-        composable(route = NavigationScreen.Auth.routeWithArguments) {
-            AuthScreen(
-                onRequestOAuth = onRequestOAuth,
-                onAuthSuccess = {
-                    navHostController.navigateToList()
-                    onAuthSuccess()
-                },
-                viewModel = hiltViewModel<AuthViewModel, AuthViewModel.Factory>(
-                    creationCallback = { factory ->
-                        factory.create(yandexAuthResultFlow = authResultFlow)
-                    },
-                ),
-            )
-        }
+        authScreenComposable(navHostController, onRequestOAuth, onAuthSuccess, authResultFlow)
 
-        composable(route = NavigationScreen.List.routeWithArguments) {
-            ListScreen(
-                onNavigateToTask = { taskId ->
-                    navHostController.navigate(route = "${NavigationScreen.Task.route!!}/$taskId")
-                },
-                onNavigateToSettings = {
-                    navHostController.navigate(route = NavigationScreen.Settings.routeWithArguments)
-                },
-                viewModel = hiltViewModel(),
-            )
-        }
+        listScreenComposable(navHostController)
 
-        composable(
-            route = NavigationScreen.Task.routeWithArguments,
-            arguments = listOf(
-                navArgument(name = NavigationScreen.TASK_ID_ARG) {
-                    type = NavType.StringType
-                    nullable = true
-                },
-            ),
-        ) {
-            TaskScreen(
-                viewModel = hiltViewModel<TaskViewModel, TaskViewModel.Factory>(
-                    creationCallback = { factory ->
-                        factory.create(taskId = it.arguments?.getString(NavigationScreen.TASK_ID_ARG))
-                    },
-                ),
-                onClose = { navHostController.popBackStack() },
-            )
-        }
+        taskScreenComposable(navHostController)
 
-        composable(route = NavigationScreen.Settings.routeWithArguments) {
-            SettingsScreen(
-                viewModel = hiltViewModel(),
-                onClose = { navHostController.popBackStack() },
-                onLoggedOut = { navHostController.navigateToAuth() },
-            )
-        }
+        settingsScreenComposable(navHostController)
     }
 }
 
-private fun NavHostController.navigateToAuth() = navigate(
-    route = NavigationScreen.Auth.routeWithArguments,
-    navOptions {
-        popUpTo(route = NavigationScreen.List.routeWithArguments) {
-            inclusive = true
-        }
-    },
-)
+private fun enterTransition(navHostController: NavHostController) =
+    slideInHorizontally { fullWidth ->
+        if (navHostController.currentDestination?.route == NavigationScreen.List.routeWithArguments) 0 else fullWidth
+    }
 
-private fun NavHostController.navigateToList() = navigate(
-    route = NavigationScreen.List.routeWithArguments,
-    navOptions {
-        popUpTo(route = NavigationScreen.Auth.routeWithArguments) {
-            inclusive = true
+private fun exitTransition(navHostController: NavHostController) =
+    slideOutHorizontally { fullWidth ->
+        if (
+            navHostController.currentDestination?.route == NavigationScreen.Task.routeWithArguments ||
+            navHostController.currentDestination?.route == NavigationScreen.Settings.routeWithArguments
+        ) {
+            0
+        } else {
+            fullWidth
         }
-    },
-)
+    }

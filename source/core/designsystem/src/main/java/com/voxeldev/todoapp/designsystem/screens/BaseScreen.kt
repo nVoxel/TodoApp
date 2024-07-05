@@ -37,19 +37,32 @@ fun BaseScreen(
         if (loading) {
             FullscreenLoader()
         } else {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter,
-            ) {
-                content()
+            BaseScreenContent(
+                content = content,
+                networkNotification = networkNotification,
+                onNetworkNotificationClicked = viewModel::hideNetworkNotification,
+            )
+        }
+    }
+}
 
-                Box(modifier = Modifier.zIndex(zIndex = 1f)) {
-                    TodoNetworkNotification(
-                        isVisible = networkNotification,
-                        onClick = viewModel::hideNetworkNotification,
-                    )
-                }
-            }
+@Composable
+private fun BaseScreenContent(
+    content: @Composable () -> Unit,
+    networkNotification: Boolean,
+    onNetworkNotificationClicked: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        content()
+
+        Box(modifier = Modifier.zIndex(zIndex = 1f)) {
+            TodoNetworkNotification(
+                isVisible = networkNotification,
+                onClick = onNetworkNotificationClicked,
+            )
         }
     }
 }

@@ -1,8 +1,5 @@
 package com.voxeldev.todoapp.designsystem.components
 
-/**
- * @author nvoxel
- */
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,38 +56,56 @@ fun Error(
     shouldShowRetry: Boolean,
     retryCallback: () -> Unit = {},
 ) {
-    val appPalette = LocalAppPalette.current
-
     Column(
         modifier = Modifier.padding(all = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            color = appPalette.labelPrimary,
-            text = stringResource(id = R.string.error, message),
-            textAlign = TextAlign.Center,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            style = AppTypography.body,
+        ErrorContent(
+            message = message,
+            shouldShowRetry = shouldShowRetry,
+            retryCallback = retryCallback,
         )
-        if (shouldShowRetry) {
-            TodoButton(
-                modifier = Modifier.padding(top = 16.dp),
-                onClick = { retryCallback() },
-            ) {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Default.RestartAlt,
-                    contentDescription = null,
-                )
-                Text(
-                    modifier = Modifier.padding(start = 4.dp, end = 2.dp),
-                    text = stringResource(id = R.string.retry),
-                )
-            }
-        }
+    }
+}
+
+@Composable
+private fun ErrorContent(
+    message: String,
+    shouldShowRetry: Boolean,
+    retryCallback: () -> Unit = {},
+) {
+    val appPalette = LocalAppPalette.current
+
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        color = appPalette.labelPrimary,
+        text = stringResource(id = R.string.error, message),
+        textAlign = TextAlign.Center,
+        maxLines = 3,
+        overflow = TextOverflow.Ellipsis,
+        style = AppTypography.body,
+    )
+    if (shouldShowRetry) {
+        RetryButton(retryCallback = retryCallback)
+    }
+}
+
+@Composable
+private fun RetryButton(retryCallback: () -> Unit) {
+    TodoButton(
+        modifier = Modifier.padding(top = 16.dp),
+        onClick = retryCallback,
+    ) {
+        Icon(
+            modifier = Modifier.size(20.dp),
+            imageVector = Icons.Default.RestartAlt,
+            contentDescription = null,
+        )
+        Text(
+            modifier = Modifier.padding(start = 4.dp, end = 2.dp),
+            text = stringResource(id = R.string.retry),
+        )
     }
 }
 
