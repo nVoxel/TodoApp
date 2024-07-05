@@ -29,7 +29,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,16 +45,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.api.model.TodoItemImportance
 import com.voxeldev.todoapp.designsystem.components.TodoCheckbox
 import com.voxeldev.todoapp.designsystem.components.TodoLargeTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSmallFAB
 import com.voxeldev.todoapp.designsystem.icons.AdditionalIcons
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
-import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
 import com.voxeldev.todoapp.list.R
 import com.voxeldev.todoapp.list.ui.components.SwipeableListItem
 import com.voxeldev.todoapp.list.ui.components.TodoItemInfoDialog
@@ -77,8 +77,8 @@ fun ListScreen(
     var isFabVisible by rememberSaveable { mutableStateOf(true) }
     var isOnlyUncompletedVisible by rememberSaveable { mutableStateOf(false) }
 
-    val todoItems by viewModel.todoItems.collectAsState()
-    val completedItemsCount by viewModel.completedItemsCount.collectAsState()
+    val todoItems by viewModel.todoItems.collectAsStateWithLifecycle()
+    val completedItemsCount by viewModel.completedItemsCount.collectAsStateWithLifecycle()
 
     BaseScreen(
         viewModel = viewModel,
@@ -229,6 +229,12 @@ private fun ListItem(
 
     var isInfoDialogVisible by rememberSaveable { mutableStateOf(false) }
 
+    val deadlineTimestamp = remember(todoItem) {
+        todoItem.deadlineTimestamp?.let { deadlineTimestamp ->
+            onRequestFormattedTimestamp(deadlineTimestamp)
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -270,11 +276,11 @@ private fun ListItem(
                     style = if (todoItem.isComplete) AppTypography.bodyStrikethrough else AppTypography.body,
                 )
 
-                if (todoItem.deadlineTimestamp != null) {
+                deadlineTimestamp?.let {
                     Spacer(modifier = Modifier.height(height = 4.dp))
 
                     Text(
-                        text = onRequestFormattedTimestamp(todoItem.deadlineTimestamp!!),
+                        text = deadlineTimestamp,
                         color = appPalette.labelTertiary,
                         style = AppTypography.subhead,
                     )
@@ -327,7 +333,7 @@ private fun NewListItem(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ru")
 @Composable
 private fun ListScreenPreview() {
-    TodoAppTheme {
+    PreviewBase {
         ListScreen(
             lazyColumnState = rememberLazyListState(),
             topBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState()),

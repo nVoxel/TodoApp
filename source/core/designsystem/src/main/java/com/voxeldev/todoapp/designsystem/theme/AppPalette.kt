@@ -1,8 +1,13 @@
 package com.voxeldev.todoapp.designsystem.theme
 
+import android.content.res.Configuration
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import com.voxeldev.todoapp.designsystem.preview.AppPalettePreview
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 
 /**
  * @author nvoxel
@@ -81,3 +86,12 @@ internal val darkAppPalette = AppPalette(
     backSecondary = Color(0xFF252528),
     backElevated = Color(0xFF3C3C3F),
 )
+
+@Preview(name = "Component colors (Light)", widthDp = 1440, heightDp = 460, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Component colors (Dark)", widthDp = 1440, heightDp = 460, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun Preview() {
+    PreviewBase {
+        AppPalettePreview()
+    }
+}

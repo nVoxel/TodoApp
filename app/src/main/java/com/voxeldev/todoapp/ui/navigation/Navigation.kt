@@ -49,9 +49,9 @@ internal fun MainNavHost(
             route = NavigationScreen.Task.routeWithArguments,
             arguments = listOf(
                 navArgument(name = NavigationScreen.TASK_ID_ARG) {
-                type = NavType.StringType
-                nullable = true
-            },
+                    type = NavType.StringType
+                    nullable = true
+                },
             ),
         ) {
             TaskScreen(

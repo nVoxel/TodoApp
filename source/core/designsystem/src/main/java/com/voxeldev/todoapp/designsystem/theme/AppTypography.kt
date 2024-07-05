@@ -1,9 +1,13 @@
 package com.voxeldev.todoapp.designsystem.theme
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.voxeldev.todoapp.designsystem.preview.AppTypographyPreview
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 
 object AppTypography {
 
@@ -43,4 +47,12 @@ object AppTypography {
         fontWeight = FontWeight.W400,
         lineHeight = 20.sp,
     )
+}
+
+@Preview(name = "Text styles")
+@Composable
+private fun Preview() {
+    PreviewBase {
+        AppTypographyPreview()
+    }
 }

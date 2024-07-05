@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.designsystem.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.CubicBezierEasing
@@ -23,13 +24,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -48,11 +54,13 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import kotlin.math.abs
@@ -72,21 +80,12 @@ fun TodoLargeTopBar(
     actions: @Composable RowScope.() -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    val appPalette = LocalAppPalette.current
-
     LargeTopAppBar(
         modifier = modifier,
         titlePrimary = titlePrimary,
         titleSecondary = titleSecondary,
         actions = actions,
         scrollBehavior = scrollBehavior,
-        colors = TopAppBarColors(
-            containerColor = appPalette.backPrimary,
-            scrolledContainerColor = appPalette.backPrimary,
-            navigationIconContentColor = appPalette.colorBlue,
-            titleContentColor = appPalette.labelPrimary,
-            actionIconContentColor = appPalette.colorBlue,
-        ),
     )
 }
 
@@ -96,12 +95,14 @@ private fun LargeTopAppBar(
     modifier: Modifier = Modifier,
     titlePrimary: @Composable () -> Unit,
     titleSecondary: @Composable () -> Unit,
-    colors: TopAppBarColors,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
     scrollBehavior: TopAppBarScrollBehavior? = null,
+    collapsedByDefault: Boolean = false,
 ) {
+    val appPalette = LocalAppPalette.current
+
     TwoRowsTopAppBar(
         titlePrimary = titlePrimary,
         titleSecondary = titleSecondary,
@@ -111,11 +112,18 @@ private fun LargeTopAppBar(
         modifier = modifier,
         navigationIcon = navigationIcon,
         actions = actions,
-        colors = colors,
+        colors = TopAppBarColors(
+            containerColor = appPalette.backPrimary,
+            scrolledContainerColor = appPalette.backPrimary,
+            navigationIconContentColor = appPalette.colorBlue,
+            titleContentColor = appPalette.labelPrimary,
+            actionIconContentColor = appPalette.colorBlue,
+        ),
         windowInsets = windowInsets,
         maxHeight = TopBarMaxHeight,
         pinnedHeight = TopBarPinnedHeight,
         scrollBehavior = scrollBehavior,
+        collapsedByDefault = collapsedByDefault,
     )
 }
 
@@ -135,6 +143,7 @@ fun TwoRowsTopAppBar(
     maxHeight: Dp,
     pinnedHeight: Dp,
     scrollBehavior: TopAppBarScrollBehavior?,
+    collapsedByDefault: Boolean,
 ) {
     if (maxHeight <= pinnedHeight) {
         throw IllegalArgumentException(
@@ -174,11 +183,11 @@ fun TwoRowsTopAppBar(
             content = actions,
         )
     }
-    val topTitleAlpha = TopTitleAlphaEasing.transform(colorTransitionFraction)
-    val bottomTitleAlpha = 1f - colorTransitionFraction
+    val topTitleAlpha = if (collapsedByDefault) 1f else TopTitleAlphaEasing.transform(colorTransitionFraction)
+    val bottomTitleAlpha = if (collapsedByDefault) 0f else 1f - colorTransitionFraction
     // Hide the top row title semantics when its alpha value goes below 0.5 threshold.
     // Hide the bottom row title semantics when the top title semantics are active.
-    val hideTopRowSemantics = colorTransitionFraction < 0.5f
+    val hideTopRowSemantics = if (collapsedByDefault) false else colorTransitionFraction < 0.5f
     val hideBottomRowSemantics = !hideTopRowSemantics
 
     // Set up support for resizing the top app bar when vertically dragging the bar itself.
@@ -243,54 +252,56 @@ fun TwoRowsTopAppBar(
                 actions = { },
             )
 
-            TopAppBarLayout(
-                modifier = Modifier
-                    // only apply the horizontal sides of the window insets padding, since the top
-                    // padding will always be applied by the layout above
-                    .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Horizontal))
-                    .clipToBounds(),
-                heightPx = maxHeightPx - pinnedHeightPx + (
-                    scrollBehavior?.state?.heightOffset
-                    ?: 0f
-                ),
-                navigationIconContentColor =
-                colors.navigationIconContentColor,
-                titleContentColor = colors.titleContentColor,
-                actionIconContentColor =
-                colors.actionIconContentColor,
-                title = {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                start = 40.dp,
-                                end = 24.dp,
+            if (!collapsedByDefault) {
+                TopAppBarLayout(
+                    modifier = Modifier
+                        // only apply the horizontal sides of the window insets padding, since the top
+                        // padding will always be applied by the layout above
+                        .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Horizontal))
+                        .clipToBounds(),
+                    heightPx = maxHeightPx - pinnedHeightPx + (
+                            scrollBehavior?.state?.heightOffset
+                                ?: 0f
                             ),
-                    ) {
-                        titlePrimary()
-
-                        Spacer(modifier = Modifier.height(height = 8.dp))
-
-                        Row(
+                    navigationIconContentColor =
+                    colors.navigationIconContentColor,
+                    titleContentColor = colors.titleContentColor,
+                    actionIconContentColor =
+                    colors.actionIconContentColor,
+                    title = {
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
+                                .fillMaxWidth()
+                                .padding(
+                                    start = 40.dp,
+                                    end = 24.dp,
+                                ),
                         ) {
-                            titleSecondary()
-                            actionsRow()
+                            titlePrimary()
+
+                            Spacer(modifier = Modifier.height(height = 8.dp))
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                titleSecondary()
+                                actionsRow()
+                            }
                         }
-                    }
-                },
-                titleTextStyle = titleTextStyle,
-                titleAlpha = bottomTitleAlpha,
-                titleVerticalArrangement = Arrangement.Bottom,
-                titleHorizontalArrangement = Arrangement.Start,
-                titleBottomPadding = titleBottomPaddingPx,
-                hideTitleSemantics = hideBottomRowSemantics,
-                navigationIcon = {},
-                actions = {},
-            )
+                    },
+                    titleTextStyle = titleTextStyle,
+                    titleAlpha = bottomTitleAlpha,
+                    titleVerticalArrangement = Arrangement.Bottom,
+                    titleHorizontalArrangement = Arrangement.Start,
+                    titleBottomPadding = titleBottomPaddingPx,
+                    hideTitleSemantics = hideBottomRowSemantics,
+                    navigationIcon = {},
+                    actions = {},
+                )
+            }
         }
     }
 }
@@ -400,9 +411,9 @@ private fun TopAppBarLayout(
                             // May happen if the actions are wider than the navigation and the title
                             // is long. In this case, offset to the left.
                             baseX += (
-                                (constraints.maxWidth - actionIconsPlaceable.width) -
-                                    (baseX + titlePlaceable.width)
-                            )
+                                    (constraints.maxWidth - actionIconsPlaceable.width) -
+                                            (baseX + titlePlaceable.width)
+                                    )
                         }
                         baseX
                     }
@@ -423,9 +434,9 @@ private fun TopAppBarLayout(
                             layoutHeight - titlePlaceable.height
                         } else {
                             layoutHeight - titlePlaceable.height - max(
-                            0,
-                            titleBottomPadding - titlePlaceable.height + titleBaseline,
-                        )
+                                0,
+                                titleBottomPadding - titlePlaceable.height + titleBaseline,
+                            )
                         }
                     // Arrangement.Top
                     else -> 0
@@ -557,3 +568,55 @@ private val TopTitleAlphaEasing = CubicBezierEasing(.8f, 0f, .8f, .15f)
 
 private val TopAppBarHorizontalPadding = 4.dp
 private val TopAppBarTitleInset = 16.dp - TopAppBarHorizontalPadding
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewFull() {
+    PreviewBase {
+        Box(modifier = Modifier.padding(all = 8.dp)) {
+            TodoLargeTopBar(
+                titlePrimary = {
+                    Text(text = "Title Primary")
+                },
+                titleSecondary = {
+                    Text(
+                        text = "Title Secondary",
+                        style = AppTypography.body,
+                    )
+                },
+                actions = { Icon(imageVector = Icons.Default.Settings, contentDescription = null) },
+                scrollBehavior = TopAppBarDefaults
+                    .exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState()),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewCollapsed() {
+    PreviewBase {
+        Box(modifier = Modifier.padding(all = 8.dp)) {
+            LargeTopAppBar(
+                titlePrimary = {
+                    Text(text = "Title Primary")
+                },
+                titleSecondary = {
+                    Text(
+                        text = "Title Secondary",
+                        style = AppTypography.body,
+                    )
+                },
+                actions = { Icon(imageVector = Icons.Default.Settings, contentDescription = null) },
+                scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+                    state = rememberTopAppBarState(),
+                ),
+                collapsedByDefault = true,
+            )
+        }
+    }
+}

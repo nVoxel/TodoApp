@@ -23,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItemImportance
 import com.voxeldev.todoapp.designsystem.components.TodoDatePicker
 import com.voxeldev.todoapp.designsystem.components.TodoDivider
@@ -40,14 +40,14 @@ import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
 import com.voxeldev.todoapp.designsystem.components.TodoSwitch
 import com.voxeldev.todoapp.designsystem.components.TodoTextField
 import com.voxeldev.todoapp.designsystem.components.conditional
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
-import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
 import com.voxeldev.todoapp.task.R
+import com.voxeldev.todoapp.task.ui.extensions.calculateTopBarElevation
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayColor
 import com.voxeldev.todoapp.task.ui.extensions.getDisplayText
-import com.voxeldev.todoapp.task.ui.extensions.scrollPercentage
 import com.voxeldev.todoapp.task.ui.preview.TaskScreenPreviewData
 import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
 
@@ -59,10 +59,11 @@ fun TaskScreen(
     viewModel: TaskViewModel,
     onClose: () -> Unit,
 ) {
-    val text by viewModel.text.collectAsState()
-    val importance by viewModel.importance.collectAsState()
-    val deadlineTimestamp by viewModel.deadlineTimestamp.collectAsState()
-    val deadlineTimestampString by viewModel.deadlineTimestampString.collectAsState()
+    val text by viewModel.text.collectAsStateWithLifecycle()
+    val importance by viewModel.importance.collectAsStateWithLifecycle()
+    val deadlineTimestamp by viewModel.deadlineTimestamp.collectAsStateWithLifecycle()
+    val deadlineTimestampString by viewModel.deadlineTimestampString.collectAsStateWithLifecycle()
+    val saveButtonActive by viewModel.saveButtonActive.collectAsStateWithLifecycle()
 
     BaseScreen(
         viewModel = viewModel,
@@ -74,6 +75,7 @@ fun TaskScreen(
             importance = importance,
             deadlineTimestamp = deadlineTimestamp,
             deadlineTimestampString = deadlineTimestampString,
+            saveButtonActive = saveButtonActive,
             onTextChanged = { updatedText -> viewModel.updateText(text = updatedText) },
             onImportanceChanged = { updatedImportance -> viewModel.updateImportance(importance = updatedImportance) },
             onDeadlineTimestampChanged = { updatedDeadlineTimestamp ->
@@ -94,6 +96,7 @@ private fun TaskScreen(
     importance: TodoItemImportance,
     deadlineTimestamp: Long?,
     deadlineTimestampString: String?,
+    saveButtonActive: Boolean,
     onTextChanged: (String) -> Unit,
     onImportanceChanged: (TodoItemImportance) -> Unit,
     onDeadlineTimestampChanged: (Long) -> Unit,
@@ -111,17 +114,10 @@ private fun TaskScreen(
 
     Scaffold(
         topBar = {
-            Surface(
-                shadowElevation = (16 * scrollState.scrollPercentage()).dp,
-            ) {
+            Surface(shadowElevation = scrollState.calculateTopBarElevation()) {
                 TodoSmallTopBar(
-                    buttonText = if (editTask) {
-                        stringResource(
-                            id = R.string.save,
-                        )
-                    } else {
-                        stringResource(id = R.string.create)
-                    },
+                    buttonText = stringResource(id = if (editTask) R.string.save else R.string.create),
+                    isButtonActive = saveButtonActive,
                     onButtonClicked = onSaveClicked,
                     onCloseClicked = onCloseClicked,
                 )
@@ -203,8 +199,13 @@ private fun TaskScreen(
 
                 TodoSwitch(
                     checked = deadlineTimestampString != null,
-                    onCheckedChange = { onDeadlineTimestampReset() },
-                    enabled = deadlineTimestampString != null,
+                    onCheckedChange = {
+                        if (deadlineTimestampString == null) {
+                            datePickerDialogVisible = true
+                        } else {
+                            onDeadlineTimestampReset()
+                        }
+                    },
                 )
 
                 TodoDatePicker(
@@ -284,13 +285,14 @@ private fun ImportanceDropdown(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ru")
 @Composable
 private fun TaskScreenPreview() {
-    TodoAppTheme {
+    PreviewBase {
         TaskScreen(
             editTask = true,
             text = TaskScreenPreviewData.text,
             importance = TaskScreenPreviewData.importance,
             deadlineTimestamp = TaskScreenPreviewData.deadlineTimestamp,
             deadlineTimestampString = TaskScreenPreviewData.deadlineTimestampString,
+            saveButtonActive = true,
             onTextChanged = {},
             onImportanceChanged = {},
             onDeadlineTimestampChanged = {},
