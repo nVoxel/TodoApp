@@ -7,6 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
+ * Maps [TodoListResponse] response to [TodoItemList] model.
  * @author nvoxel
  */
 @Singleton

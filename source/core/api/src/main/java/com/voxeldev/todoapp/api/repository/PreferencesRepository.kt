@@ -1,6 +1,7 @@
 package com.voxeldev.todoapp.api.repository
 
 /**
+ * Stores various user preferences.
  * @author nvoxel
  */
 interface PreferencesRepository {

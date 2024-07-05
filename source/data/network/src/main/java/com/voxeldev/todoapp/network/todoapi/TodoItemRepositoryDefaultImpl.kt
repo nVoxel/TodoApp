@@ -24,6 +24,7 @@ import io.ktor.http.contentType
 import javax.inject.Inject
 
 /**
+ * [TodoItemRepository] default implementation that uses ktor.
  * @author nvoxel
  */
 internal class TodoItemRepositoryDefaultImpl @Inject constructor(

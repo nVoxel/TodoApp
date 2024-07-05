@@ -6,6 +6,7 @@ import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import javax.inject.Inject
 
 /**
+ * Gets execution interval of [AutoRefreshWorker].
  * @author nvoxel
  */
 class GetAutoRefreshIntervalUseCase @Inject constructor(

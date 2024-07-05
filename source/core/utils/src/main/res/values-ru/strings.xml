@@ -4,7 +4,7 @@
     <string name="invalid_format_exception">Ответ с сервера получен в неверном формате</string>
     <string name="item_not_found_exception">Задача с идентификатором "%1$s" не найдена</string>
     <string name="network_not_available_exception">Потеряно подключение к интернету</string>
-    <string name="other_network_exception">Не удалось получить ответ с сервера</string>
+    <string name="other_network_exception">Не удалось получить ответ с сервера: код %1$d</string>
     <string name="revision_not_available_exception">Не удалось получить ревизию данных</string>
     <string name="server_error_exception">Внутренняя ошибка на сервере</string>
     <string name="token_not_found_exception">Ваш токен больше недействителен</string>

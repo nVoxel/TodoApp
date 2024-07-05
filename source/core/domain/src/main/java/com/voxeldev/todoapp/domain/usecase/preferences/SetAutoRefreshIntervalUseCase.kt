@@ -5,6 +5,7 @@ import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 
 /**
+ * Sets execution interval of [AutoRefreshWorker].
  * @author nvoxel
  */
 class SetAutoRefreshIntervalUseCase(

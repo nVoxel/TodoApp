@@ -6,10 +6,11 @@ import com.voxeldev.todoapp.utils.R
 import com.voxeldev.todoapp.utils.exceptions.base.DisplayableException
 
 /**
+ * Means the backend answered with non-200 response code.
  * @author nvoxel
  */
-class OtherNetworkException : DisplayableException, Throwable() {
+class OtherNetworkException(private val responseCode: Int) : DisplayableException, Exception() {
 
     @Composable
-    override fun getDisplayMessage(): String = stringResource(R.string.other_network_exception)
+    override fun getDisplayMessage(): String = stringResource(R.string.other_network_exception, responseCode)
 }

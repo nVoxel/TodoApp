@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.startup.Initializer
 
 /**
+ * Initializes dependency graph.
  * @author nvoxel
  */
 internal class DependencyGraphInitializer : Initializer<Unit> {

@@ -19,6 +19,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 /**
+ * Remote data module.
  * @author nvoxel
  */
 @Module

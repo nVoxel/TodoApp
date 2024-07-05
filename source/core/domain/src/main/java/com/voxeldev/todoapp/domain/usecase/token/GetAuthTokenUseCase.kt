@@ -7,6 +7,7 @@ import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import javax.inject.Inject
 
 /**
+ * Gets saved [AuthToken].
  * @author nvoxel
  */
 class GetAuthTokenUseCase @Inject constructor(

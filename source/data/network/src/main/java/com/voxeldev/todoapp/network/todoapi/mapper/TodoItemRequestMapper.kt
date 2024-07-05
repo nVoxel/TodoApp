@@ -9,6 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
+ * Maps [TodoItemModifyRequest] model to [TodoSingleRequest] request.
  * @author nvoxel
  */
 @Singleton

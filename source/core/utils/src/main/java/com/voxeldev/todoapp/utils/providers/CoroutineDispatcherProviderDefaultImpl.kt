@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 /**
+ * Provides coroutine dispatchers with default bindings.
  * @author nvoxel
  */
 class CoroutineDispatcherProviderDefaultImpl @Inject constructor() : CoroutineDispatcherProvider {

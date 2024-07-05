@@ -16,6 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
+ * Observes network availability changes.
  * @author nvoxel
  */
 @SuppressLint("MissingPermission")

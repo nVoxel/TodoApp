@@ -7,6 +7,7 @@ import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 
 /**
+ * Initializes Hilt graph.
  * @author nvoxel
  */
 @EntryPoint

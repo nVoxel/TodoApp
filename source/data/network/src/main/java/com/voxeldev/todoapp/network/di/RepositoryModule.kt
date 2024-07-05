@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
+ * Repository bindings module.
  * @author nvoxel
  */
 @Module(includes = [InternalRepositoryModule::class])

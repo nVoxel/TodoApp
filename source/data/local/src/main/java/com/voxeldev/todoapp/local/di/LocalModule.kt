@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
+ * Local data module.
  * @author nvoxel
  */
 @Module(includes = [InternalLocalModule::class])

@@ -1,6 +1,7 @@
 package com.voxeldev.todoapp.ui.navigation
 
 /**
+ * Represents app navigation screen.
  * @author nvoxel
  */
 internal sealed class NavigationScreen(

@@ -4,6 +4,7 @@ import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.api.request.TodoItemModifyRequest
 
 /**
+ * Provides CRUD interface of [TodoItem].
  * @author nvoxel
  */
 interface TodoItemRepository {

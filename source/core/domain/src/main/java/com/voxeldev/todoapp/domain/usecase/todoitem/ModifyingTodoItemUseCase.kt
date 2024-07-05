@@ -8,6 +8,8 @@ import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 
 /**
+ * Base use case for all modifying (but not deleting) requests.
+ * Provides current revision and device ID.
  * @author nvoxel
  */
 abstract class ModifyingTodoItemUseCase(

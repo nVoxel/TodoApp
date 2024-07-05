@@ -9,6 +9,7 @@ import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import javax.inject.Inject
 
 /**
+ * Updates existion [TodoItem].
  * @author nvoxel
  */
 class UpdateTodoItemUseCase @Inject constructor(

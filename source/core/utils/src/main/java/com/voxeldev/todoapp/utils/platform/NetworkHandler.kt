@@ -8,6 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
+ * Returns whether a network connection is available or not.
  * @author nvoxel
  */
 @Singleton

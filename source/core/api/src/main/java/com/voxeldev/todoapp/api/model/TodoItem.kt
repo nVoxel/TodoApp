@@ -1,6 +1,7 @@
 package com.voxeldev.todoapp.api.model
 
 /**
+ * User-created task.
  * @author nvoxel
  */
 data class TodoItem(

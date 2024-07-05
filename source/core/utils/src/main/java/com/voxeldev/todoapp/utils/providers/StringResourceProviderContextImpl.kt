@@ -4,6 +4,7 @@ import android.content.Context
 import com.voxeldev.todoapp.utils.R
 
 /**
+ * Provides custom strings.
  * @author nvoxel
  */
 internal class StringResourceProviderContextImpl(context: Context) : StringResourceProvider {

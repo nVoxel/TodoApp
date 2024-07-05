@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.domain.usecase.todoitem
 
+import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.api.repository.TodoItemListRepository
 import com.voxeldev.todoapp.api.repository.TodoItemRepository
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
@@ -7,6 +8,7 @@ import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import javax.inject.Inject
 
 /**
+ * Deletes existing [TodoItem].
  * @author nvoxel
  */
 class DeleteTodoItemUseCase @Inject constructor(

@@ -14,6 +14,7 @@ import androidx.work.WorkerParameters
 import com.voxeldev.todoapp.api.repository.TodoItemListRepository
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.domain.usecase.preferences.GetAutoRefreshIntervalUseCase
+import com.voxeldev.todoapp.utils.exceptions.TokenNotFoundException
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -22,6 +23,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 /**
+ * WorkManager Worker that periodically refreshes task list.
  * @author nvoxel
  */
 @HiltWorker
@@ -40,7 +42,11 @@ class AutoRefreshWorker @AssistedInject constructor(
             },
             onFailure = { exception ->
                 Log.i("AutoRefreshWorker", "Finished with error: ${exception.message ?: exception.toString()}")
-                Result.retry()
+                if (exception is TokenNotFoundException) {
+                    Result.failure()
+                } else {
+                    Result.retry()
+                }
             },
         )
     }

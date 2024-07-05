@@ -14,6 +14,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
+ * Utils module that stores auxiliary classes.
  * @author nvoxel
  */
 @Module(includes = [UtilsModule.Provide::class])

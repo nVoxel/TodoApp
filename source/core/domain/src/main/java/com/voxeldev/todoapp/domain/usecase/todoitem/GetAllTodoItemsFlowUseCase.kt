@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
+ * Gets [Flow] of [TodoItemList].
  * @author nvoxel
  */
 class GetAllTodoItemsFlowUseCase @Inject constructor(

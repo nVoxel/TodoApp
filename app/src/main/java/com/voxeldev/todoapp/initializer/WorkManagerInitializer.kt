@@ -9,6 +9,7 @@ import androidx.work.WorkManager
 import javax.inject.Inject
 
 /**
+ * Initializes WorkManager in order for it to use HiltWorkerFactory.
  * @author nvoxel
  */
 internal class WorkManagerInitializer : Initializer<WorkManager>, Configuration.Provider {

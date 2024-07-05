@@ -4,7 +4,7 @@
     <string name="invalid_format_exception">Got invalid response format from the server</string>
     <string name="item_not_found_exception">Item with ID "%1$s" does not exist</string>
     <string name="network_not_available_exception">Network connection lost</string>
-    <string name="other_network_exception">Failed to get response from the server</string>
+    <string name="other_network_exception">Failed to get response from the server: code %1$d</string>
     <string name="revision_not_available_exception">Failed to get data revision</string>
     <string name="server_error_exception">Internal error on the server</string>
     <string name="token_not_found_exception">Your token is no longer valid</string>

@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
+ * Task data that can be send to the backend.
  * @author nvoxel
  */
 @Serializable

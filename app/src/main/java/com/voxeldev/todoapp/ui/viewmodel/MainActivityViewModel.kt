@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 /**
+ * Used to store current OAuth state.
  * @author nvoxel
  */
 internal class MainActivityViewModel : ViewModel() {

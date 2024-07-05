@@ -88,7 +88,7 @@ fun AuthScreen(
 private fun AuthScreen(
     state: AuthScreenState,
     showLoading: Boolean,
-    error: Throwable?,
+    error: Exception?,
     reverseAnimation: Boolean,
     onRetryClicked: () -> Unit,
     onChooseMethodClicked: () -> Unit,

@@ -7,6 +7,7 @@ import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import javax.inject.Inject
 
 /**
+ * Gets single [TodoItem] by its ID.
  * @author nvoxel
  */
 class GetSingleTodoItemUseCase @Inject constructor(

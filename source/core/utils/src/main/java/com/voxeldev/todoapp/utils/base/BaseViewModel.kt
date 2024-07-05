@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
+ * Base ViewModel that can store exceptions, loading and network states.
  * @author nvoxel
  */
 open class BaseViewModel(
@@ -22,8 +23,8 @@ open class BaseViewModel(
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : ViewModel() {
 
-    protected val _exception: MutableStateFlow<Throwable?> = MutableStateFlow(value = null)
-    val exception: StateFlow<Throwable?> = _exception.asStateFlow()
+    protected val _exception: MutableStateFlow<Exception?> = MutableStateFlow(value = null)
+    val exception: StateFlow<Exception?> = _exception.asStateFlow()
 
     protected val _loading: MutableStateFlow<Boolean> = MutableStateFlow(value = false)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
@@ -51,7 +52,7 @@ open class BaseViewModel(
     protected open fun onNetworkConnected() { }
 
     protected fun handleException(exception: Throwable) {
-        _exception.update { exception }
+        _exception.update { Exception(exception) }
         _loading.update { false }
     }
 

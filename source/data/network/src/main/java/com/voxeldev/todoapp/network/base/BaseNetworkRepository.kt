@@ -12,6 +12,7 @@ import io.ktor.client.statement.HttpStatement
 import io.ktor.http.HttpStatusCode
 
 /**
+ * Base network repository that uses ktor and executes HTTP requests.
  * @author nvoxel
  */
 internal abstract class BaseNetworkRepository<Model>(
@@ -62,7 +63,7 @@ internal abstract class BaseNetworkRepository<Model>(
                 return when (response.status) {
                     HttpStatusCode.Unauthorized -> Result.failure(TokenNotFoundException())
                     HttpStatusCode.InternalServerError -> Result.failure(ServerErrorException())
-                    else -> Result.failure(OtherNetworkException())
+                    else -> Result.failure(OtherNetworkException(responseCode = response.status.value))
                 }
             }
 

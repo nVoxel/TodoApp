@@ -7,6 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 /**
+ * Default implementation of [PreferencesRepository] that uses unencrypted shared preferences.
  * @author nvoxel
  */
 internal class PreferencesRepositoryDefaultImpl @Inject constructor(

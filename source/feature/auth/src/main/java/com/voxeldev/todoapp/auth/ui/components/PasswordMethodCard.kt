@@ -24,7 +24,7 @@ internal fun PasswordMethodCard(
     onUpdateLoginText: (String) -> Unit,
     onUpdatePasswordText: (String) -> Unit,
     showLoading: Boolean,
-    error: Throwable?,
+    error: Exception?,
     onRetryClicked: () -> Unit,
     onCheckAuthClicked: () -> Unit,
     onCloseClicked: () -> Unit,

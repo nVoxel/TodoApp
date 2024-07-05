@@ -1,10 +1,12 @@
 package com.voxeldev.todoapp.list.viewmodel
 
+import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.api.model.TodoItemList
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.DeleteTodoItemUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.GetAllTodoItemsFlowUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.UpdateTodoItemUseCase
+import com.voxeldev.todoapp.list.ui.ListScreen
 import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.extensions.formatTimestamp
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
@@ -20,6 +22,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 /**
+ * Stores [ListScreen] current state, provides methods to change [TodoItem].
  * @author nvoxel
  */
 @HiltViewModel

@@ -3,6 +3,7 @@ package com.voxeldev.todoapp.api.repository
 import com.voxeldev.todoapp.api.model.AuthToken
 
 /**
+ * Stores authentication token.
  * @author nvoxel
  */
 interface AuthTokenRepository {

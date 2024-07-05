@@ -9,6 +9,7 @@ import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import javax.inject.Inject
 
 /**
+ * Creates new [TodoItem].
  * @author nvoxel
  */
 class CreateTodoItemUseCase @Inject constructor(

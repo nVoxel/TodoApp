@@ -36,7 +36,7 @@ internal fun ChooseMethodCard(
     onCredentialsMethodClicked: () -> Unit,
     onOAuthMethodClicked: () -> Unit,
     showLoading: Boolean,
-    error: Throwable?,
+    error: Exception?,
     onRetryClicked: () -> Unit,
 ) {
     val appPalette = LocalAppPalette.current

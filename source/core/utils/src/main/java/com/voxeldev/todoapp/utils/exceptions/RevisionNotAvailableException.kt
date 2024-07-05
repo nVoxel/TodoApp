@@ -6,9 +6,10 @@ import com.voxeldev.todoapp.utils.R
 import com.voxeldev.todoapp.utils.exceptions.base.DisplayableException
 
 /**
+ * Means stored revision does not exist.
  * @author nvoxel
  */
-class RevisionNotAvailableException : DisplayableException, Throwable() {
+class RevisionNotAvailableException : DisplayableException, Exception() {
 
     @Composable
     override fun getDisplayMessage(): String = stringResource(R.string.revision_not_available_exception)

@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 /**
+ * Default implementation of [AuthTokenRepository] that uses encrypted shared preferences.
  * @author nvoxel
  */
 internal class AuthTokenRepositoryPrefsImpl @Inject constructor(

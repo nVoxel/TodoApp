@@ -4,6 +4,7 @@ import com.voxeldev.todoapp.api.model.AuthToken
 import com.voxeldev.todoapp.api.model.AuthTokenType
 import com.voxeldev.todoapp.auth.exceptions.FailedToAuthenticateException
 import com.voxeldev.todoapp.auth.exceptions.FieldNotFilledException
+import com.voxeldev.todoapp.auth.ui.AuthScreen
 import com.voxeldev.todoapp.auth.ui.AuthScreenState
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.GetAllTodoItemsFlowUseCase
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
+ * Stores [AuthScreen] current state and manages authentication state.
  * @author nvoxel
  */
 @HiltViewModel(assistedFactory = AuthViewModel.Factory::class)
@@ -154,7 +156,7 @@ class AuthViewModel @AssistedInject constructor(
                         if (exception is TokenNotFoundException) {
                             FailedToAuthenticateException()
                         } else {
-                            exception
+                            Exception(exception)
                         }
                     }
                     clearToken()

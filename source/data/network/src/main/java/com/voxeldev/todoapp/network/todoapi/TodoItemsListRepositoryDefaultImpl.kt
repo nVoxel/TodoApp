@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
+ * [TodoItemListRepository] default implementation that uses ktor.
  * @author nvoxel
  */
 internal class TodoItemsListRepositoryDefaultImpl @Inject constructor(

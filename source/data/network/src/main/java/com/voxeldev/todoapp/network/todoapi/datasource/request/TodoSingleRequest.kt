@@ -4,6 +4,7 @@ import com.voxeldev.todoapp.network.todoapi.datasource.TodoItemData
 import kotlinx.serialization.Serializable
 
 /**
+ * Used to create and update tasks on the backend.
  * @author nvoxel
  */
 @Serializable

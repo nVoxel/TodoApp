@@ -1,6 +1,7 @@
 package com.voxeldev.todoapp.auth.ui
 
 /**
+ * Represents [AuthScreen] active state.
  * @author nvoxel
  */
 sealed class AuthScreenState(val stateKey: String) {

@@ -6,6 +6,7 @@ import com.voxeldev.todoapp.domain.usecase.todoitem.CreateTodoItemUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.DeleteTodoItemUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.GetSingleTodoItemUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.UpdateTodoItemUseCase
+import com.voxeldev.todoapp.task.ui.TaskScreen
 import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.extensions.formatTimestamp
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
@@ -24,6 +25,7 @@ import java.util.Locale
 import java.util.UUID
 
 /**
+ * Stores [TaskScreen] current state, provides screen-related methods.
  * @author nvoxel
  */
 @HiltViewModel(assistedFactory = TaskViewModel.Factory::class)

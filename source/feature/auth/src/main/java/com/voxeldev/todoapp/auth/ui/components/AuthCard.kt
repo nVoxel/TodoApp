@@ -45,7 +45,7 @@ internal fun AuthCard(
     showClose: Boolean = false,
     onCloseClicked: () -> Unit = {},
     showLoading: Boolean = false,
-    error: Throwable? = null,
+    error: Exception? = null,
     retryCallback: () -> Unit = {},
     cardContent: @Composable ColumnScope.(isForegroundVisible: Boolean) -> Unit,
 ) {
@@ -79,7 +79,7 @@ internal fun AuthCard(
 @Composable
 private fun AuthCardNonContentStates(
     showLoading: Boolean,
-    error: Throwable?,
+    error: Exception?,
     retryCallback: () -> Unit,
 ) {
     if (showLoading) {

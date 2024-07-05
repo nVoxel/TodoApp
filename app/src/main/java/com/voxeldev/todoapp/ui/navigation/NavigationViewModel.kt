@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
+ * Used to store current authentication state in app.
  * @author nvoxel
  */
 @HiltViewModel

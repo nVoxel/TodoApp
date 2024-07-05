@@ -7,6 +7,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 /**
+ * Base use case that provides async task execution.
  * @author nvoxel
  */
 abstract class BaseUseCase<in Params, out Type>(

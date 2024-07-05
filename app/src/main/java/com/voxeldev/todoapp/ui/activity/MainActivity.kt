@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
+ * Main app activity.
  * @author nvoxel
  */
 @AndroidEntryPoint

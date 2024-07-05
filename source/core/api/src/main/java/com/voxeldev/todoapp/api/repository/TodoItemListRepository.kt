@@ -4,6 +4,7 @@ import com.voxeldev.todoapp.api.model.TodoItemList
 import kotlinx.coroutines.flow.Flow
 
 /**
+ * Provides task list as well as the current data revision.
  * @author nvoxel
  */
 interface TodoItemListRepository {

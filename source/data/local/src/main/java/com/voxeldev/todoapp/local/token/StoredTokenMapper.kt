@@ -7,6 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
+ * Maps [AuthToken] to [StoredToken] and vice versa.
  * @author nvoxel
  */
 @Singleton
