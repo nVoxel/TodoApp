@@ -49,10 +49,12 @@ open class BaseViewModel(
     /**
      * Called when a network connection appears, if the previous request was not completed due to network unavailability
      */
-    protected open fun onNetworkConnected() { }
+    protected open fun onNetworkConnected() {}
 
     protected fun handleException(exception: Throwable) {
-        _exception.update { Exception(exception) }
+        _exception.update {
+            if (exception is Exception) exception else Exception(exception)
+        }
         _loading.update { false }
     }
 

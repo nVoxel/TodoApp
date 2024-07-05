@@ -18,28 +18,24 @@ abstract class ModifyingTodoItemUseCase(
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : BaseUseCase<TodoItem, Unit>(coroutineDispatcherProvider = coroutineDispatcherProvider) {
 
-    protected suspend fun getRevision(todoItem: TodoItem): Result<Unit> = runCatching {
-        todoItemListRepository.getRevision().fold(
-            onSuccess = { revision -> getDeviceId(todoItem = todoItem, revision = revision) },
-            onFailure = { exception -> Result.failure<Unit>(exception = exception) },
-        )
-    }
+    protected suspend fun getRevision(todoItem: TodoItem): Result<Unit> = todoItemListRepository.getRevision().fold(
+        onSuccess = { revision -> getDeviceId(todoItem = todoItem, revision = revision) },
+        onFailure = { exception -> Result.failure(exception = exception) },
+    )
 
-    private suspend fun getDeviceId(todoItem: TodoItem, revision: Int): Result<Unit> = runCatching {
-        preferencesRepository.getDeviceID().fold(
-            onSuccess = { deviceId ->
-                modifyTodoItem(
-                    todoItemModifyRequest = TodoItemModifyRequest(
-                        todoItem = todoItem,
-                        revision = revision,
-                        deviceId = deviceId,
-                    ),
-                    onSuccessCallback = { todoItemListRepository.refreshData() },
-                )
-            },
-            onFailure = { exception -> Result.failure<Unit>(exception = exception) },
-        )
-    }
+    private suspend fun getDeviceId(todoItem: TodoItem, revision: Int): Result<Unit> = preferencesRepository.getDeviceID().fold(
+        onSuccess = { deviceId ->
+            return modifyTodoItem(
+                todoItemModifyRequest = TodoItemModifyRequest(
+                    todoItem = todoItem,
+                    revision = revision,
+                    deviceId = deviceId,
+                ),
+                onSuccessCallback = { todoItemListRepository.refreshData() },
+            )
+        },
+        onFailure = { exception -> Result.failure(exception = exception) },
+    )
 
     abstract suspend fun modifyTodoItem(
         todoItemModifyRequest: TodoItemModifyRequest,

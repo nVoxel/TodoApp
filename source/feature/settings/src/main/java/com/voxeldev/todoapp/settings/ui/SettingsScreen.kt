@@ -9,14 +9,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import com.voxeldev.todoapp.designsystem.components.TodoDivider
 import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
 import com.voxeldev.todoapp.designsystem.components.clipShadow
 import com.voxeldev.todoapp.designsystem.extensions.calculateTopBarElevation
@@ -106,14 +103,14 @@ private fun SettingsScreenContent(
             .padding(paddingValues = paddingValues)
             .verticalScroll(state = scrollState),
     ) {
-        SettingsItem(
+        /*SettingsItem(
             titleText = stringResource(id = R.string.auto_refresh_interval),
             descriptionText = stringResource(id = R.string.auto_refresh_interval_description),
             onClick = {},
             iconVector = Icons.Default.Timer,
         )
 
-        TodoDivider(modifier = Modifier.padding(horizontal = 16.dp))
+        TodoDivider(modifier = Modifier.padding(horizontal = 16.dp))*/
 
         SettingsItem(
             titleText = stringResource(id = R.string.log_out),

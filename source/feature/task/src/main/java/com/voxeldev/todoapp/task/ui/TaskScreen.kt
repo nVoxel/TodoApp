@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -19,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItemImportance
+import com.voxeldev.todoapp.designsystem.components.ErrorSnackbarEffect
 import com.voxeldev.todoapp.designsystem.components.TodoDivider
 import com.voxeldev.todoapp.designsystem.components.TodoTextField
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
@@ -32,6 +36,7 @@ import com.voxeldev.todoapp.task.ui.components.TaskScreenImportanceButton
 import com.voxeldev.todoapp.task.ui.components.TaskScreenTopBar
 import com.voxeldev.todoapp.task.ui.preview.TaskScreenPreviewData
 import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
+import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
 
 /**
  * @author nvoxel
@@ -46,9 +51,13 @@ fun TaskScreen(
     val deadlineTimestamp by viewModel.deadlineTimestamp.collectAsStateWithLifecycle()
     val deadlineTimestampString by viewModel.deadlineTimestampString.collectAsStateWithLifecycle()
     val saveButtonActive by viewModel.saveButtonActive.collectAsStateWithLifecycle()
+    val error by viewModel.exception.collectAsStateWithLifecycle()
+
+    val displayFullscreenError = viewModel.taskId != null && text.isBlank() // don't display after initial load
 
     BaseScreen(
         viewModel = viewModel,
+        displayFullscreenError = displayFullscreenError,
         retryCallback = viewModel::getTodoItem,
     ) {
         TaskScreen(
@@ -58,6 +67,8 @@ fun TaskScreen(
             deadlineTimestamp = deadlineTimestamp,
             deadlineTimestampString = deadlineTimestampString,
             saveButtonActive = saveButtonActive,
+            error = error?.getDisplayMessage(),
+            onSnackbarHide = viewModel::onSnackbarHide,
             onTextChanged = { updatedText -> viewModel.updateText(text = updatedText) },
             onImportanceChanged = { updatedImportance -> viewModel.updateImportance(importance = updatedImportance) },
             onDeadlineTimestampChanged = { updatedDeadlineTimestamp ->
@@ -79,6 +90,8 @@ private fun TaskScreen(
     deadlineTimestamp: Long?,
     deadlineTimestampString: String?,
     saveButtonActive: Boolean,
+    error: String?,
+    onSnackbarHide: () -> Unit,
     onTextChanged: (String) -> Unit,
     onImportanceChanged: (TodoItemImportance) -> Unit,
     onDeadlineTimestampChanged: (Long) -> Unit,
@@ -90,9 +103,16 @@ private fun TaskScreen(
     val appPalette = LocalAppPalette.current
 
     val scrollState = rememberScrollState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     var importanceDropdownVisible by rememberSaveable { mutableStateOf(false) }
     var datePickerDialogVisible by rememberSaveable { mutableStateOf(false) }
+
+    ErrorSnackbarEffect(
+        errorMessage = error,
+        snackbarHostState = snackbarHostState,
+        onHide = onSnackbarHide,
+    )
 
     Scaffold(
         topBar = {
@@ -103,6 +123,9 @@ private fun TaskScreen(
                 onSaveClicked = onSaveClicked,
                 onCloseClicked = onCloseClicked,
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         },
         containerColor = appPalette.backPrimary,
     ) { paddingValues ->
@@ -169,6 +192,8 @@ private fun TaskScreenPreview() {
             deadlineTimestamp = TaskScreenPreviewData.deadlineTimestamp,
             deadlineTimestampString = TaskScreenPreviewData.deadlineTimestampString,
             saveButtonActive = true,
+            error = null,
+            onSnackbarHide = {},
             onTextChanged = {},
             onImportanceChanged = {},
             onDeadlineTimestampChanged = {},

@@ -60,6 +60,7 @@ internal fun SwipeableListItem(
         isDeleted = isDeleted,
         isChecked = isChecked,
         changeIsChecked = { newIsChecked -> isChecked = newIsChecked },
+        changeIsDeleted = { newIsDeleted -> isDeleted = newIsDeleted },
         onDeleteClicked = onDeleteClicked,
         onCheckClicked = onCheckClicked,
     )
@@ -140,6 +141,7 @@ private fun SideEffects(
     swipeToDismissBoxState: DismissState,
     isDeleted: Boolean,
     isChecked: Boolean,
+    changeIsDeleted: (Boolean) -> Unit,
     changeIsChecked: (Boolean) -> Unit,
     onDeleteClicked: () -> Unit,
     onCheckClicked: () -> Unit,
@@ -154,6 +156,8 @@ private fun SideEffects(
         if (isDeleted) {
             delay(timeMillis = animationDelay)
             onDeleteClicked()
+            swipeToDismissBoxState.reset()
+            changeIsDeleted(false)
         }
     }
 

@@ -20,6 +20,7 @@ import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
 @Composable
 fun BaseScreen(
     viewModel: BaseViewModel,
+    displayFullscreenError: Boolean = true,
     retryCallback: () -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -27,22 +28,20 @@ fun BaseScreen(
     val error by viewModel.exception.collectAsStateWithLifecycle()
     val networkNotification by viewModel.networkNotification.collectAsStateWithLifecycle()
 
-    error?.let {
+    if (error != null && displayFullscreenError) {
         FullscreenError(
-            message = it.getDisplayMessage(),
+            message = error!!.getDisplayMessage(),
             shouldShowRetry = true,
             retryCallback = retryCallback,
         )
-    } ?: run {
-        if (loading) {
-            FullscreenLoader()
-        } else {
-            BaseScreenContent(
-                content = content,
-                networkNotification = networkNotification,
-                onNetworkNotificationClicked = viewModel::hideNetworkNotification,
-            )
-        }
+    } else if (loading) {
+        FullscreenLoader()
+    } else {
+        BaseScreenContent(
+            content = content,
+            networkNotification = networkNotification,
+            onNetworkNotificationClicked = viewModel::hideNetworkNotification,
+        )
     }
 }
 

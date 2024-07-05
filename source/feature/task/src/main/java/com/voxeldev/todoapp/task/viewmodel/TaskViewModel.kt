@@ -101,6 +101,10 @@ class TaskViewModel @AssistedInject constructor(
         }
     }
 
+    fun onSnackbarHide() {
+        _exception.update { null }
+    }
+
     fun updateText(text: String) {
         _text.update { text }
         updateSaveButton()

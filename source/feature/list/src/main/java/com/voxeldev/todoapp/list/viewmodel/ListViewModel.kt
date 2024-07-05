@@ -49,6 +49,10 @@ class ListViewModel @Inject constructor(
         getTodoItems()
     }
 
+    fun onSnackbarHide() {
+        _exception.update { null }
+    }
+
     fun getTodoItems() {
         _loading.update { true }
         _exception.update { null }

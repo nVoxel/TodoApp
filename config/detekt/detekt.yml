@@ -20,9 +20,10 @@ complexity:
     excludes: [ '**/designsystem/components/**' ]
   LongParameterList:
     constructorThreshold: 8
-    functionThreshold: 15
+    functionThreshold: 16
   NestedBlockDepth:
-    threshold: 7
+    threshold: 3
+    excludes: [ '**/designsystem/components/**' ]
   NamedArguments:
     threshold: 1
 

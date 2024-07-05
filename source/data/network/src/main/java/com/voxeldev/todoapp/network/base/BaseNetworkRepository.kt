@@ -36,38 +36,42 @@ internal abstract class BaseNetworkRepository<Model>(
     protected suspend inline fun <reified Response> doRequest(
         request: HttpStatement,
         transform: Response.() -> Model,
-    ): Result<Model> =
-        getResponse(request = request).fold(
-            onSuccess = { response ->
-                return runCatching {
-                    val body: Response = response.body() ?: return Result.failure(UnexpectedResponseException())
-                    return@runCatching body.transform()
-                }
-            },
-            onFailure = { exception -> return Result.failure(exception = exception) },
-        )
+    ): Result<Model> = getResponse(request = request).fold(
+        onSuccess = { response -> return transformBody(response, transform) },
+        onFailure = { exception -> return Result.failure(exception = exception) },
+    )
 
     private suspend fun getResponse(
         request: HttpStatement,
     ): Result<HttpResponse> {
-        networkHandler.isNetworkAvailable().let { isNetworkAvailable ->
-            if (!isNetworkAvailable) {
-                return Result.failure(NetworkNotAvailableException())
-            }
+        if (!networkHandler.isNetworkAvailable()) {
+            return Result.failure(NetworkNotAvailableException())
         }
 
         return runCatching {
             val response = request.execute()
-
-            if (response.status != HttpStatusCode.OK) {
-                return when (response.status) {
-                    HttpStatusCode.Unauthorized -> Result.failure(TokenNotFoundException())
-                    HttpStatusCode.InternalServerError -> Result.failure(ServerErrorException())
-                    else -> Result.failure(OtherNetworkException(responseCode = response.status.value))
-                }
-            }
-
+            checkResponse(response = response)
             return Result.success(response)
         }
+    }
+
+    private fun checkResponse(response: HttpResponse) {
+        if (response.status == HttpStatusCode.OK) return
+
+        val exception = when (response.status) {
+            HttpStatusCode.Unauthorized -> TokenNotFoundException()
+            HttpStatusCode.InternalServerError -> ServerErrorException()
+            else -> OtherNetworkException(responseCode = response.status.value)
+        }
+
+        throw exception
+    }
+
+    private suspend inline fun <reified Response> transformBody(
+        response: HttpResponse,
+        transform: Response.() -> Model,
+    ) = runCatching {
+        val body: Response = response.body() ?: return Result.failure<Model>(UnexpectedResponseException())
+        return@runCatching body.transform()
     }
 }

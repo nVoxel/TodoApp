@@ -31,7 +31,7 @@ class UpdateTodoItemUseCase @Inject constructor(
     ) = runCatching {
         todoItemRepository.updateItem(request = todoItemModifyRequest).fold(
             onSuccess = { onSuccessCallback() },
-            onFailure = { exception -> return Result.failure<Unit>(exception = exception) },
+            onFailure = { exception -> throw exception },
         )
     }
 }

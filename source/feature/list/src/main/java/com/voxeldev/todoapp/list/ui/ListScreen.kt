@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
@@ -30,6 +32,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItem
+import com.voxeldev.todoapp.designsystem.components.ErrorSnackbarEffect
 import com.voxeldev.todoapp.designsystem.components.TodoSmallFAB
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
@@ -41,6 +44,7 @@ import com.voxeldev.todoapp.list.ui.components.NewListItem
 import com.voxeldev.todoapp.list.ui.components.SwipeableListItem
 import com.voxeldev.todoapp.list.ui.preview.ListScreenPreviewData
 import com.voxeldev.todoapp.list.viewmodel.ListViewModel
+import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
 
 /**
  * @author nvoxel
@@ -60,15 +64,21 @@ fun ListScreen(
 
     val todoItems by viewModel.todoItems.collectAsStateWithLifecycle()
     val completedItemsCount by viewModel.completedItemsCount.collectAsStateWithLifecycle()
+    val error by viewModel.exception.collectAsStateWithLifecycle()
+
+    val displayFullscreenError = todoItems.isEmpty() // don't display after initial load
 
     BaseScreen(
         viewModel = viewModel,
         retryCallback = viewModel::getTodoItems,
+        displayFullscreenError = displayFullscreenError,
     ) {
         ListScreen(
             lazyColumnState = lazyColumnState,
             topBarScrollBehavior = topBarScrollBehavior,
             isFabVisible = isFabVisible,
+            error = error?.getDisplayMessage(),
+            onSnackbarHide = viewModel::onSnackbarHide,
             onFabVisibleChanged = { updatedIsFabVisible -> isFabVisible = updatedIsFabVisible },
             isOnlyUncompletedVisible = isOnlyUncompletedVisible,
             onUncompletedVisibilityChanged = { updatedIsOnlyUncompletedVisible ->
@@ -98,6 +108,8 @@ private fun ListScreen(
     lazyColumnState: LazyListState,
     topBarScrollBehavior: TopAppBarScrollBehavior,
     isFabVisible: Boolean,
+    error: String?,
+    onSnackbarHide: () -> Unit,
     onFabVisibleChanged: (Boolean) -> Unit,
     isOnlyUncompletedVisible: Boolean,
     onUncompletedVisibilityChanged: (Boolean) -> Unit,
@@ -121,6 +133,14 @@ private fun ListScreen(
         }
     }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    ErrorSnackbarEffect(
+        errorMessage = error,
+        snackbarHostState = snackbarHostState,
+        onHide = onSnackbarHide,
+    )
+
     Scaffold(
         modifier = Modifier
             .nestedScroll(connection = topBarScrollBehavior.nestedScrollConnection)
@@ -140,6 +160,7 @@ private fun ListScreen(
                 onClick = { onItemClicked(null) },
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         containerColor = appPalette.backPrimary,
     ) { paddingValues ->
         LazyColumn(
@@ -194,6 +215,8 @@ private fun ListScreenPreview() {
             lazyColumnState = rememberLazyListState(),
             topBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState()),
             isFabVisible = true,
+            error = null,
+            onSnackbarHide = {},
             onFabVisibleChanged = {},
             isOnlyUncompletedVisible = false,
             onUncompletedVisibilityChanged = {},
