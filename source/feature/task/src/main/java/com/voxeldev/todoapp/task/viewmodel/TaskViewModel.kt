@@ -14,7 +14,6 @@ import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +27,6 @@ import java.util.UUID
  * Stores [TaskScreen] current state, provides screen-related methods.
  * @author nvoxel
  */
-@HiltViewModel(assistedFactory = TaskViewModel.Factory::class)
 class TaskViewModel @AssistedInject constructor(
     @Assisted val taskId: String?,
     private val createTodoItemUseCase: CreateTodoItemUseCase,

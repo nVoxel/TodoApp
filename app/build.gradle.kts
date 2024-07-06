@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
 }
 
 android {
@@ -41,10 +40,6 @@ android {
     buildFeatures {
         compose = true
     }
-
-    hilt {
-        enableAggregatingTask = true
-    }
 }
 
 dependencies {
@@ -64,13 +59,10 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.material.icons.extended)
 
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)
 
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.work)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
 
     implementation(libs.yandex.authsdk)
 
@@ -79,6 +71,7 @@ dependencies {
     implementation(projects.source.core.designsystem)
     implementation(projects.source.core.domain)
     implementation(projects.source.core.utils)
+    implementation(projects.source.data.local)
     implementation(projects.source.feature.auth)
     implementation(projects.source.feature.list)
     implementation(projects.source.feature.settings)

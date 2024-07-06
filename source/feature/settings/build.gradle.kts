@@ -55,10 +55,8 @@ dependencies {
 
     implementation(libs.navigation.compose)
 
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.work)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
 
     debugImplementation(libs.androidx.ui.tooling)
 

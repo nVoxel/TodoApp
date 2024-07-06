@@ -11,7 +11,6 @@ import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.extensions.formatTimestamp
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +24,6 @@ import javax.inject.Inject
  * Stores [ListScreen] current state, provides methods to change [TodoItem].
  * @author nvoxel
  */
-@HiltViewModel
 class ListViewModel @Inject constructor(
     private val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase,
     private val updateTodoItemUseCase: UpdateTodoItemUseCase,

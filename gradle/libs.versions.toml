@@ -1,15 +1,12 @@
 [versions]
 activity-compose = "1.9.0"
-androidx-hilt = "1.2.0"
 androidx-junit = "1.1.5"
 androidx-work = "2.9.0"
 compose-bom = "2024.06.00"
 core-ktx = "1.13.1"
+dagger = "2.51.1"
 detekt = "1.23.6"
 espresso-core = "3.5.1"
-hilt = "2.51.1"
-hilt-navigation-compose = "1.2.0"
-hilt-work = "1.2.0"
 junit = "4.13.2"
 kotlinx-coroutines = "1.8.0"
 kotlinx-serialization = "1.6.3"
@@ -32,8 +29,6 @@ android-compileSdk = "34"
 
 version-name = "1.0"
 version-code = "1"
-appcompat = "1.7.0"
-material = "1.12.0"
 
 [libraries]
 
@@ -56,11 +51,9 @@ androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx"
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
-# Hilt
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
-androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidx-hilt" }
-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-work" }
+# Dagger
+dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
+dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
 
 # KotlinX
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -74,7 +67,6 @@ ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.r
 ktor-client-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 # Navigation
-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
 
 # Yandex
@@ -88,8 +80,6 @@ detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-form
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 
@@ -104,9 +94,6 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 
 # Compose
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
-# Hilt
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 # Analysis
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

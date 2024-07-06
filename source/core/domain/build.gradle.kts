@@ -33,8 +33,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
 
     implementation(projects.source.core.api)
     implementation(projects.source.core.utils)

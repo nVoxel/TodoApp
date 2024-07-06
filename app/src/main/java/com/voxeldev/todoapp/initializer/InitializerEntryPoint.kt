@@ -1,16 +1,10 @@
 package com.voxeldev.todoapp.initializer
 
-import android.content.Context
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
-
 /**
  * Initializes Hilt graph.
  * @author nvoxel
  */
-@EntryPoint
+/*@EntryPoint
 @InstallIn(SingletonComponent::class)
 internal interface InitializerEntryPoint {
     fun inject(workManagerInitializer: WorkManagerInitializer)
@@ -24,4 +18,4 @@ internal interface InitializerEntryPoint {
             )
         }
     }
-}
+}*/

@@ -4,8 +4,6 @@ import com.voxeldev.todoapp.api.repository.AuthTokenRepository
 import com.voxeldev.todoapp.utils.providers.StringResourceProvider
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
@@ -23,7 +21,6 @@ import javax.inject.Singleton
  * @author nvoxel
  */
 @Module
-@InstallIn(SingletonComponent::class)
 class NetworkModule {
 
     @OptIn(ExperimentalSerializationApi::class)

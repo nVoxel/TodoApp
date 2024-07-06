@@ -18,7 +18,6 @@ import com.yandex.authsdk.YandexAuthResult
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +28,6 @@ import kotlinx.coroutines.launch
  * Stores [AuthScreen] current state and manages authentication state.
  * @author nvoxel
  */
-@HiltViewModel(assistedFactory = AuthViewModel.Factory::class)
 class AuthViewModel @AssistedInject constructor(
     @Assisted val yandexAuthResultFlow: StateFlow<YandexAuthResult?>,
     private val setAuthTokenUseCase: SetAuthTokenUseCase,

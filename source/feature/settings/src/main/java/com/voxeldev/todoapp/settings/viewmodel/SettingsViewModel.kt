@@ -6,7 +6,6 @@ import com.voxeldev.todoapp.settings.ui.SettingsScreen
 import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -14,7 +13,6 @@ import javax.inject.Inject
  * Stores [SettingsScreen] current state, provides screen-related methods.
  * @author nvoxel
  */
-@HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val clearAuthTokenUseCase: ClearAuthTokenUseCase,
     networkObserver: NetworkObserver,
