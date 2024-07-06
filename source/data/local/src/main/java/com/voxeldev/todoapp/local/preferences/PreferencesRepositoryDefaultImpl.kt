@@ -3,7 +3,6 @@ package com.voxeldev.todoapp.local.preferences
 import android.content.Context
 import android.provider.Settings.Secure
 import com.voxeldev.todoapp.api.repository.PreferencesRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 /**
@@ -11,7 +10,7 @@ import javax.inject.Inject
  * @author nvoxel
  */
 internal class PreferencesRepositoryDefaultImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val context: Context,
 ) : PreferencesRepository {
 
     private val sharedPreferences = context.getSharedPreferences(

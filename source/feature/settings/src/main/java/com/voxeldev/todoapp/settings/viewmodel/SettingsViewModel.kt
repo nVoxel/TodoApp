@@ -7,13 +7,12 @@ import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
 /**
  * Stores [SettingsScreen] current state, provides screen-related methods.
  * @author nvoxel
  */
-class SettingsViewModel @Inject constructor(
+class SettingsViewModel(
     private val clearAuthTokenUseCase: ClearAuthTokenUseCase,
     networkObserver: NetworkObserver,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,

@@ -1,4 +1,4 @@
-package com.voxeldev.todoapp.ui.navigation
+package com.voxeldev.todoapp.ui.viewmodel.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,13 +9,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
 /**
  * Used to store current authentication state in app.
  * @author nvoxel
  */
-internal class NavigationViewModel @Inject constructor(
+internal class NavigationViewModel(
     private val getAuthTokenUseCase: GetAuthTokenUseCase,
 ) : ViewModel() {
 

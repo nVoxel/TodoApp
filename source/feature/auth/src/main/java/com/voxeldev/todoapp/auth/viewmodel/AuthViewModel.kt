@@ -15,9 +15,6 @@ import com.voxeldev.todoapp.utils.exceptions.TokenNotFoundException
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import com.yandex.authsdk.YandexAuthResult
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,8 +25,8 @@ import kotlinx.coroutines.launch
  * Stores [AuthScreen] current state and manages authentication state.
  * @author nvoxel
  */
-class AuthViewModel @AssistedInject constructor(
-    @Assisted val yandexAuthResultFlow: StateFlow<YandexAuthResult?>,
+class AuthViewModel(
+    private val yandexAuthResultFlow: StateFlow<YandexAuthResult?>,
     private val setAuthTokenUseCase: SetAuthTokenUseCase,
     private val clearAuthTokenUseCase: ClearAuthTokenUseCase,
     private val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase, // there is no other way to check auth
@@ -42,11 +39,6 @@ class AuthViewModel @AssistedInject constructor(
 
     private val _state: MutableStateFlow<AuthScreenState> = MutableStateFlow(value = AuthScreenState.ChooseMethod())
     val state: StateFlow<AuthScreenState> = _state.asStateFlow()
-
-    @AssistedFactory
-    interface Factory {
-        fun create(yandexAuthResultFlow: StateFlow<YandexAuthResult?>): AuthViewModel
-    }
 
     init {
         scope.launch {

@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
 

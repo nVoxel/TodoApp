@@ -18,13 +18,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
-import javax.inject.Inject
 
 /**
  * Stores [ListScreen] current state, provides methods to change [TodoItem].
  * @author nvoxel
  */
-class ListViewModel @Inject constructor(
+class ListViewModel(
     private val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase,
     private val updateTodoItemUseCase: UpdateTodoItemUseCase,
     private val deleteTodoItemUseCase: DeleteTodoItemUseCase,

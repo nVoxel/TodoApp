@@ -3,7 +3,6 @@ package com.voxeldev.todoapp.settings.work
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -26,7 +25,6 @@ import java.util.concurrent.TimeUnit
  * WorkManager Worker that periodically refreshes task list.
  * @author nvoxel
  */
-@HiltWorker
 class AutoRefreshWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParameters: WorkerParameters,

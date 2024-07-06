@@ -7,7 +7,6 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +21,7 @@ import javax.inject.Singleton
 @SuppressLint("MissingPermission")
 @Singleton
 class NetworkObserver @Inject constructor(
-    @ApplicationContext context: Context,
+    context: Context,
     networkHandler: NetworkHandler,
 ) {
 

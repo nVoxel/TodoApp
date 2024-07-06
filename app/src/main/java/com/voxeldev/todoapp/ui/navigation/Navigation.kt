@@ -5,11 +5,14 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
+import com.voxeldev.todoapp.di.ViewModelProviders
 import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
+import com.voxeldev.todoapp.ui.viewmodel.navigation.NavigationViewModel
 import com.yandex.authsdk.YandexAuthResult
 import kotlinx.coroutines.flow.StateFlow
 
@@ -18,18 +21,22 @@ import kotlinx.coroutines.flow.StateFlow
  */
 @Composable
 internal fun MainNavHost(
+    viewModelProviders: ViewModelProviders,
     navHostController: NavHostController = rememberNavController(),
     authResultFlow: StateFlow<YandexAuthResult?>,
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
 ) {
-    val navigationViewModel: NavigationViewModel = hiltViewModel()
+    val navigationViewModel: NavigationViewModel = viewModel(
+        factory = viewModelProviders.navigationViewModelProvider,
+    )
     val authTokenState by navigationViewModel.authTokenState.collectAsStateWithLifecycle()
 
     if (authTokenState is AuthTokenState.Loading) {
         FullscreenLoader()
     } else {
         MainNavHost(
+            viewModelProviders = viewModelProviders,
             navHostController = navHostController,
             startDestination = if (authTokenState is AuthTokenState.Found) NavigationScreen.List else NavigationScreen.Auth,
             authResultFlow = authResultFlow,
@@ -41,6 +48,7 @@ internal fun MainNavHost(
 
 @Composable
 private fun MainNavHost(
+    viewModelProviders: ViewModelProviders,
     navHostController: NavHostController,
     startDestination: NavigationScreen,
     authResultFlow: StateFlow<YandexAuthResult?>,
@@ -53,13 +61,28 @@ private fun MainNavHost(
         enterTransition = { enterTransition(navHostController = navHostController) },
         exitTransition = { exitTransition(navHostController = navHostController) },
     ) {
-        authScreenComposable(navHostController, onRequestOAuth, onAuthSuccess, authResultFlow)
+        authScreenComposable(
+            authViewModelProviderFactory = viewModelProviders.authViewModelProviderFactory,
+            navHostController = navHostController,
+            onRequestOAuth = onRequestOAuth,
+            onAuthSuccess = onAuthSuccess,
+            authResultFlow = authResultFlow,
+        )
 
-        listScreenComposable(navHostController)
+        listScreenComposable(
+            listViewModelProvider = viewModelProviders.listViewModelProvider,
+            navHostController = navHostController,
+        )
 
-        taskScreenComposable(navHostController)
+        taskScreenComposable(
+            taskViewModelProviderFactory = viewModelProviders.taskViewModelProviderFactory,
+            navHostController = navHostController,
+        )
 
-        settingsScreenComposable(navHostController)
+        settingsScreenComposable(
+            settingsViewModelProvider = viewModelProviders.settingsViewModelProvider,
+            navHostController = navHostController,
+        )
     }
 }
 

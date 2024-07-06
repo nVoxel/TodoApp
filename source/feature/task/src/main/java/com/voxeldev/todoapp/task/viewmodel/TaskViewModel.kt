@@ -11,9 +11,6 @@ import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.extensions.formatTimestamp
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,8 +24,8 @@ import java.util.UUID
  * Stores [TaskScreen] current state, provides screen-related methods.
  * @author nvoxel
  */
-class TaskViewModel @AssistedInject constructor(
-    @Assisted val taskId: String?,
+class TaskViewModel(
+    val taskId: String?,
     private val createTodoItemUseCase: CreateTodoItemUseCase,
     private val deleteTodoItemUseCase: DeleteTodoItemUseCase,
     private val getSingleTodoItemUseCase: GetSingleTodoItemUseCase,
@@ -58,11 +55,6 @@ class TaskViewModel @AssistedInject constructor(
     private var loadedTodoItem: TodoItem? = null
 
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
-
-    @AssistedFactory
-    interface Factory {
-        fun create(taskId: String?): TaskViewModel
-    }
 
     init {
         getTodoItem()
