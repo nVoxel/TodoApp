@@ -25,7 +25,7 @@ import java.util.UUID
  * @author nvoxel
  */
 class TaskViewModel(
-    val taskId: String?,
+    private val taskId: String?,
     private val createTodoItemUseCase: CreateTodoItemUseCase,
     private val deleteTodoItemUseCase: DeleteTodoItemUseCase,
     private val getSingleTodoItemUseCase: GetSingleTodoItemUseCase,

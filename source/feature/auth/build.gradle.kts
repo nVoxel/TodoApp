@@ -65,6 +65,7 @@ dependencies {
     implementation(projects.source.core.designsystem)
     implementation(projects.source.core.domain)
     implementation(projects.source.core.utils)
+    implementation(projects.source.data.local)
     implementation(projects.source.data.network)
 
     testImplementation(libs.junit)

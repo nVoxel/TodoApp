@@ -14,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
 import com.voxeldev.todoapp.designsystem.components.clipShadow
 import com.voxeldev.todoapp.designsystem.extensions.calculateTopBarElevation
@@ -22,6 +23,7 @@ import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import com.voxeldev.todoapp.settings.R
+import com.voxeldev.todoapp.settings.di.SettingsScreenContainer
 import com.voxeldev.todoapp.settings.ui.components.SettingsItem
 import com.voxeldev.todoapp.settings.viewmodel.SettingsViewModel
 
@@ -30,7 +32,10 @@ import com.voxeldev.todoapp.settings.viewmodel.SettingsViewModel
  */
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel,
+    settingsScreenContainer: SettingsScreenContainer,
+    viewModel: SettingsViewModel = viewModel(
+        factory = settingsScreenContainer.settingsViewModelProvider,
+    ),
     onClose: () -> Unit,
     onLoggedOut: () -> Unit,
 ) {

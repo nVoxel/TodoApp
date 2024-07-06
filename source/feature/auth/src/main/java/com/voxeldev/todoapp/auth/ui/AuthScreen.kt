@@ -28,7 +28,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.voxeldev.todoapp.auth.R
+import com.voxeldev.todoapp.auth.di.AuthScreenContainer
 import com.voxeldev.todoapp.auth.ui.components.ChooseMethodCard
 import com.voxeldev.todoapp.auth.ui.components.ManageSystemBars
 import com.voxeldev.todoapp.auth.ui.components.PasswordMethodCard
@@ -37,6 +39,8 @@ import com.voxeldev.todoapp.auth.viewmodel.AuthViewModel
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
+import com.yandex.authsdk.YandexAuthResult
+import kotlinx.coroutines.flow.StateFlow
 
 private const val SLIDE_DURATION_MILLIS = 400
 private const val FADE_DURATION_MILLIS = 150
@@ -46,9 +50,15 @@ private const val FADE_DURATION_MILLIS = 150
  */
 @Composable
 fun AuthScreen(
+    authResultFlow: StateFlow<YandexAuthResult?>,
+    authScreenContainer: AuthScreenContainer,
+    viewModel: AuthViewModel = viewModel(
+        factory = authScreenContainer.authViewModelProvider.create(
+            yandexAuthResultFlow = authResultFlow,
+        ),
+    ),
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
-    viewModel: AuthViewModel,
 ) {
     val authScreenState by viewModel.state.collectAsStateWithLifecycle()
     val showLoading by viewModel.loading.collectAsStateWithLifecycle()

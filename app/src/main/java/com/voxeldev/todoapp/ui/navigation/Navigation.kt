@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
-import com.voxeldev.todoapp.di.ViewModelProviders
+import com.voxeldev.todoapp.di.NavigationContainer
 import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
 import com.voxeldev.todoapp.ui.viewmodel.navigation.NavigationViewModel
 import com.yandex.authsdk.YandexAuthResult
@@ -21,22 +21,21 @@ import kotlinx.coroutines.flow.StateFlow
  */
 @Composable
 internal fun MainNavHost(
-    viewModelProviders: ViewModelProviders,
+    navigationContainer: NavigationContainer,
+    navigationViewModel: NavigationViewModel = viewModel(
+        factory = navigationContainer.navigationViewModelProvider,
+    ),
     navHostController: NavHostController = rememberNavController(),
     authResultFlow: StateFlow<YandexAuthResult?>,
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
 ) {
-    val navigationViewModel: NavigationViewModel = viewModel(
-        factory = viewModelProviders.navigationViewModelProvider,
-    )
     val authTokenState by navigationViewModel.authTokenState.collectAsStateWithLifecycle()
 
     if (authTokenState is AuthTokenState.Loading) {
         FullscreenLoader()
     } else {
         MainNavHost(
-            viewModelProviders = viewModelProviders,
             navHostController = navHostController,
             startDestination = if (authTokenState is AuthTokenState.Found) NavigationScreen.List else NavigationScreen.Auth,
             authResultFlow = authResultFlow,
@@ -48,7 +47,6 @@ internal fun MainNavHost(
 
 @Composable
 private fun MainNavHost(
-    viewModelProviders: ViewModelProviders,
     navHostController: NavHostController,
     startDestination: NavigationScreen,
     authResultFlow: StateFlow<YandexAuthResult?>,
@@ -62,27 +60,17 @@ private fun MainNavHost(
         exitTransition = { exitTransition(navHostController = navHostController) },
     ) {
         authScreenComposable(
-            authViewModelProviderFactory = viewModelProviders.authViewModelProviderFactory,
             navHostController = navHostController,
             onRequestOAuth = onRequestOAuth,
             onAuthSuccess = onAuthSuccess,
             authResultFlow = authResultFlow,
         )
 
-        listScreenComposable(
-            listViewModelProvider = viewModelProviders.listViewModelProvider,
-            navHostController = navHostController,
-        )
+        listScreenComposable(navHostController = navHostController)
 
-        taskScreenComposable(
-            taskViewModelProviderFactory = viewModelProviders.taskViewModelProviderFactory,
-            navHostController = navHostController,
-        )
+        taskScreenComposable(navHostController = navHostController)
 
-        settingsScreenComposable(
-            settingsViewModelProvider = viewModelProviders.settingsViewModelProvider,
-            navHostController = navHostController,
-        )
+        settingsScreenComposable(navHostController = navHostController)
     }
 }
 

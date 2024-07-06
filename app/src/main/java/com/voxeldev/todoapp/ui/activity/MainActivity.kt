@@ -8,14 +8,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
-import com.voxeldev.todoapp.di.DaggerMainActivityComponent
-import com.voxeldev.todoapp.di.ViewModelProviders
 import com.voxeldev.todoapp.ui.navigation.MainNavHost
+import com.voxeldev.todoapp.ui.navigation.rememberNavigationContainer
 import com.voxeldev.todoapp.ui.viewmodel.MainActivityViewModel
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdk
-import javax.inject.Inject
 
 /**
  * Main app activity.
@@ -23,18 +21,12 @@ import javax.inject.Inject
  */
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var viewModelProviders: ViewModelProviders
-
     private val viewModel: MainActivityViewModel by viewModels()
 
     private val loginOptions = YandexAuthLoginOptions()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val component = DaggerMainActivityComponent.factory().create(applicationContext = applicationContext)
-        component.inject(this)
 
         /*setupAutoRefreshWork(
             getAutoRefreshIntervalUseCase = getAutoRefreshIntervalUseCase,
@@ -53,7 +45,7 @@ class MainActivity : ComponentActivity() {
 
             TodoAppTheme {
                 MainNavHost(
-                    viewModelProviders = viewModelProviders,
+                    navigationContainer = rememberNavigationContainer(),
                     authResultFlow = viewModel.authResultFlow,
                     onRequestOAuth = { launcher.launch(input = loginOptions) },
                     onAuthSuccess = viewModel::onAuthSuccess,

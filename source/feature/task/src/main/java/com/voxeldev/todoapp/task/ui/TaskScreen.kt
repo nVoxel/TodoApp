@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.voxeldev.todoapp.api.model.TodoItemImportance
 import com.voxeldev.todoapp.designsystem.components.ErrorSnackbarEffect
 import com.voxeldev.todoapp.designsystem.components.TodoDivider
@@ -30,6 +31,7 @@ import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import com.voxeldev.todoapp.task.R
+import com.voxeldev.todoapp.task.di.TaskScreenContainer
 import com.voxeldev.todoapp.task.ui.components.TaskScreenDeadlineButton
 import com.voxeldev.todoapp.task.ui.components.TaskScreenDeleteButton
 import com.voxeldev.todoapp.task.ui.components.TaskScreenImportanceButton
@@ -43,7 +45,11 @@ import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
  */
 @Composable
 fun TaskScreen(
-    viewModel: TaskViewModel,
+    taskId: String?,
+    taskScreenContainer: TaskScreenContainer,
+    viewModel: TaskViewModel = viewModel(
+        factory = taskScreenContainer.taskViewModelProvider.create(taskId = taskId),
+    ),
     onClose: () -> Unit,
 ) {
     val text by viewModel.text.collectAsStateWithLifecycle()
@@ -53,7 +59,7 @@ fun TaskScreen(
     val saveButtonActive by viewModel.saveButtonActive.collectAsStateWithLifecycle()
     val error by viewModel.exception.collectAsStateWithLifecycle()
 
-    val displayFullscreenError = viewModel.taskId != null && text.isBlank() // don't display after initial load
+    val displayFullscreenError = taskId != null && text.isBlank() // don't display after initial load
 
     BaseScreen(
         viewModel = viewModel,
@@ -61,7 +67,7 @@ fun TaskScreen(
         retryCallback = viewModel::getTodoItem,
     ) {
         TaskScreen(
-            editTask = viewModel.taskId != null,
+            editTask = taskId != null,
             text = text,
             importance = importance,
             deadlineTimestamp = deadlineTimestamp,
