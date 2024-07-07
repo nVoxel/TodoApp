@@ -1,10 +1,9 @@
 package com.voxeldev.todoapp.di.dependencies
 
 import android.content.Context
+import com.voxeldev.todoapp.api.repository.AuthTokenRepository
+import com.voxeldev.todoapp.api.repository.TodoItemListRepository
 import com.voxeldev.todoapp.auth.di.AuthFeatureDependencies
-import com.voxeldev.todoapp.domain.usecase.todoitem.GetAllTodoItemsFlowUseCase
-import com.voxeldev.todoapp.domain.usecase.token.ClearAuthTokenUseCase
-import com.voxeldev.todoapp.domain.usecase.token.SetAuthTokenUseCase
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import dagger.Module
@@ -19,16 +18,14 @@ class AuthFeatureDependenciesModule {
     @Provides
     fun provideAuthFeatureDependencies(
         applicationContext: Context,
-        setAuthTokenUseCase: SetAuthTokenUseCase,
-        clearAuthTokenUseCase: ClearAuthTokenUseCase,
-        getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase,
+        authTokenRepository: AuthTokenRepository,
+        todoItemListRepository: TodoItemListRepository,
         networkObserver: NetworkObserver,
         coroutineDispatcherProvider: CoroutineDispatcherProvider,
     ): AuthFeatureDependencies = AuthFeatureDependenciesImpl(
         applicationContext = applicationContext,
-        setAuthTokenUseCase = setAuthTokenUseCase,
-        clearAuthTokenUseCase = clearAuthTokenUseCase,
-        getAllTodoItemsFlowUseCase = getAllTodoItemsFlowUseCase,
+        authTokenRepository = authTokenRepository,
+        todoItemListRepository = todoItemListRepository,
         networkObserver = networkObserver,
         coroutineDispatcherProvider = coroutineDispatcherProvider,
     )
@@ -36,9 +33,9 @@ class AuthFeatureDependenciesModule {
 
 internal class AuthFeatureDependenciesImpl(
     override val applicationContext: Context,
-    override val setAuthTokenUseCase: SetAuthTokenUseCase,
-    override val clearAuthTokenUseCase: ClearAuthTokenUseCase,
-    override val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase,
+    override val authTokenRepository: AuthTokenRepository,
+    override val todoItemListRepository: TodoItemListRepository,
     override val networkObserver: NetworkObserver,
     override val coroutineDispatcherProvider: CoroutineDispatcherProvider,
-) : AuthFeatureDependencies
+
+    ) : AuthFeatureDependencies

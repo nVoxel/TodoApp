@@ -1,10 +1,9 @@
 package com.voxeldev.todoapp.task.di
 
 import android.content.Context
-import com.voxeldev.todoapp.domain.usecase.todoitem.CreateTodoItemUseCase
-import com.voxeldev.todoapp.domain.usecase.todoitem.DeleteTodoItemUseCase
-import com.voxeldev.todoapp.domain.usecase.todoitem.GetSingleTodoItemUseCase
-import com.voxeldev.todoapp.domain.usecase.todoitem.UpdateTodoItemUseCase
+import com.voxeldev.todoapp.api.repository.PreferencesRepository
+import com.voxeldev.todoapp.api.repository.TodoItemListRepository
+import com.voxeldev.todoapp.api.repository.TodoItemRepository
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 
@@ -15,10 +14,9 @@ interface TaskFeatureDependencies {
 
     val applicationContext: Context
 
-    val createTodoItemUseCase: CreateTodoItemUseCase
-    val deleteTodoItemUseCase: DeleteTodoItemUseCase
-    val getSingleTodoItemUseCase: GetSingleTodoItemUseCase
-    val updateTodoItemUseCase: UpdateTodoItemUseCase
+    val todoItemListRepository: TodoItemListRepository
+    val todoItemRepository: TodoItemRepository
+    val preferencesRepository: PreferencesRepository
     val networkObserver: NetworkObserver
     val coroutineDispatcherProvider: CoroutineDispatcherProvider
 }

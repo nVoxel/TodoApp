@@ -1,7 +1,7 @@
 package com.voxeldev.todoapp.di.dependencies
 
 import android.content.Context
-import com.voxeldev.todoapp.domain.usecase.token.ClearAuthTokenUseCase
+import com.voxeldev.todoapp.api.repository.AuthTokenRepository
 import com.voxeldev.todoapp.settings.di.SettingsFeatureDependencies
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
@@ -17,12 +17,12 @@ class SettingsFeatureDependenciesModule {
     @Provides
     fun provideSettingsFeatureDependencies(
         applicationContext: Context,
-        clearAuthTokenUseCase: ClearAuthTokenUseCase,
+        authTokenRepository: AuthTokenRepository,
         networkObserver: NetworkObserver,
         coroutineDispatcherProvider: CoroutineDispatcherProvider,
     ): SettingsFeatureDependencies = SettingsFeatureDependenciesImpl(
         applicationContext = applicationContext,
-        clearAuthTokenUseCase = clearAuthTokenUseCase,
+        authTokenRepository = authTokenRepository,
         networkObserver = networkObserver,
         coroutineDispatcherProvider = coroutineDispatcherProvider,
     )
@@ -30,7 +30,7 @@ class SettingsFeatureDependenciesModule {
 
 internal class SettingsFeatureDependenciesImpl(
     override val applicationContext: Context,
-    override val clearAuthTokenUseCase: ClearAuthTokenUseCase,
+    override val authTokenRepository: AuthTokenRepository,
     override val networkObserver: NetworkObserver,
     override val coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : SettingsFeatureDependencies
