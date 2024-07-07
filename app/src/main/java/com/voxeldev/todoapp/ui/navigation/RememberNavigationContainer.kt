@@ -3,8 +3,8 @@ package com.voxeldev.todoapp.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.voxeldev.todoapp.di.DaggerNavigationComponent
-import com.voxeldev.todoapp.di.NavigationContainer
+import com.voxeldev.todoapp.di.navigation.DaggerNavigationComponent
+import com.voxeldev.todoapp.di.navigation.NavigationContainer
 
 /**
  * @author nvoxel

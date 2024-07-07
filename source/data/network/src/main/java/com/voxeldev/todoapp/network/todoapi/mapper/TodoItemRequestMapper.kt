@@ -6,13 +6,11 @@ import com.voxeldev.todoapp.network.todoapi.datasource.TodoItemData
 import com.voxeldev.todoapp.network.todoapi.datasource.request.TodoSingleRequest
 import com.voxeldev.todoapp.network.todoapi.mapper.converters.toRequest
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Maps [TodoItemModifyRequest] model to [TodoSingleRequest] request.
  * @author nvoxel
  */
-@Singleton
 internal class TodoItemRequestMapper @Inject constructor() : RequestMapper<TodoItemModifyRequest, TodoSingleRequest> {
 
     override fun toRequest(model: TodoItemModifyRequest): TodoSingleRequest =

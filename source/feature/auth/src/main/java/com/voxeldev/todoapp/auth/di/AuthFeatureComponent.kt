@@ -1,24 +1,22 @@
 package com.voxeldev.todoapp.auth.di
 
-import android.content.Context
-import com.voxeldev.todoapp.local.di.LocalModule
-import com.voxeldev.todoapp.network.di.RepositoryModule
-import com.voxeldev.todoapp.utils.di.UtilsModule
-import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
+import javax.inject.Scope
 
 /**
  * @author nvoxel
  */
-@Component(modules = [UtilsModule::class, LocalModule::class, RepositoryModule::class])
-@Singleton
+@Component(dependencies = [AuthFeatureDependencies::class])
+@AuthFeatureScope
 interface AuthFeatureComponent {
 
     fun inject(authScreenContainer: AuthScreenContainer)
 
     @Component.Factory
     interface AuthFeatureComponentFactory {
-        fun create(@BindsInstance applicationContext: Context): AuthFeatureComponent
+        fun create(dependencies: AuthFeatureDependencies): AuthFeatureComponent
     }
 }
+
+@Scope
+annotation class AuthFeatureScope

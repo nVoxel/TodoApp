@@ -7,22 +7,22 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import com.voxeldev.todoapp.utils.di.scopes.AppScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Observes network availability changes.
  * @author nvoxel
  */
+@AppScope
 @SuppressLint("MissingPermission")
-@Singleton
 class NetworkObserver @Inject constructor(
     context: Context,
-    networkHandler: NetworkHandler,
+    private val networkHandler: NetworkHandler,
 ) {
 
     private val _networkAvailability: MutableStateFlow<Boolean> = MutableStateFlow(networkHandler.isNetworkAvailable())
@@ -42,14 +42,14 @@ class NetworkObserver @Inject constructor(
         connectivityManager.registerNetworkCallback(
             networkRequest,
             object : NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                _networkAvailability.update { true }
-            }
+                override fun onAvailable(network: Network) {
+                    _networkAvailability.update { networkHandler.isNetworkAvailable() } // fix false positives
+                }
 
-            override fun onLost(network: Network) {
-                _networkAvailability.update { false }
-            }
-        },
+                override fun onLost(network: Network) {
+                    _networkAvailability.update { networkHandler.isNetworkAvailable() } // fix false positives
+                }
+            },
         )
     }
 }

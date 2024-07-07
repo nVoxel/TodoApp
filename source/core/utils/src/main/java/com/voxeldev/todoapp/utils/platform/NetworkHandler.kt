@@ -3,14 +3,14 @@ package com.voxeldev.todoapp.utils.platform
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.voxeldev.todoapp.utils.di.scopes.AppScope
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Returns whether a network connection is available or not.
  * @author nvoxel
  */
-@Singleton
+@AppScope
 class NetworkHandler @Inject constructor(
     private val context: Context,
 ) {

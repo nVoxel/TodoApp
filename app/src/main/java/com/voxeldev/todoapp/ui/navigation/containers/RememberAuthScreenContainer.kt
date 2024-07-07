@@ -1,8 +1,9 @@
-package com.voxeldev.todoapp.auth.ui.navigation
+package com.voxeldev.todoapp.ui.navigation.containers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.voxeldev.todoapp.TodoApp
 import com.voxeldev.todoapp.auth.di.AuthScreenContainer
 import com.voxeldev.todoapp.auth.di.DaggerAuthFeatureComponent
 
@@ -11,11 +12,11 @@ import com.voxeldev.todoapp.auth.di.DaggerAuthFeatureComponent
  */
 @Composable
 fun rememberAuthScreenContainer(): AuthScreenContainer {
-    val applicationContext = LocalContext.current.applicationContext
+    val application = LocalContext.current.applicationContext as TodoApp
     return remember {
         AuthScreenContainer().also { container ->
             DaggerAuthFeatureComponent.factory()
-                .create(applicationContext = applicationContext)
+                .create(dependencies = application.authFeatureDependencies)
                 .inject(authScreenContainer = container)
         }
     }

@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
-import com.voxeldev.todoapp.di.NavigationContainer
+import com.voxeldev.todoapp.di.navigation.NavigationContainer
 import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
 import com.voxeldev.todoapp.ui.viewmodel.navigation.NavigationViewModel
 import com.yandex.authsdk.YandexAuthResult

@@ -14,7 +14,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import javax.inject.Singleton
 
 /**
  * Remote data module.
@@ -30,7 +29,6 @@ class NetworkModule {
     }
 
     @Provides
-    @Singleton
     fun provideHttpClient(
         stringResourceProvider: StringResourceProvider,
         authTokenRepository: AuthTokenRepository,

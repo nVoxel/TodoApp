@@ -6,13 +6,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.voxeldev.todoapp.auth.ui.AuthScreen
-import com.voxeldev.todoapp.auth.ui.navigation.rememberAuthScreenContainer
 import com.voxeldev.todoapp.list.ui.ListScreen
-import com.voxeldev.todoapp.list.ui.navigation.rememberListScreenContainer
 import com.voxeldev.todoapp.settings.ui.SettingsScreen
-import com.voxeldev.todoapp.settings.ui.navigation.rememberSettingsScreenContainer
 import com.voxeldev.todoapp.task.ui.TaskScreen
-import com.voxeldev.todoapp.task.ui.navigation.rememberTaskScreenContainer
+import com.voxeldev.todoapp.ui.navigation.containers.rememberAuthScreenContainer
+import com.voxeldev.todoapp.ui.navigation.containers.rememberListScreenContainer
+import com.voxeldev.todoapp.ui.navigation.containers.rememberSettingsScreenContainer
+import com.voxeldev.todoapp.ui.navigation.containers.rememberTaskScreenContainer
 import com.yandex.authsdk.YandexAuthResult
 import kotlinx.coroutines.flow.StateFlow
 

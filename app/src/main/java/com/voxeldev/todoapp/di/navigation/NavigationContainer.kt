@@ -1,4 +1,4 @@
-package com.voxeldev.todoapp.di
+package com.voxeldev.todoapp.di.navigation
 
 import com.voxeldev.todoapp.ui.viewmodel.navigation.NavigationViewModelProvider
 import javax.inject.Inject

@@ -8,7 +8,6 @@ import com.voxeldev.todoapp.utils.providers.StringResourceProviderContextImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 /**
  * Utils module that stores auxiliary classes.
@@ -18,7 +17,6 @@ import javax.inject.Singleton
 abstract class UtilsModule {
 
     @Binds
-    @Singleton
     abstract fun bindCoroutineDispatcherProvider(
         coroutineDispatcherProviderDefaultImpl: CoroutineDispatcherProviderDefaultImpl,
     ): CoroutineDispatcherProvider
@@ -27,7 +25,6 @@ abstract class UtilsModule {
     class Provide {
 
         @Provides
-        @Singleton
         fun provideStringResourceProvider(context: Context): StringResourceProvider =
             StringResourceProviderContextImpl(context = context)
     }

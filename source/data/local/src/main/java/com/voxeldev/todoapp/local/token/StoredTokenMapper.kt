@@ -4,13 +4,11 @@ import com.voxeldev.todoapp.api.model.AuthToken
 import com.voxeldev.todoapp.api.model.AuthTokenType
 import com.voxeldev.todoapp.utils.exceptions.CorruptedTokenException
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Maps [AuthToken] to [StoredToken] and vice versa.
  * @author nvoxel
  */
-@Singleton
 internal class StoredTokenMapper @Inject constructor() {
 
     fun toStored(authToken: AuthToken): StoredToken =

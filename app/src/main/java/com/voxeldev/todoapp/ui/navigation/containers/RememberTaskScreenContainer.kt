@@ -1,8 +1,9 @@
-package com.voxeldev.todoapp.task.ui.navigation
+package com.voxeldev.todoapp.ui.navigation.containers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.voxeldev.todoapp.TodoApp
 import com.voxeldev.todoapp.task.di.DaggerTaskFeatureComponent
 import com.voxeldev.todoapp.task.di.TaskScreenContainer
 
@@ -11,11 +12,11 @@ import com.voxeldev.todoapp.task.di.TaskScreenContainer
  */
 @Composable
 fun rememberTaskScreenContainer(): TaskScreenContainer {
-    val applicationContext = LocalContext.current.applicationContext
+    val application = LocalContext.current.applicationContext as TodoApp
     return remember {
         TaskScreenContainer().also { container ->
             DaggerTaskFeatureComponent.factory()
-                .create(applicationContext = applicationContext)
+                .create(dependencies = application.taskFeatureDependencies)
                 .inject(taskScreenContainer = container)
         }
     }

@@ -1,4 +1,4 @@
-package com.voxeldev.todoapp.di
+package com.voxeldev.todoapp.di.navigation
 
 import android.content.Context
 import com.voxeldev.todoapp.local.di.LocalModule

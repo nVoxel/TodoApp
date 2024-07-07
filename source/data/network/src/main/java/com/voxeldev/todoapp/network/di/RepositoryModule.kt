@@ -4,9 +4,9 @@ import com.voxeldev.todoapp.api.repository.TodoItemListRepository
 import com.voxeldev.todoapp.api.repository.TodoItemRepository
 import com.voxeldev.todoapp.network.todoapi.TodoItemRepositoryDefaultImpl
 import com.voxeldev.todoapp.network.todoapi.TodoItemsListRepositoryDefaultImpl
+import com.voxeldev.todoapp.utils.di.scopes.AppScope
 import dagger.Binds
 import dagger.Module
-import javax.inject.Singleton
 
 /**
  * Repository bindings module.
@@ -19,13 +19,13 @@ interface RepositoryModule
 internal interface InternalRepositoryModule {
 
     @Binds
-    @Singleton
+    @AppScope
     fun bindTodoItemListRepository(
         todoItemsListRepositoryDefaultImpl: TodoItemsListRepositoryDefaultImpl,
     ): TodoItemListRepository
 
     @Binds
-    @Singleton
+    @AppScope
     fun bindTodoItemRepository(
         todoItemRepositoryDefaultImpl: TodoItemRepositoryDefaultImpl,
     ): TodoItemRepository
