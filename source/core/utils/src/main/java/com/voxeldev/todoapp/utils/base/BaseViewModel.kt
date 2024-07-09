@@ -37,15 +37,9 @@ open class BaseViewModel(
         viewModelScope.launch {
             networkObserver.networkAvailability.collect { networkAvailable ->
                 _networkNotification.update { !networkAvailable }
-                if (networkAvailable) onNetworkConnected()
             }
         }
     }
-
-    /**
-     * Called when a network connection appears
-     */
-    protected open fun onNetworkConnected() {}
 
     protected fun handleException(exception: Throwable) {
         _exception.update {

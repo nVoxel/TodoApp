@@ -63,7 +63,7 @@ class TaskViewModel(
 
         scope.launch {
             networkObserver.networkAvailability.collect { networkAvailable ->
-                _networkNotification.update { !networkAvailable }
+                if (networkAvailable) getTodoItem()
             }
         }
     }
@@ -198,8 +198,6 @@ class TaskViewModel(
             }
         }
     }
-
-    override fun onNetworkConnected() = getTodoItem()
 
     private fun getTimestamp() = System.currentTimeMillis() / 1000
 

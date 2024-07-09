@@ -30,7 +30,7 @@ class ListViewModel(
     private val updateTodoItemUseCase: UpdateTodoItemUseCase,
     private val deleteTodoItemUseCase: DeleteTodoItemUseCase,
     private val refreshTodoItemsUseCase: RefreshTodoItemsUseCase,
-    networkObserver: NetworkObserver,
+    private val networkObserver: NetworkObserver,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : BaseViewModel(
     networkObserver = networkObserver,
@@ -52,6 +52,18 @@ class ListViewModel(
 
     init {
         getTodoItems()
+
+        scope.launch {
+            networkObserver.networkAvailability.collect { networkAvailable ->
+                if (!networkAvailable || !todoItems.value.isOffline) return@collect
+                refreshTodoItemsUseCase(
+                    params = BaseUseCase.NoParams,
+                    scope = scope,
+                ) { result ->
+                    result.onFailure(action = ::handleException)
+                }
+            }
+        }
     }
 
     fun onSnackbarHide() {
@@ -107,16 +119,6 @@ class ListViewModel(
 
     fun getFormattedTimestamp(timestamp: Long): String =
         timestamp.formatTimestamp(format = format)
-
-    override fun onNetworkConnected() {
-        if (!todoItems.value.isOffline) return
-        refreshTodoItemsUseCase(
-            params = BaseUseCase.NoParams,
-            scope = scope,
-        ) { result ->
-            result.onFailure(action = ::handleException)
-        }
-    }
 
     private fun getTimestamp() = System.currentTimeMillis() / 1000
 }

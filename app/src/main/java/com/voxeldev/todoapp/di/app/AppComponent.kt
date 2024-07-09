@@ -28,7 +28,7 @@ import dagger.Component
     ],
 )
 @AppScope
-interface AppComponent {
+internal interface AppComponent {
 
     fun inject(todoApp: TodoApp)
 

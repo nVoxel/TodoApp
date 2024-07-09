@@ -59,6 +59,12 @@ class AuthViewModel(
                 }
             }
         }
+
+        scope.launch {
+            networkObserver.networkAvailability.collect { networkAvailable ->
+                if (networkAvailable) checkAuth()
+            }
+        }
     }
 
     fun onRetryClicked() {
@@ -176,6 +182,4 @@ class AuthViewModel(
             _loading.update { false }
         }
     }
-
-    override fun onNetworkConnected() = checkAuth()
 }
