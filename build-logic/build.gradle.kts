@@ -3,6 +3,13 @@ plugins {
     id("java-gradle-plugin")
 }
 
+gradlePlugin {
+    plugins.register("telegram-stats") {
+        id = name
+        implementationClass = "com.voxeldev.todoapp.plugin.TelegramStatsPlugin"
+    }
+}
+
 dependencies {
     implementation(libs.agp)
     implementation(libs.kotlin.gradle.plugin)

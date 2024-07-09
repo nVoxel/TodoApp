@@ -5,6 +5,7 @@ rootProject.name = "TodoApp"
 
 pluginManagement {
     includeBuild("build-logic")
+
     repositories {
         google {
             content {
