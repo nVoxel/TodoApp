@@ -1,10 +1,12 @@
 package com.voxeldev.todoapp.list.viewmodel
 
+import com.voxeldev.todoapp.api.extensions.toModifyRequest
 import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.api.model.TodoItemList
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.DeleteTodoItemUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.GetAllTodoItemsFlowUseCase
+import com.voxeldev.todoapp.domain.usecase.todoitem.RefreshTodoItemsUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.UpdateTodoItemUseCase
 import com.voxeldev.todoapp.list.ui.ListScreen
 import com.voxeldev.todoapp.utils.base.BaseViewModel
@@ -27,6 +29,7 @@ class ListViewModel(
     private val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase,
     private val updateTodoItemUseCase: UpdateTodoItemUseCase,
     private val deleteTodoItemUseCase: DeleteTodoItemUseCase,
+    private val refreshTodoItemsUseCase: RefreshTodoItemsUseCase,
     networkObserver: NetworkObserver,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : BaseViewModel(
@@ -34,7 +37,12 @@ class ListViewModel(
     coroutineDispatcherProvider = coroutineDispatcherProvider,
 ) {
 
-    private val _todoItems: MutableStateFlow<TodoItemList> = MutableStateFlow(value = emptyList())
+    private val _todoItems: MutableStateFlow<TodoItemList> = MutableStateFlow(
+        value = TodoItemList(
+            list = emptyList(),
+            isOffline = false,
+        ),
+    )
     val todoItems: StateFlow<TodoItemList> = _todoItems.asStateFlow()
 
     private val _completedItemsCount: MutableStateFlow<Int> = MutableStateFlow(value = 0)
@@ -63,7 +71,7 @@ class ListViewModel(
                     scope.launch {
                         flow.collect { todoItems ->
                             _todoItems.update { todoItems }
-                            _completedItemsCount.update { todoItems.count { it.isComplete } }
+                            _completedItemsCount.update { todoItems.list.count { it.isComplete } }
                         }
                     }
                     _loading.update { false }
@@ -74,11 +82,13 @@ class ListViewModel(
     }
 
     fun checkTodoItem(id: String, isChecked: Boolean) {
-        val item = todoItems.value.find { item -> item.id == id }
+        val item = todoItems.value.list.find { item -> item.id == id }
         item?.let {
-            val newItem = item.copy(isComplete = isChecked)
             updateTodoItemUseCase(
-                params = newItem,
+                params = item.copy(
+                    isComplete = isChecked,
+                    modifiedTimestamp = getTimestamp(),
+                ).toModifyRequest(),
                 scope = scope,
             ) { result ->
                 result.onFailure(action = ::handleException)
@@ -98,5 +108,15 @@ class ListViewModel(
     fun getFormattedTimestamp(timestamp: Long): String =
         timestamp.formatTimestamp(format = format)
 
-    override fun onNetworkConnected() = getTodoItems()
+    override fun onNetworkConnected() {
+        if (!todoItems.value.isOffline) return
+        refreshTodoItemsUseCase(
+            params = BaseUseCase.NoParams,
+            scope = scope,
+        ) { result ->
+            result.onFailure(action = ::handleException)
+        }
+    }
+
+    private fun getTimestamp() = System.currentTimeMillis() / 1000
 }

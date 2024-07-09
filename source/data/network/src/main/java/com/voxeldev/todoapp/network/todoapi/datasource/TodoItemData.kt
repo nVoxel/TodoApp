@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  * @author nvoxel
  */
 @Serializable
-internal data class TodoItemData(
+data class TodoItemData(
     val id: String,
     val text: String,
     val importance: String,

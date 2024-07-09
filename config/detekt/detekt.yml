@@ -16,14 +16,16 @@ complexity:
     excludes: [ '**/test/**', '**/functionalTest/**', '**/*Mapper.kt', '**/components/swipedismiss/**', '**/*ThemePreview.kt' ]
   LongMethod:
     threshold: 30
-    ignoreAnnotated: ['Composable']
+    ignoreAnnotated: [ 'Composable' ]
     excludes: [ '**/designsystem/components/**' ]
+    ignoreFunction: [ 'synchronizeLists', 'checkLocalList' ]
   LongParameterList:
-    constructorThreshold: 8
+    constructorThreshold: 9
     functionThreshold: 16
   NestedBlockDepth:
     threshold: 3
     excludes: [ '**/designsystem/components/**' ]
+    ignoreFunction: [ 'checkLocalList' ]
   NamedArguments:
     threshold: 1
 
@@ -96,16 +98,16 @@ formatting:
 
 naming:
   ClassNaming:
-    ignoreAnnotated: ['org.junit.jupiter.api.Nested']
+    ignoreAnnotated: [ 'org.junit.jupiter.api.Nested' ]
   FunctionNaming:
     active: true
-    ignoreAnnotated: ['Composable', 'Test', 'ParameterizedTest', 'RepeatedTest', 'TestFactory']
+    ignoreAnnotated: [ 'Composable', 'Test', 'ParameterizedTest', 'RepeatedTest', 'TestFactory' ]
     excludes: [ '**/components/swipedismiss/**' ]
   TopLevelPropertyNaming:
     constantPattern: '[a-z][_A-Za-z0-9]*|[A-Z][_A-Z0-9]*'
   InvalidPackageDeclaration:
     active: true
-    excludes: ['**/build-logic/**/*.kt', '**/*.kts']
+    excludes: [ '**/build-logic/**/*.kt', '**/*.kts' ]
   NoNameShadowing:
     active: true
   NonBooleanPropertyPrefixedWithIs:
@@ -119,7 +121,7 @@ naming:
 
 performance:
   SpreadOperator:
-    excludes: ['**/test/**', '**/functionalTest/**']
+    excludes: [ '**/test/**', '**/functionalTest/**' ]
 
 potential-bugs:
   AvoidReferentialEquality:
@@ -136,7 +138,7 @@ potential-bugs:
     active: true
   ImplicitDefaultLocale:
     active: true
-    excludes: ['**/Preview**.kt']
+    excludes: [ '**/Preview**.kt' ]
   ImplicitUnitReturnType:
     active: true
   MapGetWithNotNullAssertionOperator:
@@ -147,7 +149,7 @@ potential-bugs:
     active: true
   UnsafeCast:
     active: true
-    excludes: ['**/test/**', '**/*.Test.kt', '**/*.Spec.kt']
+    excludes: [ '**/test/**', '**/*.Test.kt', '**/*.Spec.kt' ]
   UselessPostfixExpression:
     active: true
 
@@ -162,11 +164,11 @@ style:
     active: true
   ClassOrdering:
     active: true
-    excludes: ['**/*StubImpl.kt', '**/components/swipedismiss/**']
+    excludes: [ '**/*StubImpl.kt', '**/components/swipedismiss/**' ]
   CollapsibleIfStatements:
     active: true
-    excludes: ['**/TodoLargeTopBar.kt']
-    ignoreAnnotated: ['Composable']
+    excludes: [ '**/TodoLargeTopBar.kt' ]
+    ignoreAnnotated: [ 'Composable' ]
   DestructuringDeclarationWithTooManyEntries:
     active: true
   EqualsOnSignatureLine:
@@ -188,7 +190,7 @@ style:
         reason: 'Authors are not recorded in KDoc.'
       - value: '@requiresTypeResolution'
         reason: 'Use @RequiresTypeResolution annotation on the class instead.'
-    excludes: ['**/detekt-rules-style/**/ForbiddenComment.kt']
+    excludes: [ '**/detekt-rules-style/**/ForbiddenComment.kt' ]
   ForbiddenImport:
     active: true
     imports:
@@ -220,7 +222,7 @@ style:
   ForbiddenVoid:
     active: true
   MagicNumber:
-    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt', '**/TodoLargeTopBar.kt', '**/components/swipedismiss/**', '**/Preview**.kt']
+    excludes: [ '**/test/**', '**/*Test.kt', '**/*Spec.kt', '**/TodoLargeTopBar.kt', '**/components/swipedismiss/**', '**/Preview**.kt' ]
     ignorePropertyDeclaration: true
     ignoreAnnotation: true
     ignoreEnums: true
@@ -237,11 +239,11 @@ style:
   MaxLineLength:
     active: true
     maxLineLength: 140
-    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt']
+    excludes: [ '**/test/**', '**/*Test.kt', '**/*Spec.kt' ]
     excludeCommentStatements: true
   MayBeConst:
     active: true
-    excludes: ['**/*StubImpl.kt', '**/*PreviewData.kt']
+    excludes: [ '**/*StubImpl.kt', '**/*PreviewData.kt' ]
   NestedClassesVisibility:
     active: true
   ObjectLiteralToLambda:
@@ -258,13 +260,13 @@ style:
     active: true
     max: 3
     excludeGuardClauses: true
-    excludedFunctions: ['getResponse']
+    excludedFunctions: [ 'getResponse', 'getRevision' ]
   TrimMultilineRawString:
     active: true
   UnderscoresInNumericLiterals:
     active: true
     acceptableLength: 6
-    excludes: ['**/*StubImpl.kt', '**/*PreviewData.kt']
+    excludes: [ '**/*StubImpl.kt', '**/*PreviewData.kt' ]
   UnnecessaryAnnotationUseSiteTarget:
     active: true
   UnnecessaryBackticks:
@@ -275,7 +277,7 @@ style:
     active: true
   UnnecessaryInnerClass:
     active: true
-    ignoreAnnotated: ['Nested']
+    ignoreAnnotated: [ 'Nested' ]
   UnusedPrivateMember:
     active: true
     allowedNames: '(_|ignored|expected)'
@@ -296,11 +298,11 @@ style:
     active: true
   UseRequire:
     active: true
-    excludes: ['**/TodoLargeTopBar.kt']
+    excludes: [ '**/TodoLargeTopBar.kt' ]
   UseRequireNotNull:
     active: true
   VarCouldBeVal:
     active: true
-    ignoreAnnotated: ['Parameter']
+    ignoreAnnotated: [ 'Parameter' ]
   WildcardImport:
     active: false # because formatting -> NoWildcardImports

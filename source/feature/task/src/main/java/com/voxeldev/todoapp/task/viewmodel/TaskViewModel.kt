@@ -1,7 +1,9 @@
 package com.voxeldev.todoapp.task.viewmodel
 
+import com.voxeldev.todoapp.api.extensions.toModifyRequest
 import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.api.model.TodoItemImportance
+import com.voxeldev.todoapp.api.request.TodoItemModifyRequest
 import com.voxeldev.todoapp.domain.usecase.todoitem.CreateTodoItemUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.DeleteTodoItemUseCase
 import com.voxeldev.todoapp.domain.usecase.todoitem.GetSingleTodoItemUseCase
@@ -11,6 +13,7 @@ import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.extensions.formatTimestamp
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
+import com.voxeldev.todoapp.utils.providers.UUIDProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +21,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.UUID
 
 /**
  * Stores [TaskScreen] current state, provides screen-related methods.
@@ -129,8 +131,8 @@ class TaskViewModel(
     private fun createItem(callback: () -> Unit) {
         val timestamp = getTimestamp()
 
-        val newItem = TodoItem(
-            id = UUID.randomUUID().toString(),
+        val request = TodoItemModifyRequest(
+            id = UUIDProvider.provideUUID(),
             text = _text.value,
             importance = _importance.value,
             deadlineTimestamp = _deadlineTimestamp.value,
@@ -141,7 +143,7 @@ class TaskViewModel(
 
         _loading.update { true }
         createTodoItemUseCase(
-            params = newItem,
+            params = request,
             scope = scope,
         ) { result ->
             result.fold(
@@ -155,17 +157,17 @@ class TaskViewModel(
     }
 
     private fun updateItem(callback: () -> Unit) {
-        val updatedItem = loadedTodoItem?.copy(
+        val request = loadedTodoItem?.copy(
             text = _text.value,
             importance = _importance.value,
             deadlineTimestamp = _deadlineTimestamp.value,
             modifiedTimestamp = getTimestamp(),
-        )
+        )?.toModifyRequest()
 
-        updatedItem?.let {
+        request?.let {
             _loading.update { true }
             updateTodoItemUseCase(
-                params = updatedItem,
+                params = request,
                 scope = scope,
             ) { result ->
                 result.fold(

@@ -7,8 +7,7 @@ import com.voxeldev.todoapp.di.dependencies.ListFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.SettingsFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.TaskFeatureDependenciesModule
 import com.voxeldev.todoapp.local.di.LocalModule
-import com.voxeldev.todoapp.network.di.NetworkModule
-import com.voxeldev.todoapp.network.di.RepositoryModule
+import com.voxeldev.todoapp.repository.di.RepositoryModule
 import com.voxeldev.todoapp.utils.di.UtilsModule
 import com.voxeldev.todoapp.utils.di.scopes.AppScope
 import dagger.BindsInstance
@@ -21,7 +20,6 @@ import dagger.Component
     modules = [
         UtilsModule::class,
         LocalModule::class,
-        NetworkModule::class,
         RepositoryModule::class,
         AuthFeatureDependenciesModule::class,
         ListFeatureDependenciesModule::class,

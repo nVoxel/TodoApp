@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -35,10 +35,11 @@ android {
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 
     implementation(projects.source.core.api)
     implementation(projects.source.core.utils)
+    implementation(projects.source.data.repository)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

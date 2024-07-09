@@ -10,14 +10,14 @@ private const val IMPORTANCE_URGENT = "important"
 /**
  * @author nvoxel
  */
-internal fun TodoItemImportance.toRequest(): String =
+fun TodoItemImportance.toRequest(): String =
     when (this) {
         TodoItemImportance.Low -> IMPORTANCE_LOW
         TodoItemImportance.Normal -> IMPORTANCE_NORMAL
         TodoItemImportance.Urgent -> IMPORTANCE_URGENT
     }
 
-internal fun String.toImportance(): TodoItemImportance =
+fun String.toImportance(): TodoItemImportance =
     when (this) {
         IMPORTANCE_LOW -> TodoItemImportance.Low
         IMPORTANCE_NORMAL -> TodoItemImportance.Normal

@@ -69,7 +69,7 @@ fun ListScreen(
     val completedItemsCount by viewModel.completedItemsCount.collectAsStateWithLifecycle()
     val error by viewModel.exception.collectAsStateWithLifecycle()
 
-    val displayFullscreenError = todoItems.isEmpty() // don't display after initial load
+    val displayFullscreenError = todoItems.list.isEmpty() // don't display after initial load
 
     BaseScreen(
         viewModel = viewModel,
@@ -87,7 +87,7 @@ fun ListScreen(
             onUncompletedVisibilityChanged = { updatedIsOnlyUncompletedVisible ->
                 isOnlyUncompletedVisible = updatedIsOnlyUncompletedVisible
             },
-            todoItems = todoItems,
+            todoItems = todoItems.list,
             completedItemsCount = completedItemsCount,
             onItemClicked = onNavigateToTask,
             onCheckClicked = { id, isChecked ->

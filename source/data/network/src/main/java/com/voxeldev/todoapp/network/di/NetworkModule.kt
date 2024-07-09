@@ -1,6 +1,7 @@
 package com.voxeldev.todoapp.network.di
 
 import com.voxeldev.todoapp.api.repository.AuthTokenRepository
+import com.voxeldev.todoapp.utils.di.scopes.AppScope
 import com.voxeldev.todoapp.utils.providers.StringResourceProvider
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ import kotlinx.serialization.json.Json
  * @author nvoxel
  */
 @Module
-class NetworkModule {
+internal class NetworkModule {
 
     @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
@@ -29,6 +30,7 @@ class NetworkModule {
     }
 
     @Provides
+    @AppScope
     fun provideHttpClient(
         stringResourceProvider: StringResourceProvider,
         authTokenRepository: AuthTokenRepository,

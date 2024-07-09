@@ -2,7 +2,7 @@ package com.voxeldev.todoapp.di.dependencies
 
 import android.content.Context
 import com.voxeldev.todoapp.api.repository.AuthTokenRepository
-import com.voxeldev.todoapp.api.repository.TodoItemListRepository
+import com.voxeldev.todoapp.api.repository.TodoItemRepository
 import com.voxeldev.todoapp.auth.di.AuthFeatureDependencies
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
@@ -19,13 +19,13 @@ class AuthFeatureDependenciesModule {
     fun provideAuthFeatureDependencies(
         applicationContext: Context,
         authTokenRepository: AuthTokenRepository,
-        todoItemListRepository: TodoItemListRepository,
+        todoItemRepository: TodoItemRepository,
         networkObserver: NetworkObserver,
         coroutineDispatcherProvider: CoroutineDispatcherProvider,
     ): AuthFeatureDependencies = AuthFeatureDependenciesImpl(
         applicationContext = applicationContext,
         authTokenRepository = authTokenRepository,
-        todoItemListRepository = todoItemListRepository,
+        todoItemRepository = todoItemRepository,
         networkObserver = networkObserver,
         coroutineDispatcherProvider = coroutineDispatcherProvider,
     )
@@ -34,8 +34,7 @@ class AuthFeatureDependenciesModule {
 internal class AuthFeatureDependenciesImpl(
     override val applicationContext: Context,
     override val authTokenRepository: AuthTokenRepository,
-    override val todoItemListRepository: TodoItemListRepository,
+    override val todoItemRepository: TodoItemRepository,
     override val networkObserver: NetworkObserver,
     override val coroutineDispatcherProvider: CoroutineDispatcherProvider,
-
-    ) : AuthFeatureDependencies
+) : AuthFeatureDependencies

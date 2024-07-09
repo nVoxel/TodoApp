@@ -1,10 +1,11 @@
 package com.voxeldev.todoapp.domain.usecase.todoitem
 
 import com.voxeldev.todoapp.api.model.TodoItemList
-import com.voxeldev.todoapp.api.repository.TodoItemListRepository
+import com.voxeldev.todoapp.api.repository.TodoItemRepository
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 /**
@@ -12,10 +13,12 @@ import javax.inject.Inject
  * @author nvoxel
  */
 class GetAllTodoItemsFlowUseCase @Inject constructor(
-    private val todoItemsRepository: TodoItemListRepository,
+    private val todoItemRepository: TodoItemRepository,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
-) : BaseUseCase<BaseUseCase.NoParams, Flow<TodoItemList>>(coroutineDispatcherProvider = coroutineDispatcherProvider) {
+) : BaseUseCase<BaseUseCase.NoParams, StateFlow<TodoItemList>>(
+    coroutineDispatcherProvider = coroutineDispatcherProvider,
+) {
 
-    override suspend fun run(params: NoParams): Result<Flow<TodoItemList>> =
-        todoItemsRepository.getAllFlow()
+    override suspend fun run(params: NoParams): Result<StateFlow<TodoItemList>> =
+        todoItemRepository.getAllFlow()
 }

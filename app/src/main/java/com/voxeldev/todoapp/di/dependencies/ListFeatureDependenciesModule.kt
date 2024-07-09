@@ -2,7 +2,6 @@ package com.voxeldev.todoapp.di.dependencies
 
 import android.content.Context
 import com.voxeldev.todoapp.api.repository.PreferencesRepository
-import com.voxeldev.todoapp.api.repository.TodoItemListRepository
 import com.voxeldev.todoapp.api.repository.TodoItemRepository
 import com.voxeldev.todoapp.list.di.ListFeatureDependencies
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
@@ -19,14 +18,12 @@ class ListFeatureDependenciesModule {
     @Provides
     fun provideListFeatureDependencies(
         applicationContext: Context,
-        todoItemListRepository: TodoItemListRepository,
         todoItemRepository: TodoItemRepository,
         preferencesRepository: PreferencesRepository,
         networkObserver: NetworkObserver,
         coroutineDispatcherProvider: CoroutineDispatcherProvider,
     ): ListFeatureDependencies = ListFeatureDependenciesImpl(
         applicationContext = applicationContext,
-        todoItemListRepository = todoItemListRepository,
         todoItemRepository = todoItemRepository,
         preferencesRepository = preferencesRepository,
         networkObserver = networkObserver,
@@ -36,7 +33,6 @@ class ListFeatureDependenciesModule {
 
 internal class ListFeatureDependenciesImpl(
     override val applicationContext: Context,
-    override val todoItemListRepository: TodoItemListRepository,
     override val todoItemRepository: TodoItemRepository,
     override val preferencesRepository: PreferencesRepository,
     override val networkObserver: NetworkObserver,

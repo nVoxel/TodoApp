@@ -11,6 +11,7 @@ import com.voxeldev.todoapp.domain.usecase.todoitem.GetAllTodoItemsFlowUseCase
 import com.voxeldev.todoapp.domain.usecase.token.ClearAuthTokenUseCase
 import com.voxeldev.todoapp.domain.usecase.token.SetAuthTokenUseCase
 import com.voxeldev.todoapp.utils.base.BaseViewModel
+import com.voxeldev.todoapp.utils.exceptions.NetworkNotAvailableException
 import com.voxeldev.todoapp.utils.exceptions.TokenNotFoundException
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
@@ -30,7 +31,7 @@ class AuthViewModel(
     private val setAuthTokenUseCase: SetAuthTokenUseCase,
     private val clearAuthTokenUseCase: ClearAuthTokenUseCase,
     private val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase, // there is no other way to check auth
-    networkObserver: NetworkObserver,
+    private val networkObserver: NetworkObserver,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : BaseViewModel(
     networkObserver = networkObserver,
@@ -87,6 +88,11 @@ class AuthViewModel(
     }
 
     fun checkAuth() {
+        if (!networkObserver.networkAvailability.value) {
+            handleException(exception = NetworkNotAvailableException())
+            return
+        }
+
         _loading.update { true }
         setToken(successCallback = ::checkAuthInternal)
     }
@@ -137,22 +143,28 @@ class AuthViewModel(
             scope = scope,
         ) { result ->
             result.fold(
-                onSuccess = {
-                    _state.update { AuthScreenState.Success }
-                    _loading.update { false }
+                onSuccess = { todoItemList ->
+                    onAuthSuccess()
                 },
-                onFailure = { exception ->
-                    _exception.update {
-                        if (exception is TokenNotFoundException) {
-                            FailedToAuthenticateException()
-                        } else {
-                            Exception(exception)
-                        }
-                    }
-                    clearToken()
-                },
+                onFailure = { exception -> onAuthFailure(exception = exception) },
             )
         }
+    }
+
+    private fun onAuthSuccess() {
+        _state.update { AuthScreenState.Success }
+        _loading.update { false }
+    }
+
+    private fun onAuthFailure(exception: Throwable) {
+        _exception.update {
+            if (exception is TokenNotFoundException) {
+                FailedToAuthenticateException()
+            } else {
+                exception as Exception
+            }
+        }
+        clearToken()
     }
 
     private fun clearToken() {

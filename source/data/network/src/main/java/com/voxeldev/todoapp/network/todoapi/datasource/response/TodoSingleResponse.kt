@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  * @author nvoxel
  */
 @Serializable
-internal data class TodoSingleResponse(
+data class TodoSingleResponse(
     val status: String,
     val element: TodoItemData,
     val revision: Int,

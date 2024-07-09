@@ -10,9 +10,9 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.voxeldev.todoapp.api.repository.TodoItemListRepository
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
 import com.voxeldev.todoapp.domain.usecase.preferences.GetAutoRefreshIntervalUseCase
+import com.voxeldev.todoapp.network.todoapi.TodoItemListRemoteDataSource
 import com.voxeldev.todoapp.utils.exceptions.TokenNotFoundException
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import dagger.assisted.Assisted
@@ -28,12 +28,12 @@ import java.util.concurrent.TimeUnit
 class AutoRefreshWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val todoItemListRepository: TodoItemListRepository,
+    private val todoItemListRemoteDataSource: TodoItemListRemoteDataSource,
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : CoroutineWorker(appContext, workerParameters) {
 
     override suspend fun doWork(): Result = withContext(coroutineDispatcherProvider.ioDispatcher) {
-        todoItemListRepository.getAllFlow().fold(
+        todoItemListRemoteDataSource.getAll().fold(
             onSuccess = {
                 Log.i("AutoRefreshWorker", "Finished successfully")
                 Result.success()
