@@ -17,7 +17,7 @@ complexity:
   LongMethod:
     threshold: 30
     ignoreAnnotated: [ 'Composable' ]
-    excludes: [ '**/designsystem/components/**' ]
+    excludes: [ '**/designsystem/components/**', '**/plugin/*Plugin.kt' ]
     ignoreFunction: [ 'synchronizeLists', 'checkLocalList' ]
   LongParameterList:
     constructorThreshold: 9

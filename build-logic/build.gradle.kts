@@ -4,14 +4,9 @@ plugins {
 }
 
 gradlePlugin {
-    plugins.register("telegram-stats") {
+    plugins.register("build-verify") {
         id = name
-        implementationClass = "com.voxeldev.todoapp.plugin.stats.TelegramStatsPlugin"
-    }
-
-    plugins.register("validate-apk-size") {
-        id = name
-        implementationClass = "com.voxeldev.todoapp.plugin.size.ValidateApkSizePlugin"
+        implementationClass = "com.voxeldev.todoapp.plugin.BuildVerifyPlugin"
     }
 }
 
