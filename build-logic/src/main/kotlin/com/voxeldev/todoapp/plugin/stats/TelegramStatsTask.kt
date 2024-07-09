@@ -1,4 +1,4 @@
-package com.voxeldev.todoapp.plugin
+package com.voxeldev.todoapp.plugin.stats
 
 import com.voxeldev.todoapp.telegram.TelegramApi
 import io.ktor.http.HttpStatusCode
@@ -32,14 +32,18 @@ abstract class TelegramStatsTask @Inject constructor(
         val token = token.get()
         val chatId = chatId.get()
         apkDir.get().asFile.listFiles()
-            ?.filter { it.name.endsWith(".apk") }
-            ?.forEach {
+            ?.filter { file -> file.name.endsWith(".apk") }
+            ?.forEach { file ->
                 runBlocking {
-                    telegramApi.sendMessage("Build finished...", token, chatId)
+                    telegramApi.sendMessage(
+                        message = "Build finished...",
+                        token = token,
+                        chatId = chatId,
+                    )
                 }
 
                 runBlocking {
-                    telegramApi.sendFile(it, token, chatId).apply {
+                    telegramApi.sendFile(file, token, chatId).apply {
                         if (status == HttpStatusCode.OK) {
                             println("[TelegramStats] Sent APK to $chatId successfully")
                         } else {
