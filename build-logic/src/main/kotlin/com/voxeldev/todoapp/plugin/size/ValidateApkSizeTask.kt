@@ -40,6 +40,8 @@ abstract class ValidateApkSizeTask @Inject constructor(
 
     @TaskAction
     fun validateApkSize() {
+        val apkDirFile = apkDir.get().asFile
+
         val validationEnabled = validationEnabled.getOrElse(true)
         val maxApkSizeMegabytes = maxApkSizeMegabytes.getOrElse(DEFAULT_APK_SIZE_THRESHOLD)
 
@@ -48,13 +50,13 @@ abstract class ValidateApkSizeTask @Inject constructor(
         val token = token.get()
         val chatId = chatId.get()
 
-        println(apkDir.get().toString())
-
-        apkDir.get().asFile.listFiles()
+        apkDirFile.listFiles()
             ?.filter { file -> file.name.endsWith(".apk") }
             ?.forEach { file ->
                 val fileSizeMegabytes = getFileSizeMegabytes(file = file)
                 val formattedSize = String.format(Locale.getDefault(), "%.2f", fileSizeMegabytes)
+
+                File(apkDirFile, APK_SIZE_FILE_NAME).writeText(text = formattedSize)
 
                 if (fileSizeMegabytes >= maxApkSizeMegabytes) {
                     val message = "Build failed due to exceeding maximum apk size! " +
@@ -77,8 +79,10 @@ abstract class ValidateApkSizeTask @Inject constructor(
 
     private fun getFileSizeMegabytes(file: File): Double = file.length().toDouble() / BYTES_IN_MEGABYTE
 
-    private companion object {
-        const val DEFAULT_APK_SIZE_THRESHOLD = 10
-        const val BYTES_IN_MEGABYTE = 1_048_576
+    companion object {
+        const val APK_SIZE_FILE_NAME = "apk_size.txt"
+
+        private const val DEFAULT_APK_SIZE_THRESHOLD = 10
+        private const val BYTES_IN_MEGABYTE = 1_048_576
     }
 }
