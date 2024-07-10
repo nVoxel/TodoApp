@@ -17,7 +17,7 @@ complexity:
   LongMethod:
     threshold: 30
     ignoreAnnotated: [ 'Composable' ]
-    excludes: [ '**/designsystem/components/**', '**/plugin/*Plugin.kt' ]
+    excludes: [ '**/designsystem/components/**', '**/com/voxeldev/todoapp/plugin/**' ]
     ignoreFunction: [ 'synchronizeLists', 'checkLocalList' ]
   LongParameterList:
     constructorThreshold: 9

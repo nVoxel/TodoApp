@@ -12,6 +12,7 @@ import com.voxeldev.todoapp.telegram.TelegramApi
 import com.voxeldev.todoapp.utils.extensions.capitalized
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import libs
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -53,6 +54,8 @@ class BuildVerifyPlugin : Plugin<Project> {
                 project = project,
                 variant = variant,
                 telegramApi = telegramApi,
+                buildVariant = variant.name,
+                versionCode = project.libs.versions.version.code.get().toString(),
             ).apply {
                 configure {
                     apkDir.set(artifacts)
@@ -79,9 +82,17 @@ class BuildVerifyPlugin : Plugin<Project> {
         project: Project,
         variant: Variant,
         telegramApi: TelegramApi,
+        buildVariant: String,
+        versionCode: String,
     ): TaskProvider<TelegramStatsTask> = project.tasks.register(
         "telegramStatsFor${variant.name.capitalized()}",
         TelegramStatsTask::class.java,
         telegramApi,
+        buildVariant,
+        versionCode,
     )
+
+    companion object {
+        const val BUILD_VERIFY_TAG = "BuildVerify"
+    }
 }

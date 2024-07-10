@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.plugin.stats
 
+import com.voxeldev.todoapp.plugin.BuildVerifyPlugin.Companion.BUILD_VERIFY_TAG
 import com.voxeldev.todoapp.plugin.size.ValidateApkSizeTask.Companion.APK_SIZE_FILE_NAME
 import com.voxeldev.todoapp.telegram.TelegramApi
 import io.ktor.http.HttpStatusCode
@@ -18,6 +19,8 @@ import javax.inject.Inject
  */
 abstract class TelegramStatsTask @Inject constructor(
     private val telegramApi: TelegramApi,
+    private val buildVariant: String,
+    private val versionCode: String,
 ) : DefaultTask() {
 
     @get:InputDirectory
@@ -36,6 +39,8 @@ abstract class TelegramStatsTask @Inject constructor(
         val token = token.get()
         val chatId = chatId.get()
 
+        val resultFileName = "$FILENAME_PREFIX-$buildVariant-$versionCode.apk"
+
         apkDirFile.listFiles()
             ?.filter { file -> file.name.endsWith(".apk") }
             ?.forEach { file ->
@@ -50,14 +55,23 @@ abstract class TelegramStatsTask @Inject constructor(
                 }
 
                 runBlocking {
-                    telegramApi.sendFile(file, token, chatId).apply {
+                    telegramApi.sendFile(
+                        file = file,
+                        filename = resultFileName,
+                        chatId = chatId,
+                        token = token,
+                    ).apply {
                         if (status == HttpStatusCode.OK) {
-                            println("[TelegramStats] Sent APK to $chatId successfully")
+                            println("[$BUILD_VERIFY_TAG] Sent APK to $chatId successfully")
                         } else {
-                            println("[TelegramStats] Failed to send APK. Status code: ${status.value}")
+                            println("[$BUILD_VERIFY_TAG] Failed to send APK. Status code: ${status.value}")
                         }
                     }
                 }
             }
+    }
+
+    private companion object {
+        const val FILENAME_PREFIX = "todolist"
     }
 }

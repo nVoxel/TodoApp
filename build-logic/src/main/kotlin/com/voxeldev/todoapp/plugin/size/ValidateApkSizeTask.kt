@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.plugin.size
 
+import com.voxeldev.todoapp.plugin.BuildVerifyPlugin.Companion.BUILD_VERIFY_TAG
 import com.voxeldev.todoapp.telegram.TelegramApi
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
@@ -70,10 +71,12 @@ abstract class ValidateApkSizeTask @Inject constructor(
                         )
                     }
 
-                    throw GradleException(message)
+                    throw GradleException("[$BUILD_VERIFY_TAG] $message")
                 }
 
-                println("Got file ${file.name} of $formattedSize MB, threshold is set to $maxApkSizeMegabytes MB")
+                println(
+                    "[$BUILD_VERIFY_TAG] Got file ${file.name} of $formattedSize MB, threshold is set to $maxApkSizeMegabytes MB",
+                )
             }
     }
 
