@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 configure<BaseAppModuleExtension> {
@@ -15,6 +16,8 @@ configure<BaseAppModuleExtension> {
 }
 
 dependencies {
+    implementation(libs.yandex.authsdk)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -32,8 +35,14 @@ dependencies {
     implementation(libs.material.icons.extended)
     implementation(libs.navigation.compose)
 
+    implementation(libs.ktor.client.core)
+
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)
 
     debugImplementation(libs.androidx.ui.tooling)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

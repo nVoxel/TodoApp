@@ -13,6 +13,8 @@ fun BaseExtension.commonAndroid(libs: LibrariesForLibs) {
         minSdk = libs.versions.android.minSdk.get().toInt()
 
         consumerProguardFiles("consumer-rules.pro")
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {

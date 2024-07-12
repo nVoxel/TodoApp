@@ -14,6 +14,7 @@ dependencies {
     implementation(libs.agp)
     implementation(libs.kotlin.gradle.plugin)
     implementation(libs.kotlin.ksp.gradle)
+    implementation(libs.compose.gradle)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.ktor.client.core)

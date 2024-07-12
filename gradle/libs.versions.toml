@@ -63,6 +63,7 @@ dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", versi
 agp = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-ksp-gradle = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+compose-gradle = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 
 # KotlinX
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -96,6 +97,16 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "a
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+[bundles]
+
+ktor = [
+    "ktor-client-auth",
+    "ktor-client-content-negotiation",
+    "ktor-client-core",
+    "ktor-client-okhttp",
+    "ktor-client-serialization"
+]
 
 [plugins]
 
