@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 
 plugins {
@@ -9,6 +10,23 @@ plugins {
 
 configure<BaseAppModuleExtension> {
     commonAndroid(libs = libs)
+
+    signingConfigs {
+        val localProperties = gradleLocalProperties(rootDir, providers)
+
+        create("release") {
+            storeFile = file(path = localProperties.getProperty("release.storeFile"))
+            storePassword = localProperties.getProperty("release.storePassword")
+            keyAlias = localProperties.getProperty("release.keyAlias")
+            keyPassword = localProperties.getProperty("release.keyPassword")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
 
     buildFeatures {
         compose = true
