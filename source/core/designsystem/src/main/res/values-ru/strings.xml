@@ -4,4 +4,5 @@
     <string name="close">Закрыть</string>
     <string name="error">Ошибка: %1$s</string>
     <string name="retry">Повторить</string>
+    <string name="network_lost">Нет интернета</string>
 </resources>

@@ -2,29 +2,18 @@ package com.voxeldev.todoapp.list.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
@@ -35,32 +24,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItem
-import com.voxeldev.todoapp.api.model.TodoItemImportance
-import com.voxeldev.todoapp.designsystem.components.TodoCheckbox
-import com.voxeldev.todoapp.designsystem.components.TodoLargeTopBar
+import com.voxeldev.todoapp.designsystem.components.ErrorSnackbarEffect
 import com.voxeldev.todoapp.designsystem.components.TodoSmallFAB
-import com.voxeldev.todoapp.designsystem.icons.AdditionalIcons
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
-import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
-import com.voxeldev.todoapp.list.R
+import com.voxeldev.todoapp.list.ui.components.ListItem
+import com.voxeldev.todoapp.list.ui.components.ListScreenTopBar
+import com.voxeldev.todoapp.list.ui.components.NewListItem
 import com.voxeldev.todoapp.list.ui.components.SwipeableListItem
-import com.voxeldev.todoapp.list.ui.components.TodoItemInfoDialog
 import com.voxeldev.todoapp.list.ui.preview.ListScreenPreviewData
 import com.voxeldev.todoapp.list.viewmodel.ListViewModel
+import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
 
 /**
  * @author nvoxel
@@ -69,6 +53,7 @@ import com.voxeldev.todoapp.list.viewmodel.ListViewModel
 @Composable
 fun ListScreen(
     onNavigateToTask: (String?) -> Unit,
+    onNavigateToSettings: () -> Unit,
     viewModel: ListViewModel,
 ) {
     val lazyColumnState = rememberLazyListState()
@@ -79,15 +64,21 @@ fun ListScreen(
 
     val todoItems by viewModel.todoItems.collectAsStateWithLifecycle()
     val completedItemsCount by viewModel.completedItemsCount.collectAsStateWithLifecycle()
+    val error by viewModel.exception.collectAsStateWithLifecycle()
+
+    val displayFullscreenError = todoItems.isEmpty() // don't display after initial load
 
     BaseScreen(
         viewModel = viewModel,
         retryCallback = viewModel::getTodoItems,
+        displayFullscreenError = displayFullscreenError,
     ) {
         ListScreen(
             lazyColumnState = lazyColumnState,
             topBarScrollBehavior = topBarScrollBehavior,
             isFabVisible = isFabVisible,
+            error = error?.getDisplayMessage(),
+            onSnackbarHide = viewModel::onSnackbarHide,
             onFabVisibleChanged = { updatedIsFabVisible -> isFabVisible = updatedIsFabVisible },
             isOnlyUncompletedVisible = isOnlyUncompletedVisible,
             onUncompletedVisibilityChanged = { updatedIsOnlyUncompletedVisible ->
@@ -105,6 +96,7 @@ fun ListScreen(
             onDeleteClicked = { id ->
                 viewModel.deleteTodoItem(id = id)
             },
+            onSettingsClicked = onNavigateToSettings,
             onRequestFormattedTimestamp = viewModel::getFormattedTimestamp,
         )
     }
@@ -116,6 +108,8 @@ private fun ListScreen(
     lazyColumnState: LazyListState,
     topBarScrollBehavior: TopAppBarScrollBehavior,
     isFabVisible: Boolean,
+    error: String?,
+    onSnackbarHide: () -> Unit,
     onFabVisibleChanged: (Boolean) -> Unit,
     isOnlyUncompletedVisible: Boolean,
     onUncompletedVisibilityChanged: (Boolean) -> Unit,
@@ -124,6 +118,7 @@ private fun ListScreen(
     onItemClicked: (String?) -> Unit,
     onCheckClicked: (String, Boolean) -> Unit,
     onDeleteClicked: (String) -> Unit,
+    onSettingsClicked: () -> Unit,
     onRequestFormattedTimestamp: (Long) -> String,
 ) {
     val appPalette = LocalAppPalette.current
@@ -138,33 +133,25 @@ private fun ListScreen(
         }
     }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    ErrorSnackbarEffect(
+        errorMessage = error,
+        snackbarHostState = snackbarHostState,
+        onHide = onSnackbarHide,
+    )
+
     Scaffold(
         modifier = Modifier
             .nestedScroll(connection = topBarScrollBehavior.nestedScrollConnection)
             .nestedScroll(connection = fabNestedScrollConnection),
         topBar = {
-            TodoLargeTopBar(
-                titlePrimary = {
-                    Text(text = stringResource(id = R.string.my_todos))
-                },
-                titleSecondary = {
-                    Text(
-                        text = stringResource(id = R.string.completed, completedItemsCount),
-                        style = AppTypography.body,
-                        color = appPalette.labelTertiary,
-                    )
-                },
-                actions = {
-                    Icon(
-                        modifier = Modifier
-                            .clip(shape = CircleShape)
-                            .clickable { onUncompletedVisibilityChanged(!isOnlyUncompletedVisible) },
-                        imageVector = if (isOnlyUncompletedVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        contentDescription = stringResource(id = R.string.toggle_complete),
-                        tint = appPalette.colorBlue,
-                    )
-                },
-                scrollBehavior = topBarScrollBehavior,
+            ListScreenTopBar(
+                topBarScrollBehavior = topBarScrollBehavior,
+                completedItemsCount = completedItemsCount,
+                isOnlyUncompletedVisible = isOnlyUncompletedVisible,
+                onUncompletedVisibilityChanged = onUncompletedVisibilityChanged,
+                onSettingsClicked = onSettingsClicked,
             )
         },
         floatingActionButton = {
@@ -173,12 +160,14 @@ private fun ListScreen(
                 onClick = { onItemClicked(null) },
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         containerColor = appPalette.backPrimary,
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
-                .padding(paddingValues = paddingValues)
-                .padding(start = 8.dp, end = 8.dp, top = 2.dp)
+                .padding(top = paddingValues.calculateTopPadding())
+                .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 4.dp)
+                .navigationBarsPadding()
                 .shadow(
                     elevation = 2.dp,
                     shape = RoundedCornerShape(size = 8.dp),
@@ -188,10 +177,7 @@ private fun ListScreen(
                     shape = RoundedCornerShape(size = 8.dp),
                 ),
             state = lazyColumnState,
-            contentPadding = PaddingValues(
-                top = 8.dp,
-                bottom = 24.dp,
-            ),
+            contentPadding = PaddingValues(vertical = 8.dp),
         ) {
             items(items = todoItems, key = { it.id }) { todoItem ->
                 if (isOnlyUncompletedVisible && todoItem.isComplete) return@items
@@ -220,118 +206,6 @@ private fun ListScreen(
     }
 }
 
-@Composable
-private fun ListItem(
-    modifier: Modifier = Modifier,
-    todoItem: TodoItem,
-    onClicked: (String) -> Unit,
-    onCheckClicked: (String, Boolean) -> Unit,
-    onRequestFormattedTimestamp: (Long) -> String,
-) {
-    val appPalette = LocalAppPalette.current
-
-    var isInfoDialogVisible by rememberSaveable { mutableStateOf(false) }
-
-    val deadlineTimestamp = remember(todoItem) {
-        todoItem.deadlineTimestamp?.let { deadlineTimestamp ->
-            onRequestFormattedTimestamp(deadlineTimestamp)
-        }
-    }
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(color = appPalette.backSecondary)
-            .clickable { onClicked(todoItem.id) }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-    ) {
-        TodoCheckbox(
-            isChecked = todoItem.isComplete,
-            onCheckedChange = { checked -> onCheckClicked(todoItem.id, checked) },
-            isImportant = todoItem.importance == TodoItemImportance.Urgent,
-        )
-
-        Spacer(modifier = Modifier.width(width = 12.dp))
-
-        Row(
-            modifier = Modifier
-                .weight(weight = 1f),
-        ) {
-            if (todoItem.importance != TodoItemImportance.Normal && !todoItem.isComplete) {
-                Icon(
-                    modifier = Modifier.padding(end = 8.dp),
-                    imageVector = if (todoItem.importance == TodoItemImportance.Urgent) {
-                        AdditionalIcons.ImportanceHigh
-                    } else {
-                        AdditionalIcons.ImportanceLow
-                    },
-                    contentDescription = stringResource(id = R.string.importance),
-                    tint = if (todoItem.importance == TodoItemImportance.Urgent) appPalette.colorRed else appPalette.colorGray,
-                )
-            }
-
-            Column {
-                Text(
-                    text = todoItem.text,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    color = if (todoItem.isComplete) appPalette.labelTertiary else appPalette.labelPrimary,
-                    style = if (todoItem.isComplete) AppTypography.bodyStrikethrough else AppTypography.body,
-                )
-
-                deadlineTimestamp?.let {
-                    Spacer(modifier = Modifier.height(height = 4.dp))
-
-                    Text(
-                        text = deadlineTimestamp,
-                        color = appPalette.labelTertiary,
-                        style = AppTypography.subhead,
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.width(width = 12.dp))
-
-        Icon(
-            modifier = Modifier
-                .clip(shape = CircleShape)
-                .clickable { isInfoDialogVisible = true },
-            imageVector = Icons.Outlined.Info,
-            contentDescription = stringResource(id = R.string.info),
-            tint = appPalette.labelTertiary,
-        )
-    }
-
-    TodoItemInfoDialog(
-        isVisible = isInfoDialogVisible,
-        onDismiss = { isInfoDialogVisible = false },
-        todoItem = todoItem,
-        onRequestFormattedTimestamp = onRequestFormattedTimestamp,
-    )
-}
-
-@Composable
-private fun NewListItem(
-    modifier: Modifier = Modifier,
-    onClicked: () -> Unit,
-) {
-    val appPalette = LocalAppPalette.current
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClicked)
-            .padding(horizontal = 48.dp, vertical = 12.dp),
-    ) {
-        Text(
-            text = stringResource(id = R.string.new_task),
-            color = appPalette.labelTertiary,
-            style = AppTypography.body,
-        )
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @ScreenDayNightPreviews
 @Composable
@@ -341,6 +215,8 @@ private fun ListScreenPreview() {
             lazyColumnState = rememberLazyListState(),
             topBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState()),
             isFabVisible = true,
+            error = null,
+            onSnackbarHide = {},
             onFabVisibleChanged = {},
             isOnlyUncompletedVisible = false,
             onUncompletedVisibilityChanged = {},
@@ -349,6 +225,7 @@ private fun ListScreenPreview() {
             onItemClicked = {},
             onCheckClicked = { _, _ -> },
             onDeleteClicked = {},
+            onSettingsClicked = {},
             onRequestFormattedTimestamp = { "дата" },
         )
     }

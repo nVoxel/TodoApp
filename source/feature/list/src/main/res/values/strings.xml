@@ -12,4 +12,6 @@
     <string name="task_id">Task ID</string>
     <string name="creation_date">Created at</string>
     <string name="modification_date">Modified at</string>
+    <string name="modified_by">Modified by</string>
+    <string name="settings">Settings</string>
 </resources>

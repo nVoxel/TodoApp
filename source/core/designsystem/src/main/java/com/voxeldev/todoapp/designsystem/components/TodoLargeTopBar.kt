@@ -130,7 +130,7 @@ private fun LargeTopAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TwoRowsTopAppBar(
+private fun TwoRowsTopAppBar(
     modifier: Modifier = Modifier,
     titlePrimary: @Composable () -> Unit,
     titleSecondary: @Composable () -> Unit,

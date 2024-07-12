@@ -3,16 +3,16 @@ package com.voxeldev.todoapp.ui.navigation
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.voxeldev.todoapp.list.ui.ListScreen
-import com.voxeldev.todoapp.task.ui.TaskScreen
-import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
+import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
+import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
+import com.yandex.authsdk.YandexAuthResult
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @author nvoxel
@@ -20,48 +20,63 @@ import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
 @Composable
 internal fun MainNavHost(
     navHostController: NavHostController = rememberNavController(),
-    startDestination: NavigationScreen = NavigationScreen.List,
+    authResultFlow: StateFlow<YandexAuthResult?>,
+    onRequestOAuth: () -> Unit,
+    onAuthSuccess: () -> Unit,
+) {
+    val navigationViewModel: NavigationViewModel = hiltViewModel()
+    val authTokenState by navigationViewModel.authTokenState.collectAsStateWithLifecycle()
+
+    if (authTokenState is AuthTokenState.Loading) {
+        FullscreenLoader()
+    } else {
+        MainNavHost(
+            navHostController = navHostController,
+            startDestination = if (authTokenState is AuthTokenState.Found) NavigationScreen.List else NavigationScreen.Auth,
+            authResultFlow = authResultFlow,
+            onRequestOAuth = onRequestOAuth,
+            onAuthSuccess = onAuthSuccess,
+        )
+    }
+}
+
+@Composable
+private fun MainNavHost(
+    navHostController: NavHostController,
+    startDestination: NavigationScreen,
+    authResultFlow: StateFlow<YandexAuthResult?>,
+    onRequestOAuth: () -> Unit,
+    onAuthSuccess: () -> Unit,
 ) {
     NavHost(
         navController = navHostController,
         startDestination = startDestination.routeWithArguments,
-        enterTransition = {
-            slideInHorizontally {
-                if (navHostController.currentDestination?.route == NavigationScreen.List.routeWithArguments) 0 else it
-            }
-        },
-        exitTransition = {
-            slideOutHorizontally {
-                if (navHostController.currentDestination?.route == NavigationScreen.Task.routeWithArguments) 0 else it
-            }
-        },
+        enterTransition = { enterTransition(navHostController = navHostController) },
+        exitTransition = { exitTransition(navHostController = navHostController) },
     ) {
-        composable(route = NavigationScreen.List.routeWithArguments) {
-            ListScreen(
-                onNavigateToTask = { taskId ->
-                    navHostController.navigate(route = "${NavigationScreen.Task.route!!}/$taskId")
-                },
-                viewModel = hiltViewModel(),
-            )
-        }
+        authScreenComposable(navHostController, onRequestOAuth, onAuthSuccess, authResultFlow)
 
-        composable(
-            route = NavigationScreen.Task.routeWithArguments,
-            arguments = listOf(
-                navArgument(name = NavigationScreen.TASK_ID_ARG) {
-                    type = NavType.StringType
-                    nullable = true
-                },
-            ),
-        ) {
-            TaskScreen(
-                viewModel = hiltViewModel<TaskViewModel, TaskViewModel.Factory>(
-                    creationCallback = { factory ->
-                        factory.create(taskId = it.arguments?.getString(NavigationScreen.TASK_ID_ARG))
-                    },
-                ),
-                onClose = { navHostController.popBackStack() },
-            )
-        }
+        listScreenComposable(navHostController)
+
+        taskScreenComposable(navHostController)
+
+        settingsScreenComposable(navHostController)
     }
 }
+
+private fun enterTransition(navHostController: NavHostController) =
+    slideInHorizontally { fullWidth ->
+        if (navHostController.currentDestination?.route == NavigationScreen.List.routeWithArguments) 0 else fullWidth
+    }
+
+private fun exitTransition(navHostController: NavHostController) =
+    slideOutHorizontally { fullWidth ->
+        if (
+            navHostController.currentDestination?.route == NavigationScreen.Task.routeWithArguments ||
+            navHostController.currentDestination?.route == NavigationScreen.Settings.routeWithArguments
+        ) {
+            0
+        } else {
+            fullWidth
+        }
+    }

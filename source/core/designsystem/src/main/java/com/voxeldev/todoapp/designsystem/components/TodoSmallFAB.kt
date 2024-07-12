@@ -1,8 +1,5 @@
 package com.voxeldev.todoapp.designsystem.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,10 +28,8 @@ fun TodoSmallFAB(
 ) {
     val appPalette = LocalAppPalette.current
 
-    AnimatedVisibility(
-        visible = isFabVisible,
-        enter = slideInVertically(initialOffsetY = { it * 2 }),
-        exit = slideOutVertically(targetOffsetY = { it * 2 }),
+    BottomAnimatedVisibility(
+        isVisible = isFabVisible,
     ) {
         SmallFloatingActionButton(
             modifier = modifier

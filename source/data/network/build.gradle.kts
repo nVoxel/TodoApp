@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -33,11 +34,19 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.serialization)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
     implementation(projects.source.core.api)
     implementation(projects.source.core.utils)
+    implementation(projects.source.data.local)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

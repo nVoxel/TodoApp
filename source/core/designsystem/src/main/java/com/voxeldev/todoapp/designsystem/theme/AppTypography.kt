@@ -47,6 +47,12 @@ object AppTypography {
         fontWeight = FontWeight.W400,
         lineHeight = 20.sp,
     )
+
+    val primaryTextField = TextStyle(
+        fontSize = 24.sp,
+        fontWeight = FontWeight.W400,
+        lineHeight = 32.sp,
+    )
 }
 
 @Preview(name = "Text styles")

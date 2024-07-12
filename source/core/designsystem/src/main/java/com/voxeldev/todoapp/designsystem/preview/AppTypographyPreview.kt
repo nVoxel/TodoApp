@@ -7,10 +7,21 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.designsystem.preview.components.PreviewSectionSpacer
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
+
+private val textStyles: List<Pair<String, TextStyle>> = buildList {
+    add("Large title — 32/38" to AppTypography.largeTitle)
+    add("Title — 20/32" to AppTypography.title)
+    add("BUTTON — 14/24" to AppTypography.button)
+    add("Body — 16/20" to AppTypography.body)
+    add("Body strikethrough — 16/20" to AppTypography.bodyStrikethrough)
+    add("Subhead — 14/20" to AppTypography.subhead)
+    add("Primary Text Field — 24/32" to AppTypography.primaryTextField)
+}
 
 /**
  * @author nvoxel
@@ -24,45 +35,16 @@ internal fun AppTypographyPreview() {
         color = appPalette.backSecondary,
     ) {
         Column(modifier = Modifier.padding(all = 32.dp)) {
-            Text(
-                text = "Large title — 32/38",
-                style = AppTypography.largeTitle,
-            )
+            textStyles.forEachIndexed { index, textStyle ->
+                Text(
+                    text = textStyle.first,
+                    style = textStyle.second,
+                )
 
-            PreviewSectionSpacer()
-
-            Text(
-                text = "Title — 20/32",
-                style = AppTypography.title,
-            )
-
-            PreviewSectionSpacer()
-
-            Text(
-                text = "BUTTON — 14/24",
-                style = AppTypography.button,
-            )
-
-            PreviewSectionSpacer()
-
-            Text(
-                text = "Body — 16/20",
-                style = AppTypography.body,
-            )
-
-            PreviewSectionSpacer()
-
-            Text(
-                text = "Body strikethrough — 16/20",
-                style = AppTypography.bodyStrikethrough,
-            )
-
-            PreviewSectionSpacer()
-
-            Text(
-                text = "Subhead — 14/20",
-                style = AppTypography.subhead,
-            )
+                if (index < textStyles.lastIndex) {
+                    PreviewSectionSpacer()
+                }
+            }
         }
     }
 }

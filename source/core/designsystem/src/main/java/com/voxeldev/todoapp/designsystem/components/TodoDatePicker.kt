@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -30,8 +31,6 @@ fun TodoDatePicker(
     dismissButtonText: String,
     onDismiss: () -> Unit,
 ) {
-    val appPalette = LocalAppPalette.current
-
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialSelectedDateMillis)
 
     // Fixes DatePicker not fully visible in landscape orientation
@@ -39,33 +38,65 @@ fun TodoDatePicker(
     if (isLandscape) datePickerState.displayMode = DisplayMode.Input
 
     if (isVisible) {
-        DatePickerDialog(
-            onDismissRequest = onDismiss,
-            confirmButton = {
-                TextButton(onClick = { datePickerState.selectedDateMillis?.let { onConfirm(it / 1000) } }) {
-                    Text(
-                        text = confirmButtonText.uppercase(),
-                        color = appPalette.colorBlue,
-                        style = AppTypography.button,
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(
-                        text = dismissButtonText.uppercase(),
-                        color = appPalette.colorBlue,
-                        style = AppTypography.button,
-                    )
-                }
-            },
-        ) {
-            DatePicker(
-                state = datePickerState,
-                colors = DatePickerDefaults.colors(selectedDayContainerColor = appPalette.colorBlue),
-                showModeToggle = !isLandscape,
+        TodoDatePickerDialog(
+            datePickerState = datePickerState,
+            isLandscape = isLandscape,
+            confirmButtonText = confirmButtonText,
+            onConfirm = onConfirm,
+            dismissButtonText = dismissButtonText,
+            onDismiss = onDismiss,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TodoDatePickerDialog(
+    datePickerState: DatePickerState,
+    isLandscape: Boolean,
+    confirmButtonText: String,
+    onConfirm: (Long) -> Unit,
+    dismissButtonText: String,
+    onDismiss: () -> Unit,
+) {
+    val appPalette = LocalAppPalette.current
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TodoDatePickerButton(
+                text = confirmButtonText,
+                onClick = { datePickerState.selectedDateMillis?.let { onConfirm(it / 1000) } },
             )
-        }
+        },
+        dismissButton = {
+            TodoDatePickerButton(
+                text = dismissButtonText,
+                onClick = onDismiss,
+            )
+        },
+    ) {
+        DatePicker(
+            state = datePickerState,
+            colors = DatePickerDefaults.colors(selectedDayContainerColor = appPalette.colorBlue),
+            showModeToggle = !isLandscape,
+        )
+    }
+}
+
+@Composable
+private fun TodoDatePickerButton(
+    text: String,
+    onClick: () -> Unit,
+) {
+    val appPalette = LocalAppPalette.current
+
+    TextButton(onClick = onClick) {
+        Text(
+            text = text.uppercase(),
+            color = appPalette.colorBlue,
+            style = AppTypography.button,
+        )
     }
 }
 

@@ -1,54 +1,42 @@
 package com.voxeldev.todoapp.task.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.voxeldev.todoapp.api.model.TodoItemImportance
-import com.voxeldev.todoapp.designsystem.components.TodoDatePicker
+import com.voxeldev.todoapp.designsystem.components.ErrorSnackbarEffect
 import com.voxeldev.todoapp.designsystem.components.TodoDivider
-import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
-import com.voxeldev.todoapp.designsystem.components.TodoSwitch
 import com.voxeldev.todoapp.designsystem.components.TodoTextField
-import com.voxeldev.todoapp.designsystem.components.conditional
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
-import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import com.voxeldev.todoapp.task.R
-import com.voxeldev.todoapp.task.ui.extensions.calculateTopBarElevation
-import com.voxeldev.todoapp.task.ui.extensions.getDisplayColor
-import com.voxeldev.todoapp.task.ui.extensions.getDisplayText
+import com.voxeldev.todoapp.task.ui.components.TaskScreenDeadlineButton
+import com.voxeldev.todoapp.task.ui.components.TaskScreenDeleteButton
+import com.voxeldev.todoapp.task.ui.components.TaskScreenImportanceButton
+import com.voxeldev.todoapp.task.ui.components.TaskScreenTopBar
 import com.voxeldev.todoapp.task.ui.preview.TaskScreenPreviewData
 import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
+import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
 
 /**
  * @author nvoxel
@@ -63,9 +51,13 @@ fun TaskScreen(
     val deadlineTimestamp by viewModel.deadlineTimestamp.collectAsStateWithLifecycle()
     val deadlineTimestampString by viewModel.deadlineTimestampString.collectAsStateWithLifecycle()
     val saveButtonActive by viewModel.saveButtonActive.collectAsStateWithLifecycle()
+    val error by viewModel.exception.collectAsStateWithLifecycle()
+
+    val displayFullscreenError = viewModel.taskId != null && text.isBlank() // don't display after initial load
 
     BaseScreen(
         viewModel = viewModel,
+        displayFullscreenError = displayFullscreenError,
         retryCallback = viewModel::getTodoItem,
     ) {
         TaskScreen(
@@ -75,6 +67,8 @@ fun TaskScreen(
             deadlineTimestamp = deadlineTimestamp,
             deadlineTimestampString = deadlineTimestampString,
             saveButtonActive = saveButtonActive,
+            error = error?.getDisplayMessage(),
+            onSnackbarHide = viewModel::onSnackbarHide,
             onTextChanged = { updatedText -> viewModel.updateText(text = updatedText) },
             onImportanceChanged = { updatedImportance -> viewModel.updateImportance(importance = updatedImportance) },
             onDeadlineTimestampChanged = { updatedDeadlineTimestamp ->
@@ -96,6 +90,8 @@ private fun TaskScreen(
     deadlineTimestamp: Long?,
     deadlineTimestampString: String?,
     saveButtonActive: Boolean,
+    error: String?,
+    onSnackbarHide: () -> Unit,
     onTextChanged: (String) -> Unit,
     onImportanceChanged: (TodoItemImportance) -> Unit,
     onDeadlineTimestampChanged: (Long) -> Unit,
@@ -107,175 +103,80 @@ private fun TaskScreen(
     val appPalette = LocalAppPalette.current
 
     val scrollState = rememberScrollState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     var importanceDropdownVisible by rememberSaveable { mutableStateOf(false) }
     var datePickerDialogVisible by rememberSaveable { mutableStateOf(false) }
 
+    ErrorSnackbarEffect(
+        errorMessage = error,
+        snackbarHostState = snackbarHostState,
+        onHide = onSnackbarHide,
+    )
+
     Scaffold(
         topBar = {
-            Surface(shadowElevation = scrollState.calculateTopBarElevation()) {
-                TodoSmallTopBar(
-                    buttonText = stringResource(id = if (editTask) R.string.save else R.string.create),
-                    isButtonActive = saveButtonActive,
-                    onButtonClicked = onSaveClicked,
-                    onCloseClicked = onCloseClicked,
-                )
-            }
+            TaskScreenTopBar(
+                scrollState = scrollState,
+                saveButtonActive = saveButtonActive,
+                editTask = editTask,
+                onSaveClicked = onSaveClicked,
+                onCloseClicked = onCloseClicked,
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         },
         containerColor = appPalette.backPrimary,
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues = paddingValues)
-                .padding(horizontal = 16.dp)
                 .verticalScroll(state = scrollState),
         ) {
             Spacer(modifier = Modifier.height(height = 8.dp))
 
             TodoTextField(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .heightIn(max = 260.dp),
                 text = text,
                 onTextChanged = onTextChanged,
                 placeholderText = stringResource(id = R.string.todo_placeholder),
             )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { importanceDropdownVisible = true }
-                    .padding(top = 28.dp, bottom = 16.dp),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.importance),
-                    color = appPalette.labelPrimary,
-                    style = AppTypography.body,
-                )
+            Spacer(modifier = Modifier.height(height = 12.dp))
 
-                Text(
-                    modifier = Modifier
-                        .padding(top = 4.dp),
-                    text = importance.getDisplayText(),
-                    color = importance.getDisplayColor(forDropdown = false),
-                    style = AppTypography.subhead,
-                )
-
-                ImportanceDropdown(
-                    expanded = importanceDropdownVisible,
-                    onDismiss = { importanceDropdownVisible = false },
-                    onImportanceClicked = { updatedImportance ->
-                        onImportanceChanged(updatedImportance)
-                        importanceDropdownVisible = false
-                    },
-                )
-            }
-
-            TodoDivider()
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { datePickerDialogVisible = true }
-                    .padding(top = 16.dp, bottom = 24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(id = R.string.deadline),
-                        color = appPalette.labelPrimary,
-                        style = AppTypography.body,
-                    )
-
-                    deadlineTimestampString?.let {
-                        Text(
-                            modifier = Modifier
-                                .padding(top = 4.dp),
-                            text = deadlineTimestampString,
-                            color = appPalette.colorBlue,
-                            style = AppTypography.subhead,
-                        )
-                    }
-                }
-
-                TodoSwitch(
-                    checked = deadlineTimestampString != null,
-                    onCheckedChange = {
-                        if (deadlineTimestampString == null) {
-                            datePickerDialogVisible = true
-                        } else {
-                            onDeadlineTimestampReset()
-                        }
-                    },
-                )
-
-                TodoDatePicker(
-                    isVisible = datePickerDialogVisible,
-                    initialSelectedDateMillis = deadlineTimestamp?.let { it * 1000 } ?: System.currentTimeMillis(),
-                    confirmButtonText = stringResource(id = R.string.done),
-                    onConfirm = { updatedDeadlineTimestamp ->
-                        onDeadlineTimestampChanged(updatedDeadlineTimestamp)
-                        datePickerDialogVisible = false
-                    },
-                    dismissButtonText = stringResource(id = R.string.cancel),
-                    onDismiss = { datePickerDialogVisible = false },
-                )
-            }
-
-            TodoDivider()
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .conditional(
-                        condition = editTask,
-                        conditionMetModifier = Modifier.clickable(onClick = onDeleteClicked),
-                    )
-                    .padding(vertical = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(id = R.string.delete),
-                    tint = if (editTask) appPalette.colorRed else appPalette.labelDisable,
-                )
-
-                Spacer(modifier = Modifier.width(width = 12.dp))
-
-                Text(
-                    text = stringResource(id = R.string.delete),
-                    color = if (editTask) appPalette.colorRed else appPalette.labelDisable,
-                    style = AppTypography.body,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ImportanceDropdown(
-    expanded: Boolean,
-    onDismiss: () -> Unit,
-    onImportanceClicked: (TodoItemImportance) -> Unit,
-) {
-    val appPalette = LocalAppPalette.current
-
-    DropdownMenu(
-        modifier = Modifier
-            .defaultMinSize(minWidth = 164.dp)
-            .background(color = appPalette.backElevated),
-        expanded = expanded,
-        onDismissRequest = onDismiss,
-    ) {
-        TodoItemImportance.entries.forEach { importance ->
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = importance.getDisplayText(),
-                        color = importance.getDisplayColor(forDropdown = true),
-                        style = AppTypography.body,
-                    )
+            TaskScreenImportanceButton(
+                importance = importance,
+                importanceDropdownVisible = importanceDropdownVisible,
+                onImportanceChanged = onImportanceChanged,
+                onChangeImportanceDropdownVisibility = { newImportanceDropdownVisible ->
+                    importanceDropdownVisible = newImportanceDropdownVisible
                 },
-                onClick = { onImportanceClicked(importance) },
             )
+
+            TodoDivider()
+
+            TaskScreenDeadlineButton(
+                datePickerDialogVisible = datePickerDialogVisible,
+                deadlineTimestamp = deadlineTimestamp,
+                deadlineTimestampString = deadlineTimestampString,
+                onChangeDatePickerDialogVisibility = { newDatePickerDialogVisible ->
+                    datePickerDialogVisible = newDatePickerDialogVisible
+                },
+                onDeadlineTimestampChanged = onDeadlineTimestampChanged,
+                onDeadlineTimestampReset = onDeadlineTimestampReset,
+            )
+
+            TodoDivider()
+
+            TaskScreenDeleteButton(
+                editTask = editTask,
+                onDeleteClicked = onDeleteClicked,
+            )
+
+            Spacer(modifier = Modifier.imePadding())
         }
     }
 }
@@ -291,6 +192,8 @@ private fun TaskScreenPreview() {
             deadlineTimestamp = TaskScreenPreviewData.deadlineTimestamp,
             deadlineTimestampString = TaskScreenPreviewData.deadlineTimestampString,
             saveButtonActive = true,
+            error = null,
+            onSnackbarHide = {},
             onTextChanged = {},
             onImportanceChanged = {},
             onDeadlineTimestampChanged = {},

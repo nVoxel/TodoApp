@@ -1,17 +1,17 @@
 package com.voxeldev.todoapp.list.viewmodel
 
 import com.voxeldev.todoapp.api.model.TodoItem
-import com.voxeldev.todoapp.domain.usecase.DeleteTodoItemUseCase
-import com.voxeldev.todoapp.domain.usecase.GetAllTodoItemsFlowUseCase
-import com.voxeldev.todoapp.domain.usecase.UpdateTodoItemUseCase
+import com.voxeldev.todoapp.api.model.TodoItemList
 import com.voxeldev.todoapp.domain.usecase.base.BaseUseCase
+import com.voxeldev.todoapp.domain.usecase.todoitem.DeleteTodoItemUseCase
+import com.voxeldev.todoapp.domain.usecase.todoitem.GetAllTodoItemsFlowUseCase
+import com.voxeldev.todoapp.domain.usecase.todoitem.UpdateTodoItemUseCase
+import com.voxeldev.todoapp.list.ui.ListScreen
 import com.voxeldev.todoapp.utils.base.BaseViewModel
 import com.voxeldev.todoapp.utils.extensions.formatTimestamp
+import com.voxeldev.todoapp.utils.platform.NetworkObserver
+import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +22,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 /**
+ * Stores [ListScreen] current state, provides methods to change [TodoItem].
  * @author nvoxel
  */
 @HiltViewModel
@@ -29,20 +30,27 @@ class ListViewModel @Inject constructor(
     private val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase,
     private val updateTodoItemUseCase: UpdateTodoItemUseCase,
     private val deleteTodoItemUseCase: DeleteTodoItemUseCase,
-) : BaseViewModel() {
+    networkObserver: NetworkObserver,
+    coroutineDispatcherProvider: CoroutineDispatcherProvider,
+) : BaseViewModel(
+    networkObserver = networkObserver,
+    coroutineDispatcherProvider = coroutineDispatcherProvider,
+) {
 
-    private var _todoItems: MutableStateFlow<List<TodoItem>> = MutableStateFlow(value = emptyList())
-    val todoItems: StateFlow<List<TodoItem>> = _todoItems.asStateFlow()
+    private val _todoItems: MutableStateFlow<TodoItemList> = MutableStateFlow(value = emptyList())
+    val todoItems: StateFlow<TodoItemList> = _todoItems.asStateFlow()
 
     private val _completedItemsCount: MutableStateFlow<Int> = MutableStateFlow(value = 0)
     val completedItemsCount: StateFlow<Int> = _completedItemsCount.asStateFlow()
 
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
     init {
         getTodoItems()
+    }
+
+    fun onSnackbarHide() {
+        _exception.update { null }
     }
 
     fun getTodoItems() {
@@ -71,42 +79,27 @@ class ListViewModel @Inject constructor(
     fun checkTodoItem(id: String, isChecked: Boolean) {
         val item = todoItems.value.find { item -> item.id == id }
         item?.let {
-            // not used for stub repository
-            // _loading.update { true }
-
             val newItem = item.copy(isComplete = isChecked)
             updateTodoItemUseCase(
                 params = newItem,
                 scope = scope,
             ) { result ->
-                result.fold(
-                    onSuccess = { /*_loading.update { false }*/ },
-                    onFailure = ::handleException,
-                )
+                result.onFailure(action = ::handleException)
             }
         }
     }
 
     fun deleteTodoItem(id: String) {
-        // not used for stub repository
-        // _loading.update { true }
-
         deleteTodoItemUseCase(
             params = id,
             scope = scope,
         ) { result ->
-            result.fold(
-                onSuccess = { /*_loading.update { false }*/ },
-                onFailure = ::handleException,
-            )
+            result.onFailure(action = ::handleException)
         }
     }
 
     fun getFormattedTimestamp(timestamp: Long): String =
         timestamp.formatTimestamp(format = format)
 
-    override fun onCleared() {
-        scope.coroutineContext.cancelChildren()
-        super.onCleared()
-    }
+    override fun onNetworkConnected() = getTodoItems()
 }

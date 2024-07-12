@@ -15,7 +15,7 @@ internal object ListScreenPreviewData {
             deadlineTimestamp = 1716175200,
             isComplete = false,
             creationTimestamp = 1715930496,
-            modifiedTimestamp = null,
+            modifiedTimestamp = 1715930496,
         ),
         TodoItem(
             id = "2",
@@ -24,7 +24,7 @@ internal object ListScreenPreviewData {
             deadlineTimestamp = null,
             isComplete = false,
             creationTimestamp = 1715951200,
-            modifiedTimestamp = null,
+            modifiedTimestamp = 1715951200,
         ),
         TodoItem(
             id = "3",
@@ -42,7 +42,7 @@ internal object ListScreenPreviewData {
             deadlineTimestamp = 1716261600,
             isComplete = false,
             creationTimestamp = 1715994400,
-            modifiedTimestamp = null,
+            modifiedTimestamp = 1715994400,
         ),
         TodoItem(
             id = "5",
@@ -60,7 +60,7 @@ internal object ListScreenPreviewData {
             deadlineTimestamp = 1716348000,
             isComplete = true,
             creationTimestamp = 1716037600,
-            modifiedTimestamp = null,
+            modifiedTimestamp = 1716037600,
         ),
         TodoItem(
             id = "7",
@@ -69,7 +69,7 @@ internal object ListScreenPreviewData {
             deadlineTimestamp = null,
             isComplete = false,
             creationTimestamp = 1716059200,
-            modifiedTimestamp = null,
+            modifiedTimestamp = 1716059200,
         ),
         TodoItem(
             id = "8",
@@ -87,7 +87,7 @@ internal object ListScreenPreviewData {
             deadlineTimestamp = null,
             isComplete = false,
             creationTimestamp = 1716102400,
-            modifiedTimestamp = null,
+            modifiedTimestamp = 1716102400,
         ),
         TodoItem(
             id = "10",
@@ -96,7 +96,7 @@ internal object ListScreenPreviewData {
             deadlineTimestamp = 1716520800,
             isComplete = true,
             creationTimestamp = 1716124000,
-            modifiedTimestamp = null,
+            modifiedTimestamp = 1716124000,
         ),
     )
 }

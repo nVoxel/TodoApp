@@ -17,6 +17,8 @@ android {
         versionCode = libs.versions.version.code.get().toInt()
         versionName = libs.versions.version.name.get()
 
+        manifestPlaceholders["YANDEX_CLIENT_ID"] = extra["YANDEX_CLIENT_ID"].toString()
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -49,12 +51,15 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.startup)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.material.icons.extended)
@@ -63,11 +68,18 @@ dependencies {
     implementation(libs.navigation.compose)
 
     implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
     kapt(libs.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
+
+    implementation(libs.yandex.authsdk)
 
     implementation(projects.source.core.designsystem)
+    implementation(projects.source.core.domain)
     implementation(projects.source.core.utils)
+    implementation(projects.source.feature.auth)
     implementation(projects.source.feature.list)
+    implementation(projects.source.feature.settings)
     implementation(projects.source.feature.task)
 
     debugImplementation(libs.androidx.ui.tooling)

@@ -1,11 +1,9 @@
 package com.voxeldev.todoapp.designsystem.components
 
-/**
- * @author nvoxel
- */
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,17 +16,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.designsystem.R
 import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
+import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
 /**
  * @author nvoxel
  */
 @Composable
-fun Error(
+fun FullscreenError(
     message: String,
     shouldShowRetry: Boolean,
     retryCallback: () -> Unit = {},
@@ -37,33 +37,75 @@ fun Error(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+            .fillMaxSize()
+            .background(color = appPalette.backPrimary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = appPalette.labelPrimary,
-            text = stringResource(id = R.string.error, message),
+        Error(
+            message = message,
+            shouldShowRetry = shouldShowRetry,
+            retryCallback = retryCallback,
         )
-        if (shouldShowRetry) {
-            TodoButton(
-                modifier = Modifier.padding(top = 16.dp),
-                onClick = { retryCallback() },
-            ) {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Default.RestartAlt,
-                    contentDescription = null,
-                )
-                Text(
-                    modifier = Modifier.padding(start = 4.dp, end = 2.dp),
-                    text = stringResource(id = R.string.retry),
-                )
-            }
-        }
+    }
+}
+
+@Composable
+fun Error(
+    message: String,
+    shouldShowRetry: Boolean,
+    retryCallback: () -> Unit = {},
+) {
+    Column(
+        modifier = Modifier.padding(all = 16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        ErrorContent(
+            message = message,
+            shouldShowRetry = shouldShowRetry,
+            retryCallback = retryCallback,
+        )
+    }
+}
+
+@Composable
+private fun ErrorContent(
+    message: String,
+    shouldShowRetry: Boolean,
+    retryCallback: () -> Unit = {},
+) {
+    val appPalette = LocalAppPalette.current
+
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        color = appPalette.labelPrimary,
+        text = stringResource(id = R.string.error, message),
+        textAlign = TextAlign.Center,
+        maxLines = 3,
+        overflow = TextOverflow.Ellipsis,
+        style = AppTypography.body,
+    )
+    if (shouldShowRetry) {
+        RetryButton(retryCallback = retryCallback)
+    }
+}
+
+@Composable
+private fun RetryButton(retryCallback: () -> Unit) {
+    TodoButton(
+        modifier = Modifier.padding(top = 16.dp),
+        onClick = retryCallback,
+    ) {
+        Icon(
+            modifier = Modifier.size(20.dp),
+            imageVector = Icons.Default.RestartAlt,
+            contentDescription = null,
+        )
+        Text(
+            modifier = Modifier.padding(start = 4.dp, end = 2.dp),
+            text = stringResource(id = R.string.retry),
+        )
     }
 }
 
@@ -71,7 +113,7 @@ fun Error(
 @Composable
 private fun Preview() {
     PreviewBase {
-        Error(
+        FullscreenError(
             message = "Error while loading something...",
             shouldShowRetry = true,
         )

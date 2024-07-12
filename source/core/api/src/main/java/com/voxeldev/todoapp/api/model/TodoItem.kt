@@ -1,6 +1,7 @@
 package com.voxeldev.todoapp.api.model
 
 /**
+ * User-created task.
  * @author nvoxel
  */
 data class TodoItem(
@@ -10,5 +11,6 @@ data class TodoItem(
     val deadlineTimestamp: Long? = null,
     val isComplete: Boolean,
     val creationTimestamp: Long,
-    val modifiedTimestamp: Long? = null,
+    val modifiedTimestamp: Long,
+    val lastUpdatedBy: String? = null,
 )

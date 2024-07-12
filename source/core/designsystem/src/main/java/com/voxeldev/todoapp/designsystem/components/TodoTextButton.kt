@@ -34,9 +34,7 @@ fun TodoTextButton(
 ) {
     val appPalette = LocalAppPalette.current
 
-    CompositionLocalProvider(
-        LocalMinimumInteractiveComponentEnforcement provides false,
-    ) {
+    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
         TextButton(
             modifier = modifier
                 .defaultMinSize(minWidth = 10.dp),

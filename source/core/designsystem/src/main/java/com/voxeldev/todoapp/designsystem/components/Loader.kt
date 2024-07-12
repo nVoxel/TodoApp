@@ -16,7 +16,7 @@ import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
  * @author nvoxel
  */
 @Composable
-fun Loader(
+fun FullscreenLoader(
     modifier: Modifier = Modifier,
     progress: (() -> Float)? = null,
 ) {
@@ -29,19 +29,26 @@ fun Loader(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        progress?.let {
-            CircularProgressIndicator(
-                progress = progress,
-                color = appPalette.colorBlue,
-            )
-        } ?: CircularProgressIndicator(color = appPalette.colorBlue)
+        Loader(progress = progress)
     }
+}
+
+@Composable
+fun Loader(progress: (() -> Float)? = null) {
+    val appPalette = LocalAppPalette.current
+
+    progress?.let {
+        CircularProgressIndicator(
+            progress = progress,
+            color = appPalette.colorBlue,
+        )
+    } ?: CircularProgressIndicator(color = appPalette.colorBlue)
 }
 
 @ComponentDayNightPreviews
 @Composable
 private fun Preview() {
     PreviewBase {
-        Loader(progress = { 0.7f })
+        FullscreenLoader(progress = { 0.7f })
     }
 }

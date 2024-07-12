@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.designsystem.components.swipedismiss.DismissDirection
+import com.voxeldev.todoapp.designsystem.components.swipedismiss.DismissState
 import com.voxeldev.todoapp.designsystem.components.swipedismiss.DismissValue
 import com.voxeldev.todoapp.designsystem.components.swipedismiss.TodoSwipeDismiss
 import com.voxeldev.todoapp.designsystem.components.swipedismiss.rememberDismissState
@@ -38,7 +39,7 @@ private const val DEFAULT_ITEM_ANIMATION_DELAY = 300L
 /**
  * @author nvoxel
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SwipeableListItem(
     lazyItemScope: LazyItemScope,
@@ -46,22 +47,42 @@ internal fun SwipeableListItem(
     onCheckClicked: () -> Unit,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val appPalette = LocalAppPalette.current
-
-    val contentResolver = LocalContext.current.contentResolver
-    val animationDelay = remember {
-        val scale = Settings.Global.getFloat(contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-        return@remember (DEFAULT_ITEM_ANIMATION_DELAY * scale).roundToLong()
-    }
-
     var isDeleted by remember { mutableStateOf(false) }
     var isChecked by remember { mutableStateOf(false) }
 
-    val swipeToDismissBoxState = rememberDismissState(
+    val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
+        onChangeChecked = { newIsChecked -> isChecked = newIsChecked },
+        onChangeDeleted = { newIsDeleted -> isDeleted = newIsDeleted },
+    )
+
+    SideEffects(
+        swipeToDismissBoxState = swipeToDismissBoxState,
+        isDeleted = isDeleted,
+        isChecked = isChecked,
+        changeIsChecked = { newIsChecked -> isChecked = newIsChecked },
+        changeIsDeleted = { newIsDeleted -> isDeleted = newIsDeleted },
+        onDeleteClicked = onDeleteClicked,
+        onCheckClicked = onCheckClicked,
+    )
+
+    SwipeableListItemContent(
+        lazyItemScope = lazyItemScope,
+        swipeToDismissBoxState = swipeToDismissBoxState,
+        content = content,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun rememberSwipeToDismissBoxState(
+    onChangeChecked: (Boolean) -> Unit,
+    onChangeDeleted: (Boolean) -> Unit,
+): DismissState =
+    rememberDismissState(
         confirmValueChange = { swipeToDismissBoxValue ->
             when (swipeToDismissBoxValue) {
-                DismissValue.DismissedToEnd -> isChecked = true
-                DismissValue.DismissedToStart -> isDeleted = true
+                DismissValue.DismissedToEnd -> onChangeChecked(true)
+                DismissValue.DismissedToStart -> onChangeDeleted(true)
                 DismissValue.Default -> return@rememberDismissState false
             }
 
@@ -70,10 +91,73 @@ internal fun SwipeableListItem(
         positionalThreshold = { it * .5f },
     )
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun SwipeableListItemContent(
+    lazyItemScope: LazyItemScope,
+    swipeToDismissBoxState: DismissState,
+    content: @Composable RowScope.() -> Unit,
+) {
+    with(lazyItemScope) {
+        Box(modifier = Modifier.animateItemPlacement()) {
+            TodoSwipeDismiss(
+                state = swipeToDismissBoxState,
+                background = { SwipeableListItemBackground(swipeToDismissBoxState = swipeToDismissBoxState) },
+                dismissContent = content,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SwipeableListItemBackground(swipeToDismissBoxState: DismissState) {
+    val appPalette = LocalAppPalette.current
+
+    val direction = swipeToDismissBoxState.dismissDirection ?: return
+
+    val color = if (direction == DismissDirection.StartToEnd) appPalette.colorGreen else appPalette.colorRed
+    val alignment = if (direction == DismissDirection.StartToEnd) Alignment.CenterStart else Alignment.CenterEnd
+    val icon = if (direction == DismissDirection.StartToEnd) Icons.Default.Check else Icons.Default.Delete
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = color)
+            .padding(horizontal = 24.dp),
+        contentAlignment = alignment,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(id = R.string.task_actions),
+            tint = appPalette.colorWhite,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SideEffects(
+    swipeToDismissBoxState: DismissState,
+    isDeleted: Boolean,
+    isChecked: Boolean,
+    changeIsDeleted: (Boolean) -> Unit,
+    changeIsChecked: (Boolean) -> Unit,
+    onDeleteClicked: () -> Unit,
+    onCheckClicked: () -> Unit,
+) {
+    val contentResolver = LocalContext.current.contentResolver
+    val animationDelay = remember {
+        val scale = Settings.Global.getFloat(contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+        return@remember (DEFAULT_ITEM_ANIMATION_DELAY * scale).roundToLong()
+    }
+
     LaunchedEffect(key1 = isDeleted) {
         if (isDeleted) {
             delay(timeMillis = animationDelay)
             onDeleteClicked()
+            swipeToDismissBoxState.reset()
+            changeIsDeleted(false)
         }
     }
 
@@ -82,37 +166,7 @@ internal fun SwipeableListItem(
             delay(timeMillis = animationDelay)
             onCheckClicked()
             swipeToDismissBoxState.reset()
-            isChecked = false
-        }
-    }
-
-    with(lazyItemScope) {
-        Box(modifier = Modifier.animateItemPlacement()) {
-            TodoSwipeDismiss(
-                state = swipeToDismissBoxState,
-                background = {
-                    val direction = swipeToDismissBoxState.dismissDirection ?: return@TodoSwipeDismiss
-
-                    val color = if (direction == DismissDirection.StartToEnd) appPalette.colorGreen else appPalette.colorRed
-                    val alignment = if (direction == DismissDirection.StartToEnd) Alignment.CenterStart else Alignment.CenterEnd
-                    val icon = if (direction == DismissDirection.StartToEnd) Icons.Default.Check else Icons.Default.Delete
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = color)
-                            .padding(horizontal = 24.dp),
-                        contentAlignment = alignment,
-                    ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = stringResource(id = R.string.task_actions),
-                            tint = appPalette.colorWhite,
-                        )
-                    }
-                },
-                dismissContent = content,
-            )
+            changeIsChecked(false)
         }
     }
 }

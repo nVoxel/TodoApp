@@ -21,8 +21,11 @@ data class AppPalette(
     val labelSecondary: Color = Color.Unspecified,
     val labelTertiary: Color = Color.Unspecified,
     val labelDisable: Color = Color.Unspecified,
+    val labelContrast: Color = Color.Unspecified,
+    val labelSupport: Color = Color.Unspecified,
 
     val colorRed: Color = Color.Unspecified,
+    val colorRedSecondary: Color = Color.Unspecified,
     val colorRedBack: Color = Color.Unspecified,
     val colorGreen: Color = Color.Unspecified,
     val colorBlue: Color = Color.Unspecified,
@@ -35,6 +38,8 @@ data class AppPalette(
     val backPrimary: Color = Color.Unspecified,
     val backSecondary: Color = Color.Unspecified,
     val backElevated: Color = Color.Unspecified,
+    val backTint: Color = Color.Unspecified,
+    val backContrast: Color = Color.Unspecified,
 )
 
 val LocalAppPalette = staticCompositionLocalOf { AppPalette() }
@@ -47,8 +52,11 @@ internal val lightAppPalette = AppPalette(
     labelSecondary = Color(0x99000000),
     labelTertiary = Color(0x4D000000),
     labelDisable = Color(0x26000000),
+    labelContrast = Color(0xFFFFFFFF),
+    labelSupport = Color(0xFFB3B8CC),
 
     colorRed = Color(0xFFFF3B30),
+    colorRedSecondary = Color(0xFFFF6D64),
     colorRedBack = Color(0x14FF3B30),
     colorGreen = Color(0xFF34C759),
     colorBlue = Color(0xFF007AFF),
@@ -61,6 +69,8 @@ internal val lightAppPalette = AppPalette(
     backPrimary = Color(0xFFF7F6F2),
     backSecondary = Color(0xFFFFFFFF),
     backElevated = Color(0xFFFFFFFF),
+    backTint = Color(0x99000000),
+    backContrast = Color(0xFF292933),
 )
 
 internal val darkAppPalette = AppPalette(
@@ -71,8 +81,11 @@ internal val darkAppPalette = AppPalette(
     labelSecondary = Color(0x99FFFFFF),
     labelTertiary = Color(0x66FFFFFF),
     labelDisable = Color(0x26FFFFFF),
+    labelContrast = Color(0xFF1F1F24),
+    labelSupport = Color(0xFFB3B8CC),
 
     colorRed = Color(0xFFFF453A),
+    colorRedSecondary = Color(0xFFCC251B),
     colorRedBack = Color(0x14FF453A),
     colorGreen = Color(0xFF32D74B),
     colorBlue = Color(0xFF0A84FF),
@@ -85,10 +98,12 @@ internal val darkAppPalette = AppPalette(
     backPrimary = Color(0xFF161618),
     backSecondary = Color(0xFF252528),
     backElevated = Color(0xFF3C3C3F),
+    backTint = Color(0x99000000),
+    backContrast = Color(0xFFFAFAFF),
 )
 
-@Preview(name = "Component colors (Light)", widthDp = 1440, heightDp = 460, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Component colors (Dark)", widthDp = 1440, heightDp = 460, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Component colors (Light)", widthDp = 1440, heightDp = 560, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Component colors (Dark)", widthDp = 1440, heightDp = 560, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview() {
     PreviewBase {

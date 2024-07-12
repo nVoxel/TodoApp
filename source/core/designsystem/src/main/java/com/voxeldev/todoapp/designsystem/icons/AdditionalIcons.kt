@@ -121,4 +121,67 @@ object AdditionalIcons {
 
             return _importanceLow!!
         }
+
+    private var _yandexLogo: ImageVector? = null
+    val YandexLogo: ImageVector
+        get() {
+            _yandexLogo = ImageVector.Builder(
+                name = "Yandex",
+                defaultWidth = 44.dp,
+                defaultHeight = 44.dp,
+                viewportWidth = 44f,
+                viewportHeight = 44f,
+            ).apply {
+                path(
+                    fill = SolidColor(Color(0xFFFC3F1D)),
+                    fillAlpha = 1.0f,
+                    stroke = null,
+                    strokeAlpha = 1.0f,
+                    strokeLineWidth = 1.0f,
+                    strokeLineCap = StrokeCap.Butt,
+                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineMiter = 1.0f,
+                    pathFillType = PathFillType.NonZero,
+                ) {
+                    moveTo(0f, 0f)
+                    horizontalLineTo(44f)
+                    verticalLineTo(44f)
+                    horizontalLineTo(0f)
+                    verticalLineTo(0f)
+                    close()
+                }
+                path(
+                    fill = SolidColor(Color(0xFFFFFFFF)),
+                    fillAlpha = 1.0f,
+                    stroke = null,
+                    strokeAlpha = 1.0f,
+                    strokeLineWidth = 1.0f,
+                    strokeLineCap = StrokeCap.Butt,
+                    strokeLineJoin = StrokeJoin.Miter,
+                    strokeLineMiter = 1.0f,
+                    pathFillType = PathFillType.NonZero,
+                ) {
+                    moveTo(24.7407f, 33.9778f)
+                    horizontalLineTo(29.0889f)
+                    verticalLineTo(9.04443f)
+                    horizontalLineTo(22.7592f)
+                    curveTo(16.3929f, 9.0444f, 13.0538f, 12.303f, 13.0538f, 17.1176f)
+                    curveTo(13.0538f, 21.2731f, 15.2187f, 23.6163f, 19.0532f, 26.1609f)
+                    lineTo(21.3832f, 27.6987f)
+                    lineTo(18.3927f, 25.1907f)
+                    lineTo(12.4667f, 33.9778f)
+                    horizontalLineTo(17.1818f)
+                    lineTo(23.5115f, 24.5317f)
+                    lineTo(21.3098f, 23.0671f)
+                    curveTo(18.6496f, 21.2731f, 17.3469f, 19.8818f, 17.3469f, 16.8613f)
+                    curveTo(17.3469f, 14.2068f, 19.2183f, 12.4128f, 22.7776f, 12.4128f)
+                    horizontalLineTo(24.7223f)
+                    verticalLineTo(33.9778f)
+                    horizontalLineTo(24.7407f)
+                    close()
+                }
+            }.build()
+
+            return _yandexLogo!!
+        }
 }
