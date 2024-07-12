@@ -1,8 +1,9 @@
 package com.voxeldev.todoapp.plugin.stats
 
+import com.voxeldev.todoapp.plugin.BuildVerifyPlugin.Companion.APK_SIZE_FILE_NAME
 import com.voxeldev.todoapp.plugin.BuildVerifyPlugin.Companion.BUILD_VERIFY_TAG
-import com.voxeldev.todoapp.plugin.size.ValidateApkSizeTask.Companion.APK_SIZE_FILE_NAME
 import com.voxeldev.todoapp.telegram.TelegramApi
+import com.voxeldev.todoapp.utils.APK_SUFFIX
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
@@ -10,6 +11,7 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import javax.inject.Inject
@@ -17,7 +19,7 @@ import javax.inject.Inject
 /**
  * @author nvoxel
  */
-abstract class TelegramStatsTask @Inject constructor(
+abstract class TelegramFileTask @Inject constructor(
     private val telegramApi: TelegramApi,
     private val buildVariant: String,
     private val versionCode: String,
@@ -27,13 +29,19 @@ abstract class TelegramStatsTask @Inject constructor(
     abstract val apkDir: DirectoryProperty
 
     @get:Input
-    abstract val token: Property<String>
+    @get:Optional
+    abstract val sendFile: Property<Boolean>
 
     @get:Input
     abstract val chatId: Property<String>
 
+    @get:Input
+    abstract val token: Property<String>
+
     @TaskAction
     fun report() {
+        val sendEnabled = sendFile.getOrElse(true)
+
         val apkDirFile = apkDir.get().asFile
 
         val token = token.get()
@@ -42,9 +50,11 @@ abstract class TelegramStatsTask @Inject constructor(
         val resultFileName = "$FILENAME_PREFIX-$buildVariant-$versionCode.apk"
 
         apkDirFile.listFiles()
-            ?.filter { file -> file.name.endsWith(".apk") }
+            ?.filter { file -> file.name.endsWith(APK_SUFFIX) }
             ?.forEach { file ->
                 val formattedSize = File(apkDirFile, APK_SIZE_FILE_NAME).readText()
+
+                if (!sendEnabled) return
 
                 runBlocking {
                     telegramApi.sendMessage(

@@ -3,6 +3,7 @@
 
 # Модули
 * app — Приложение, навигация
+* build-logic — Gradle плагины (convention, build verify)
 * source
     * core
         * api — Модели, репозитории
@@ -10,8 +11,10 @@
         * domain — Юзкейсы, и.т.д
         * utils — Вспомогательные классы, расширения
     * data
+        * database — Работа с локальной БД
         * local — Работа с shared preferences, файлами
         * network — Работа с сетью
+        * repository — Репозитории, объединяющие источники
     * feature
         * auth — Авторизация
         * list — Список задач

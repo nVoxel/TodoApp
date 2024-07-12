@@ -1,7 +1,11 @@
 package com.voxeldev.todoapp.plugin.size
 
+import com.voxeldev.todoapp.plugin.BuildVerifyPlugin.Companion.APK_SIZE_FILE_NAME
 import com.voxeldev.todoapp.plugin.BuildVerifyPlugin.Companion.BUILD_VERIFY_TAG
 import com.voxeldev.todoapp.telegram.TelegramApi
+import com.voxeldev.todoapp.utils.APK_SUFFIX
+import com.voxeldev.todoapp.utils.DOUBLE_FORMAT
+import com.voxeldev.todoapp.utils.extensions.bytesToMegabytes
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -43,7 +47,7 @@ abstract class ValidateApkSizeTask @Inject constructor(
     fun validateApkSize() {
         val apkDirFile = apkDir.get().asFile
 
-        val validationEnabled = validationEnabled.getOrElse(true)
+        val validationEnabled = validationEnabled.getOrElse(DEFAULT_VALIDATION_ENABLED)
         val maxApkSizeMegabytes = maxApkSizeMegabytes.getOrElse(DEFAULT_APK_SIZE_THRESHOLD)
 
         if (!validationEnabled || maxApkSizeMegabytes < 1) return
@@ -52,10 +56,10 @@ abstract class ValidateApkSizeTask @Inject constructor(
         val chatId = chatId.get()
 
         apkDirFile.listFiles()
-            ?.filter { file -> file.name.endsWith(".apk") }
+            ?.filter { file -> file.name.endsWith(APK_SUFFIX) }
             ?.forEach { file ->
-                val fileSizeMegabytes = getFileSizeMegabytes(file = file)
-                val formattedSize = String.format(Locale.getDefault(), "%.2f", fileSizeMegabytes)
+                val fileSizeMegabytes = file.length().bytesToMegabytes()
+                val formattedSize = String.format(Locale.getDefault(), DOUBLE_FORMAT, fileSizeMegabytes)
 
                 File(apkDirFile, APK_SIZE_FILE_NAME).writeText(text = formattedSize)
 
@@ -80,12 +84,8 @@ abstract class ValidateApkSizeTask @Inject constructor(
             }
     }
 
-    private fun getFileSizeMegabytes(file: File): Double = file.length().toDouble() / BYTES_IN_MEGABYTE
-
-    companion object {
-        const val APK_SIZE_FILE_NAME = "apk_size.txt"
-
-        private const val DEFAULT_APK_SIZE_THRESHOLD = 10
-        private const val BYTES_IN_MEGABYTE = 1_048_576
+    private companion object {
+        const val DEFAULT_VALIDATION_ENABLED = true
+        const val DEFAULT_APK_SIZE_THRESHOLD = 10
     }
 }

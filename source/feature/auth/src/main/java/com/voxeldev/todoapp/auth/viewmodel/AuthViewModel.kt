@@ -104,7 +104,10 @@ class AuthViewModel(
     }
 
     private fun setToken(successCallback: () -> Unit) {
-        val authToken = getAuthToken() ?: return
+        val authToken = getAuthToken() ?: run {
+            _loading.value = false
+            return
+        }
 
         if (authToken.token.isBlank()) {
             handleException(exception = FieldNotFilledException())

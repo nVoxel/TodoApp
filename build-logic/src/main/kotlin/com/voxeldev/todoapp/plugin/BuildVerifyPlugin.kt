@@ -4,10 +4,12 @@ import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.Variant
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import com.voxeldev.todoapp.plugin.report.ReportApkContentsExtension
+import com.voxeldev.todoapp.plugin.report.ReportApkContentsTask
 import com.voxeldev.todoapp.plugin.size.ValidateApkSizeExtension
 import com.voxeldev.todoapp.plugin.size.ValidateApkSizeTask
-import com.voxeldev.todoapp.plugin.stats.TelegramStatsExtension
-import com.voxeldev.todoapp.plugin.stats.TelegramStatsTask
+import com.voxeldev.todoapp.plugin.stats.TelegramFileExtension
+import com.voxeldev.todoapp.plugin.stats.TelegramFileTask
 import com.voxeldev.todoapp.telegram.TelegramApi
 import com.voxeldev.todoapp.utils.extensions.capitalized
 import io.ktor.client.HttpClient
@@ -28,29 +30,46 @@ class BuildVerifyPlugin : Plugin<Project> {
         val androidComponents = project.extensions.findByType(AndroidComponentsExtension::class.java)
             ?: throw GradleException("Android not found")
 
+        val reportApkContentsExtension = project.extensions.create(
+            "reportApkContents",
+            ReportApkContentsExtension::class,
+        )
         val validateApkSizeExtension = project.extensions.create("validateApkSize", ValidateApkSizeExtension::class)
-        val telegramStatsExtension = project.extensions.create("telegramStats", TelegramStatsExtension::class)
+        val telegramFileExtension = project.extensions.create("telegramFile", TelegramFileExtension::class)
 
         val telegramApi = TelegramApi(httpClient = HttpClient(OkHttp))
 
         androidComponents.onVariants { variant ->
             val artifacts = variant.artifacts.get(SingleArtifact.APK)
 
-            val validateTask = registerValidateTask(
+            val reportApkContentsTask = registerReportApkContentsTask(
                 project = project,
                 variant = variant,
                 telegramApi = telegramApi,
             ).apply {
                 configure {
                     apkDir.set(artifacts)
-                    token.set(telegramStatsExtension.token)
-                    chatId.set(telegramStatsExtension.chatId)
+                    token.set(telegramFileExtension.token)
+                    chatId.set(telegramFileExtension.chatId)
+                    reportEnabled.set(reportApkContentsExtension.reportEnabled)
+                }
+            }
+
+            val validateApkSizeTask = registerValidateApkSizeTask(
+                project = project,
+                variant = variant,
+                telegramApi = telegramApi,
+            ).apply {
+                configure {
+                    apkDir.set(artifacts)
+                    token.set(telegramFileExtension.token)
+                    chatId.set(telegramFileExtension.chatId)
                     validationEnabled.set(validateApkSizeExtension.validationEnabled)
                     maxApkSizeMegabytes.set(validateApkSizeExtension.maxApkSizeMegabytes)
                 }
             }
 
-            val statsTask = registerStatsTask(
+            val fileTask = registerFileTask(
                 project = project,
                 variant = variant,
                 telegramApi = telegramApi,
@@ -59,16 +78,28 @@ class BuildVerifyPlugin : Plugin<Project> {
             ).apply {
                 configure {
                     apkDir.set(artifacts)
-                    token.set(telegramStatsExtension.token)
-                    chatId.set(telegramStatsExtension.chatId)
+                    sendFile.set(telegramFileExtension.sendFile)
+                    token.set(telegramFileExtension.token)
+                    chatId.set(telegramFileExtension.chatId)
                 }
             }
 
-            statsTask.dependsOn(validateTask)
+            fileTask.dependsOn(validateApkSizeTask)
+            reportApkContentsTask.dependsOn(fileTask)
         }
     }
 
-    private fun registerValidateTask(
+    private fun registerReportApkContentsTask(
+        project: Project,
+        variant: Variant,
+        telegramApi: TelegramApi,
+    ): TaskProvider<ReportApkContentsTask> = project.tasks.register(
+        "reportApkContentsFor${variant.name.capitalized()}",
+        ReportApkContentsTask::class.java,
+        telegramApi,
+    )
+
+    private fun registerValidateApkSizeTask(
         project: Project,
         variant: Variant,
         telegramApi: TelegramApi,
@@ -78,15 +109,15 @@ class BuildVerifyPlugin : Plugin<Project> {
         telegramApi,
     )
 
-    private fun registerStatsTask(
+    private fun registerFileTask(
         project: Project,
         variant: Variant,
         telegramApi: TelegramApi,
         buildVariant: String,
         versionCode: String,
-    ): TaskProvider<TelegramStatsTask> = project.tasks.register(
-        "telegramStatsFor${variant.name.capitalized()}",
-        TelegramStatsTask::class.java,
+    ): TaskProvider<TelegramFileTask> = project.tasks.register(
+        "telegramFileFor${variant.name.capitalized()}",
+        TelegramFileTask::class.java,
         telegramApi,
         buildVariant,
         versionCode,
@@ -94,5 +125,7 @@ class BuildVerifyPlugin : Plugin<Project> {
 
     companion object {
         const val BUILD_VERIFY_TAG = "BuildVerify"
+
+        const val APK_SIZE_FILE_NAME = "apk_size.txt"
     }
 }

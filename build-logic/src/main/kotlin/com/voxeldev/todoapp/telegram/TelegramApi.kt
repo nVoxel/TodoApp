@@ -33,9 +33,13 @@ class TelegramApi(private val httpClient: HttpClient) {
         message: String,
         chatId: String,
         token: String,
+        useMarkdownV2: Boolean = false,
     ): HttpResponse = httpClient.post("$TELEGRAM_API_URL/bot$token/sendMessage") {
         parameter("chat_id", chatId)
         parameter("text", message)
+        if (useMarkdownV2) {
+            parameter("parse_mode", "MarkdownV2")
+        }
     }
 
     private fun fileToMultipart(

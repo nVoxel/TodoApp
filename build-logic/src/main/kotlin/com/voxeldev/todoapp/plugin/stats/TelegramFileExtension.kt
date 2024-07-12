@@ -5,7 +5,8 @@ import org.gradle.api.provider.Property
 /**
  * @author nvoxel
  */
-interface TelegramStatsExtension {
+interface TelegramFileExtension {
+    val sendFile: Property<Boolean>
     val chatId: Property<String>
     val token: Property<String>
 }
