@@ -65,8 +65,9 @@ internal class DefaultTodoItemRepository @Inject constructor(
         ).fold(
             onSuccess = { return refreshData() },
             onFailure = { exception ->
-                if (exception !is NetworkNotAvailableException) return Result.failure(exception = exception)
-                return createItemLocally(request = request)
+                return handleRemoteException(exception = exception) {
+                    createItemLocally(request = request)
+                }
             },
         )
     }
@@ -95,11 +96,11 @@ internal class DefaultTodoItemRepository @Inject constructor(
                 Result.success(todoItemRemoteMapper.toModel(todoItemData = response.element))
             },
             onFailure = { exception ->
-                if (exception !is NetworkNotAvailableException) return Result.failure(exception = exception)
-
-                return todoItemsFlow.value.list.find { it.id == id }?.let { localItem ->
-                    Result.success(localItem)
-                } ?: Result.failure(exception = ItemNotFoundException(id = id))
+                return handleRemoteException(exception = exception) {
+                    todoItemsFlow.value.list.find { it.id == id }?.let { localItem ->
+                        Result.success(localItem)
+                    } ?: Result.failure(exception = ItemNotFoundException(id = id))
+                }
             },
         )
     }
@@ -112,8 +113,9 @@ internal class DefaultTodoItemRepository @Inject constructor(
         ).fold(
             onSuccess = { return refreshData() },
             onFailure = { exception ->
-                if (exception !is NetworkNotAvailableException) return Result.failure(exception = exception)
-                return updateItemLocally(request = request)
+                return handleRemoteException(exception = exception) {
+                    updateItemLocally(request = request)
+                }
             },
         )
     }
@@ -142,8 +144,9 @@ internal class DefaultTodoItemRepository @Inject constructor(
         ).fold(
             onSuccess = { return refreshData() },
             onFailure = { exception ->
-                if (exception !is NetworkNotAvailableException) return Result.failure(exception = exception)
-                return deleteItemLocally(id = id)
+                return handleRemoteException(exception = exception) {
+                    deleteItemLocally(id = id)
+                }
             },
         )
     }
@@ -278,6 +281,15 @@ internal class DefaultTodoItemRepository @Inject constructor(
             },
             onFailure = { return FALLBACK_REVISION },
         )
+    }
+
+    private suspend fun <T> handleRemoteException(exception: Throwable, doLocalOperation: suspend () -> Result<T>): Result<T> {
+        if (exception !is NetworkNotAvailableException) {
+            refreshData()
+            return Result.failure(exception = exception)
+        }
+
+        return doLocalOperation()
     }
 
     private fun Throwable.causedByUnsynchronizedData() = this is OtherNetworkException && responseCode == HttpStatusCode.NotFound.value
