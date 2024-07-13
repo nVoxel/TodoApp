@@ -45,3 +45,8 @@ jobs:
         run: ./gradlew androidDependencies
       - name: Telegram report
         run: ./gradlew :app:reportApkContentsForRelease
+      - name: Upload APK to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: app/build/outputs/apk/release/app-release.apk
