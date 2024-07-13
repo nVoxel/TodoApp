@@ -31,11 +31,11 @@ jobs:
       - name: Create secrets.properties
         env:
           DATA: ${{secrets.SECRETS_PROPERTIES}}
-        run: echo $DATA > secrets.properties
+        run: echo $DATA | base64 --decode > secrets.properties
       - name: Create local.properties
         env:
           DATA: ${{secrets.LOCAL_PROPERTIES}}
-        run: echo $DATA > local.properties
+        run: echo $DATA | base64 --decode > local.properties
       - name: Create release keystore
         env:
           DATA: ${{secrets.RELEASE_KEYSTORE}}
