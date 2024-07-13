@@ -42,7 +42,7 @@ jobs:
           PASSPHRASE: ${{secrets.RELEASE_KEYSTORE_PASSPHRASE}}
         run: |
           echo $KEYSTORE > TodoKeystore.jks.asc
-          gpg -d --passphrase $PASSPHRASE --batch TodoKeystore.jks.asc > app/TodoKeystore.jks
+          gpg --batch --passphrase $PASSPHRASE -d -o app/TodoKeystore.jks TodoKeystore.jks.asc
       - name: Download dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: ./gradlew androidDependencies
