@@ -15,7 +15,7 @@ configure<BaseAppModuleExtension> {
         val localProperties = gradleLocalProperties(rootDir, providers)
 
         create("release") {
-            storeFile = file(path = localProperties.getProperty("release.storeFile"))
+            storeFile = file(path = "TodoKeystore.jks")
             storePassword = localProperties.getProperty("release.storePassword")
             keyAlias = localProperties.getProperty("release.keyAlias")
             keyPassword = localProperties.getProperty("release.keyPassword")
