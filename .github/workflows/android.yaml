@@ -38,11 +38,8 @@ jobs:
         run: echo $DATA > local.properties
       - name: Create release keystore
         env:
-          KEYSTORE: ${{secrets.RELEASE_KEYSTORE}}
-          PASSPHRASE: ${{secrets.RELEASE_KEYSTORE_PASSPHRASE}}
-        run: |
-          echo $KEYSTORE > TodoKeystore.txt
-          base64 -d -i TodoKeystore.txt -o app/TodoKeystore.jks
+          DATA: ${{secrets.RELEASE_KEYSTORE}}
+        run: echo $DATA | base64 --decode > app/TodoKeystore.jks
       - name: Download dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: ./gradlew androidDependencies
