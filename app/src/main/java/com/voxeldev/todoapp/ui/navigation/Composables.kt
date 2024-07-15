@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.voxeldev.todoapp.api.model.AppTheme
 import com.voxeldev.todoapp.auth.ui.AuthScreen
 import com.voxeldev.todoapp.list.ui.ListScreen
 import com.voxeldev.todoapp.settings.ui.SettingsScreen
@@ -62,15 +63,28 @@ internal fun NavGraphBuilder.taskScreenComposable(navHostController: NavHostCont
         TaskScreen(
             taskId = it.arguments?.getString(NavigationScreen.TASK_ID_ARG),
             taskScreenContainer = rememberTaskScreenContainer(),
-            onClose = { navHostController.popBackStack() },
+            onClose = {
+                navHostController.popBackStack(
+                    route = NavigationScreen.List.routeWithArguments,
+                    inclusive = false,
+                )
+            },
         )
     }
 
-internal fun NavGraphBuilder.settingsScreenComposable(navHostController: NavHostController) =
-    composable(route = NavigationScreen.Settings.routeWithArguments) {
-        SettingsScreen(
-            settingsScreenContainer = rememberSettingsScreenContainer(),
-            onClose = { navHostController.popBackStack() },
-            onLoggedOut = { navHostController.navigateToAuth() },
-        )
-    }
+internal fun NavGraphBuilder.settingsScreenComposable(
+    navHostController: NavHostController,
+    onThemeChanged: (AppTheme) -> Unit,
+) = composable(route = NavigationScreen.Settings.routeWithArguments) {
+    SettingsScreen(
+        settingsScreenContainer = rememberSettingsScreenContainer(),
+        onClose = {
+            navHostController.popBackStack(
+                route = NavigationScreen.List.routeWithArguments,
+                inclusive = false,
+            )
+        },
+        onLoggedOut = { navHostController.navigateToAuth() },
+        onThemeChanged = onThemeChanged,
+    )
+}

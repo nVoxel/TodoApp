@@ -6,8 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
-import com.voxeldev.todoapp.auth.extensions.setTranslucentBars
-import com.voxeldev.todoapp.auth.extensions.setTransparentBars
+import com.voxeldev.todoapp.designsystem.extensions.setTranslucentBars
+import com.voxeldev.todoapp.designsystem.extensions.setTransparentBars
+import com.voxeldev.todoapp.designsystem.theme.LocalAppTheme
 
 /**
  * @author nvoxel
@@ -15,7 +16,9 @@ import com.voxeldev.todoapp.auth.extensions.setTransparentBars
 @Composable
 internal fun ManageSystemBars() {
     val window = (LocalContext.current as Activity).window
-    val isSystemInDarkTheme = isSystemInDarkTheme()
+
+    val systemInDarkTheme = isSystemInDarkTheme()
+    val localAppTheme = LocalAppTheme.current
 
     LaunchedEffect(key1 = Unit) {
         window.setTransparentBars()
@@ -24,7 +27,8 @@ internal fun ManageSystemBars() {
     DisposableEffect(key1 = Unit) {
         onDispose {
             window.setTranslucentBars(
-                isSystemInDarkTheme = isSystemInDarkTheme,
+                appTheme = localAppTheme,
+                systemInDarkTheme = systemInDarkTheme,
             )
         }
     }

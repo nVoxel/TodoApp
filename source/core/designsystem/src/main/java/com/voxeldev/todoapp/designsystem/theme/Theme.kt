@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.designsystem.theme
 
+import android.app.Activity
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -7,7 +8,10 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.voxeldev.todoapp.api.model.AppTheme
+import com.voxeldev.todoapp.designsystem.extensions.setTranslucentBars
 import com.voxeldev.todoapp.designsystem.preview.ThemePreview
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 
@@ -89,17 +93,30 @@ private val darkScheme = darkColorScheme(
 
 @Composable
 fun TodoAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    appTheme: AppTheme,
     content: @Composable () -> Unit,
 ) {
+    val darkTheme = when (appTheme) {
+        AppTheme.Auto -> isSystemInDarkTheme()
+        AppTheme.Light -> false
+        AppTheme.Dark -> true
+    }
+
+    (LocalContext.current as Activity).window.setTranslucentBars(
+        appTheme = appTheme,
+        systemInDarkTheme = isSystemInDarkTheme(),
+    )
+
     val colorScheme = if (darkTheme) darkScheme else lightScheme
     val appPalette = if (darkTheme) darkAppPalette else lightAppPalette
 
-    CompositionLocalProvider(LocalAppPalette provides appPalette) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            content = content,
-        )
+    CompositionLocalProvider(LocalAppTheme provides appTheme) {
+        CompositionLocalProvider(LocalAppPalette provides appPalette) {
+            MaterialTheme(
+                colorScheme = colorScheme,
+                content = content,
+            )
+        }
     }
 }
 

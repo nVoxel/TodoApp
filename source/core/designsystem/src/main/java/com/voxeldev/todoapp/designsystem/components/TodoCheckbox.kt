@@ -3,6 +3,7 @@ package com.voxeldev.todoapp.designsystem.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +19,7 @@ import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.preview.providers.TwoBooleanPreviewParameterProvider
 import com.voxeldev.todoapp.designsystem.theme.AppPalette
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
+import com.voxeldev.todoapp.designsystem.theme.ripple.CheckRippleTheme
 
 /**
  * @author nvoxel
@@ -33,16 +35,18 @@ fun TodoCheckbox(
     val appPalette = LocalAppPalette.current
 
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-        Checkbox(
-            modifier = modifier
-                .size(size = 20.dp),
-            checked = isChecked,
-            onCheckedChange = onCheckedChange,
-            colors = todoCheckboxColors(
-                appPalette = appPalette,
-                isImportant = isImportant,
-            ),
-        )
+        CompositionLocalProvider(LocalRippleTheme provides CheckRippleTheme) {
+            Checkbox(
+                modifier = modifier
+                    .size(size = 20.dp),
+                checked = isChecked,
+                onCheckedChange = onCheckedChange,
+                colors = todoCheckboxColors(
+                    appPalette = appPalette,
+                    isImportant = isImportant,
+                ),
+            )
+        }
     }
 }
 

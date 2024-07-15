@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.voxeldev.todoapp.api.model.AppTheme
 import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
 import com.voxeldev.todoapp.di.navigation.NavigationContainer
 import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
@@ -29,6 +30,7 @@ internal fun MainNavHost(
     authResultFlow: StateFlow<YandexAuthResult?>,
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
+    onThemeChanged: (AppTheme) -> Unit,
 ) {
     val authTokenState by navigationViewModel.authTokenState.collectAsStateWithLifecycle()
 
@@ -41,6 +43,7 @@ internal fun MainNavHost(
             authResultFlow = authResultFlow,
             onRequestOAuth = onRequestOAuth,
             onAuthSuccess = onAuthSuccess,
+            onThemeChanged = onThemeChanged,
         )
     }
 }
@@ -52,6 +55,7 @@ private fun MainNavHost(
     authResultFlow: StateFlow<YandexAuthResult?>,
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
+    onThemeChanged: (AppTheme) -> Unit,
 ) {
     NavHost(
         navController = navHostController,
@@ -70,7 +74,10 @@ private fun MainNavHost(
 
         taskScreenComposable(navHostController = navHostController)
 
-        settingsScreenComposable(navHostController = navHostController)
+        settingsScreenComposable(
+            navHostController = navHostController,
+            onThemeChanged = onThemeChanged,
+        )
     }
 }
 
@@ -85,7 +92,7 @@ private fun exitTransition(navHostController: NavHostController) =
             navHostController.currentDestination?.route == NavigationScreen.Task.routeWithArguments ||
             navHostController.currentDestination?.route == NavigationScreen.Settings.routeWithArguments
         ) {
-            0
+            -fullWidth
         } else {
             fullWidth
         }

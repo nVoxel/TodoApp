@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings">Settings</string>
+    <string name="app_theme">Theme</string>
+    <string name="app_theme_description">Change application theme</string>
+    <string name="app_theme_auto">Auto</string>
+    <string name="app_theme_light">Light</string>
+    <string name="app_theme_dark">Dark</string>
     <string name="auto_refresh_interval">Auto-refresh interval</string>
     <string name="auto_refresh_interval_description">Change auto-refresh interval of the list</string>
     <string name="log_out">Log Out</string>
