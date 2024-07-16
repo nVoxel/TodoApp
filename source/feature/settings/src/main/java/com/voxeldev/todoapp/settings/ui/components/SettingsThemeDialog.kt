@@ -67,7 +67,7 @@ private fun SettingsThemeDialogItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(bottom = 16.dp),
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TodoRadioButton(

@@ -21,7 +21,8 @@ complexity:
     ignoreFunction: [ 'synchronizeLists', 'checkLocalList' ]
   LongParameterList:
     constructorThreshold: 9
-    functionThreshold: 16
+    functionThreshold: 15
+    ignoreAnnotated: ['Composable']
   NestedBlockDepth:
     threshold: 3
     excludes: [ '**/designsystem/components/**' ]

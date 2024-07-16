@@ -9,6 +9,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import com.voxeldev.todoapp.api.model.AppTheme
 import com.voxeldev.todoapp.designsystem.extensions.setTranslucentBars
@@ -102,10 +103,12 @@ fun TodoAppTheme(
         AppTheme.Dark -> true
     }
 
-    (LocalContext.current as Activity).window.setTranslucentBars(
-        appTheme = appTheme,
-        systemInDarkTheme = isSystemInDarkTheme(),
-    )
+    if (!LocalView.current.isInEditMode) {
+        (LocalContext.current as Activity).window.setTranslucentBars(
+            appTheme = appTheme,
+            systemInDarkTheme = isSystemInDarkTheme(),
+        )
+    }
 
     val colorScheme = if (darkTheme) darkScheme else lightScheme
     val appPalette = if (darkTheme) darkAppPalette else lightAppPalette

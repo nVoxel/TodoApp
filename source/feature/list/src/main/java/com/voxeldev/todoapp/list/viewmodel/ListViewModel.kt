@@ -48,6 +48,9 @@ class ListViewModel(
     private val _completedItemsCount: MutableStateFlow<Int> = MutableStateFlow(value = 0)
     val completedItemsCount: StateFlow<Int> = _completedItemsCount.asStateFlow()
 
+    private val _listLoaderVisible: MutableStateFlow<Boolean> = MutableStateFlow(value = false)
+    val listLoaderVisible: StateFlow<Boolean> = _listLoaderVisible.asStateFlow()
+
     private val format = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
 
     init {
@@ -96,6 +99,8 @@ class ListViewModel(
     fun checkTodoItem(id: String, isChecked: Boolean) {
         val item = todoItems.value.list.find { item -> item.id == id }
         item?.let {
+            _listLoaderVisible.update { true }
+
             updateTodoItemUseCase(
                 params = item.copy(
                     isComplete = isChecked,
@@ -104,16 +109,20 @@ class ListViewModel(
                 scope = scope,
             ) { result ->
                 result.onFailure(action = ::handleException)
+                _listLoaderVisible.update { false }
             }
         }
     }
 
     fun deleteTodoItem(id: String) {
+        _listLoaderVisible.update { true }
+
         deleteTodoItemUseCase(
             params = id,
             scope = scope,
         ) { result ->
             result.onFailure(action = ::handleException)
+            _listLoaderVisible.update { false }
         }
     }
 

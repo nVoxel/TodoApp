@@ -155,9 +155,9 @@ private fun TaskScreen(
 
             TaskScreenImportanceButton(
                 importance = importance,
-                importanceDropdownVisible = importanceDropdownVisible,
+                importanceSheetVisible = importanceDropdownVisible,
                 onImportanceChanged = onImportanceChanged,
-                onChangeImportanceDropdownVisibility = { newImportanceDropdownVisible ->
+                onChangeImportanceSheetVisibility = { newImportanceDropdownVisible ->
                     importanceDropdownVisible = newImportanceDropdownVisible
                 },
             )

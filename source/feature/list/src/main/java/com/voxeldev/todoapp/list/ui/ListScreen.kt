@@ -3,6 +3,7 @@ package com.voxeldev.todoapp.list.ui
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -24,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -64,6 +67,7 @@ fun ListScreen(
 
     var isFabVisible by rememberSaveable { mutableStateOf(true) }
     var isOnlyUncompletedVisible by rememberSaveable { mutableStateOf(false) }
+    val isListLoaderVisible by viewModel.listLoaderVisible.collectAsStateWithLifecycle()
 
     val todoItems by viewModel.todoItems.collectAsStateWithLifecycle()
     val completedItemsCount by viewModel.completedItemsCount.collectAsStateWithLifecycle()
@@ -87,6 +91,7 @@ fun ListScreen(
             onUncompletedVisibilityChanged = { updatedIsOnlyUncompletedVisible ->
                 isOnlyUncompletedVisible = updatedIsOnlyUncompletedVisible
             },
+            listLoaderVisible = isListLoaderVisible,
             todoItems = todoItems.list,
             completedItemsCount = completedItemsCount,
             onItemClicked = onNavigateToTask,
@@ -116,6 +121,7 @@ private fun ListScreen(
     onFabVisibleChanged: (Boolean) -> Unit,
     isOnlyUncompletedVisible: Boolean,
     onUncompletedVisibilityChanged: (Boolean) -> Unit,
+    listLoaderVisible: Boolean,
     todoItems: List<TodoItem>,
     completedItemsCount: Int,
     onItemClicked: (String?) -> Unit,
@@ -182,6 +188,15 @@ private fun ListScreen(
             state = lazyColumnState,
             contentPadding = PaddingValues(vertical = 8.dp),
         ) {
+            item {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .alpha(alpha = if (listLoaderVisible) 1f else 0f)
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
+                )
+            }
+
             items(items = todoItems, key = { it.id }) { todoItem ->
                 if (isOnlyUncompletedVisible && todoItem.isComplete) return@items
 
@@ -223,6 +238,7 @@ private fun ListScreenPreview() {
             onFabVisibleChanged = {},
             isOnlyUncompletedVisible = false,
             onUncompletedVisibilityChanged = {},
+            listLoaderVisible = true,
             todoItems = ListScreenPreviewData.items,
             completedItemsCount = ListScreenPreviewData.items.count { it.isComplete },
             onItemClicked = {},

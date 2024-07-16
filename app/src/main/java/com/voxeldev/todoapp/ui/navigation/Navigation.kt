@@ -1,7 +1,7 @@
 package com.voxeldev.todoapp.ui.navigation
 
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -60,8 +60,8 @@ private fun MainNavHost(
     NavHost(
         navController = navHostController,
         startDestination = startDestination.routeWithArguments,
-        enterTransition = { enterTransition(navHostController = navHostController) },
-        exitTransition = { exitTransition(navHostController = navHostController) },
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
     ) {
         authScreenComposable(
             navHostController = navHostController,
@@ -80,20 +80,3 @@ private fun MainNavHost(
         )
     }
 }
-
-private fun enterTransition(navHostController: NavHostController) =
-    slideInHorizontally { fullWidth ->
-        if (navHostController.currentDestination?.route == NavigationScreen.List.routeWithArguments) 0 else fullWidth
-    }
-
-private fun exitTransition(navHostController: NavHostController) =
-    slideOutHorizontally { fullWidth ->
-        if (
-            navHostController.currentDestination?.route == NavigationScreen.Task.routeWithArguments ||
-            navHostController.currentDestination?.route == NavigationScreen.Settings.routeWithArguments
-        ) {
-            -fullWidth
-        } else {
-            fullWidth
-        }
-    }

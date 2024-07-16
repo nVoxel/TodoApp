@@ -1,5 +1,8 @@
 package com.voxeldev.todoapp.ui.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,6 +20,8 @@ import com.voxeldev.todoapp.ui.navigation.containers.rememberTaskScreenContainer
 import com.yandex.authsdk.YandexAuthResult
 import kotlinx.coroutines.flow.StateFlow
 
+private const val TRANSITION_DURATION_MILLIS = 300
+
 /**
  * @author nvoxel
  */
@@ -25,7 +30,11 @@ internal fun NavGraphBuilder.authScreenComposable(
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
     authResultFlow: StateFlow<YandexAuthResult?>,
-) = composable(route = NavigationScreen.Auth.routeWithArguments) {
+) = composable(
+    route = NavigationScreen.Auth.routeWithArguments,
+    enterTransition = { enterTransition(reverse = true) },
+    exitTransition = { exitTransition(reverse = true) },
+) {
     AuthScreen(
         authResultFlow = authResultFlow,
         authScreenContainer = rememberAuthScreenContainer(),
@@ -59,6 +68,8 @@ internal fun NavGraphBuilder.taskScreenComposable(navHostController: NavHostCont
                 nullable = true
             },
         ),
+        enterTransition = { enterTransition() },
+        exitTransition = { exitTransition() },
     ) {
         TaskScreen(
             taskId = it.arguments?.getString(NavigationScreen.TASK_ID_ARG),
@@ -75,7 +86,11 @@ internal fun NavGraphBuilder.taskScreenComposable(navHostController: NavHostCont
 internal fun NavGraphBuilder.settingsScreenComposable(
     navHostController: NavHostController,
     onThemeChanged: (AppTheme) -> Unit,
-) = composable(route = NavigationScreen.Settings.routeWithArguments) {
+) = composable(
+    route = NavigationScreen.Settings.routeWithArguments,
+    enterTransition = { enterTransition() },
+    exitTransition = { exitTransition() },
+) {
     SettingsScreen(
         settingsScreenContainer = rememberSettingsScreenContainer(),
         onClose = {
@@ -88,3 +103,15 @@ internal fun NavGraphBuilder.settingsScreenComposable(
         onThemeChanged = onThemeChanged,
     )
 }
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition(reverse: Boolean = false) =
+    slideIntoContainer(
+        animationSpec = tween(TRANSITION_DURATION_MILLIS),
+        towards = if (reverse) AnimatedContentTransitionScope.SlideDirection.End else AnimatedContentTransitionScope.SlideDirection.Start,
+    )
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition(reverse: Boolean = false) =
+    slideOutOfContainer(
+        animationSpec = tween(TRANSITION_DURATION_MILLIS),
+        towards = if (reverse) AnimatedContentTransitionScope.SlideDirection.Start else AnimatedContentTransitionScope.SlideDirection.End,
+    )
