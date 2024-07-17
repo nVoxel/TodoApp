@@ -1,12 +1,15 @@
 package com.voxeldev.todoapp.settings.ui
 
+import android.graphics.Bitmap
+import android.graphics.Picture
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -24,8 +27,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.voxeldev.todoapp.api.model.AppTheme
@@ -33,6 +39,7 @@ import com.voxeldev.todoapp.designsystem.components.TodoDivider
 import com.voxeldev.todoapp.designsystem.components.TodoSmallTopBar
 import com.voxeldev.todoapp.designsystem.components.circularReveal
 import com.voxeldev.todoapp.designsystem.components.clipShadow
+import com.voxeldev.todoapp.designsystem.components.copyContentImage
 import com.voxeldev.todoapp.designsystem.extensions.calculateTopBarElevation
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
@@ -42,13 +49,19 @@ import com.voxeldev.todoapp.settings.R
 import com.voxeldev.todoapp.settings.di.SettingsScreenContainer
 import com.voxeldev.todoapp.settings.ui.components.SettingsItem
 import com.voxeldev.todoapp.settings.ui.components.SettingsThemeDialog
+import com.voxeldev.todoapp.settings.ui.components.animateNewTheme
 import com.voxeldev.todoapp.settings.viewmodel.SettingsViewModel
-import kotlinx.coroutines.CoroutineScope
+import com.voxeldev.todoapp.utils.extensions.copyToBitmap
+import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
+import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProviderDefaultImpl
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-private const val INITIAL_PROGRESS = 1f
-private const val TARGET_PROGRESS = 0f
-private const val TRANSITION_DURATION_MILLIS = 500
+internal const val INITIAL_PROGRESS = 1f
+internal const val TARGET_PROGRESS = 0f
+internal const val TRANSITION_DURATION_MILLIS = 1000
+
+private const val NO_VALUE = 0
 
 /**
  * @author nvoxel
@@ -70,6 +83,7 @@ fun SettingsScreen(
         retryCallback = viewModel::onRetryClicked,
     ) {
         SettingsScreen(
+            coroutineDispatcherProvider = settingsScreenContainer.coroutineDispatcherProvider,
             selectedAppTheme = selectedAppTheme,
             onCloseClicked = onClose,
             onThemeChanged = { newAppTheme ->
@@ -83,6 +97,7 @@ fun SettingsScreen(
 
 @Composable
 private fun SettingsScreen(
+    coroutineDispatcherProvider: CoroutineDispatcherProvider,
     selectedAppTheme: AppTheme,
     onCloseClicked: () -> Unit,
     onThemeChanged: (AppTheme) -> Unit,
@@ -96,11 +111,32 @@ private fun SettingsScreen(
     val isSystemInDarkTheme = isSystemInDarkTheme()
     var themeDialogVisible by rememberSaveable { mutableStateOf(false) }
 
+    var transitionOverlayVisible by rememberSaveable { mutableStateOf(false) }
     val transitionProgress = remember { Animatable(initialValue = INITIAL_PROGRESS) }
 
-    Surface(color = appPalette.colorBlue) {
+    var width by remember { mutableStateOf(NO_VALUE) }
+    var height by remember { mutableStateOf(NO_VALUE) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .onGloballyPositioned { layoutCoordinates ->
+                width = layoutCoordinates.size.width
+                height = layoutCoordinates.size.height
+            },
+    ) {
+        if (width == NO_VALUE || height == NO_VALUE) return@Box
+
+        val picture = remember { Picture() }
+        val bitmap: Bitmap = remember {
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        }
+
         Scaffold(
-            modifier = Modifier.circularReveal(transitionProgress.value),
+            modifier = Modifier
+                .zIndex(zIndex = 1f)
+                .circularReveal(transitionProgress.value)
+                .copyContentImage(picture = picture),
             topBar = {
                 SettingsScreenTopBar(
                     scrollState = scrollState,
@@ -120,17 +156,35 @@ private fun SettingsScreen(
                 selectedTheme = selectedAppTheme,
                 onThemeSelected = { newAppTheme ->
                     themeDialogVisible = false
-                    animateNewTheme(
-                        coroutineScope = coroutineScope,
-                        selectedAppTheme = selectedAppTheme,
-                        newAppTheme = newAppTheme,
-                        isSystemInDarkTheme = isSystemInDarkTheme,
-                        transitionProgress = transitionProgress,
-                        onThemeChanged = onThemeChanged,
-                    )
+
+                    coroutineScope.launch {
+                        withContext(coroutineDispatcherProvider.ioDispatcher) {
+                            picture.copyToBitmap(bitmap = bitmap)
+                        }
+
+                        transitionOverlayVisible = true
+
+                        animateNewTheme(
+                            selectedAppTheme = selectedAppTheme,
+                            newAppTheme = newAppTheme,
+                            isSystemInDarkTheme = isSystemInDarkTheme,
+                            transitionProgress = transitionProgress,
+                            onThemeChanged = onThemeChanged,
+                        )
+
+                        transitionOverlayVisible = false
+                    }
                 },
                 isVisible = themeDialogVisible,
                 onDismiss = { themeDialogVisible = false },
+            )
+        }
+
+        if (transitionOverlayVisible) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = null,
             )
         }
     }
@@ -186,64 +240,12 @@ private fun SettingsScreenContent(
     }
 }
 
-private fun animateNewTheme(
-    coroutineScope: CoroutineScope,
-    selectedAppTheme: AppTheme,
-    newAppTheme: AppTheme,
-    isSystemInDarkTheme: Boolean,
-    transitionProgress: Animatable<Float, AnimationVector1D>,
-    onThemeChanged: (AppTheme) -> Unit,
-) {
-    coroutineScope.launch {
-        val shouldAnimateNewTheme = shouldAnimateNewTheme(
-            previousTheme = selectedAppTheme,
-            nextTheme = newAppTheme,
-            isSystemInDarkTheme = isSystemInDarkTheme,
-        )
-
-        if (shouldAnimateNewTheme) {
-            transitionProgress.animateTo(
-                targetValue = TARGET_PROGRESS,
-                animationSpec = tween(durationMillis = TRANSITION_DURATION_MILLIS),
-            )
-        }
-
-        onThemeChanged(newAppTheme)
-
-        if (shouldAnimateNewTheme) {
-            transitionProgress.animateTo(
-                targetValue = INITIAL_PROGRESS,
-               animationSpec = tween(durationMillis = TRANSITION_DURATION_MILLIS),
-            )
-        }
-    }
-}
-
-private fun shouldAnimateNewTheme(
-    previousTheme: AppTheme,
-    nextTheme: AppTheme,
-    isSystemInDarkTheme: Boolean,
-): Boolean {
-    val actualPreviousTheme = if (previousTheme == AppTheme.Auto) {
-        if (isSystemInDarkTheme) AppTheme.Dark else AppTheme.Light
-    } else {
-        previousTheme
-    }
-
-    val actualNextTheme = if (nextTheme == AppTheme.Auto) {
-        if (isSystemInDarkTheme) AppTheme.Dark else AppTheme.Light
-    } else {
-        nextTheme
-    }
-
-    return actualPreviousTheme != actualNextTheme
-}
-
 @ScreenDayNightPreviews
 @Composable
 private fun SettingsScreenPreview() {
     PreviewBase {
         SettingsScreen(
+            coroutineDispatcherProvider = CoroutineDispatcherProviderDefaultImpl(),
             selectedAppTheme = AppTheme.Auto,
             onCloseClicked = {},
             onThemeChanged = {},

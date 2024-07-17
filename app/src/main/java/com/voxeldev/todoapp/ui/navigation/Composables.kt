@@ -47,7 +47,11 @@ internal fun NavGraphBuilder.authScreenComposable(
 }
 
 internal fun NavGraphBuilder.listScreenComposable(navHostController: NavHostController) =
-    composable(route = NavigationScreen.List.routeWithArguments) {
+    composable(
+        route = NavigationScreen.List.routeWithArguments,
+        enterTransition = { enterTransition(reverse = true) },
+        exitTransition = { exitTransition(reverse = true) },
+    ) {
         ListScreen(
             listScreenContainer = rememberListScreenContainer(),
             onNavigateToTask = { taskId ->

@@ -17,26 +17,24 @@ private const val REVEAL_CENTER = 0.5f
 fun Modifier.circularReveal(
     transitionProgress: Float,
     revealFrom: Offset = Offset(REVEAL_CENTER, REVEAL_CENTER),
-): Modifier {
-    return drawWithCache {
-        val path = Path()
+): Modifier = drawWithCache {
+    val path = Path()
 
-        val center = revealFrom.mapTo(size = size)
-        val radius = calculateRadius(
-            normalizedOrigin = revealFrom,
-            size = size,
-        )
+    val center = revealFrom.mapTo(size = size)
+    val radius = calculateRadius(
+        normalizedOrigin = revealFrom,
+        size = size,
+    )
 
-        path.addOval(
-            Rect(
-                center = center,
-                radius = radius * transitionProgress,
-            ),
-        )
+    path.addOval(
+        Rect(
+            center = center,
+            radius = radius * transitionProgress,
+        ),
+    )
 
-        onDrawWithContent {
-            clipPath(path) { this@onDrawWithContent.drawContent() }
-        }
+    onDrawWithContent {
+        clipPath(path) { this@onDrawWithContent.drawContent() }
     }
 }
 

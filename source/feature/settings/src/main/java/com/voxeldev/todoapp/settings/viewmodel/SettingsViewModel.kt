@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.update
 class SettingsViewModel(
     private val clearAuthTokenUseCase: ClearAuthTokenUseCase,
     private val clearTodoItemsUseCase: ClearTodoItemsUseCase,
-    private val getAppThemeUseCase: GetAppThemeUseCase,
+    getAppThemeUseCase: GetAppThemeUseCase,
     networkObserver: NetworkObserver,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : BaseViewModel(
