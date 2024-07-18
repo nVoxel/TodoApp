@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.designsystem.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -12,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.designsystem.R
+import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
+import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 
@@ -57,6 +60,20 @@ private fun NetworkNotification(
                 tint = appPalette.colorRed,
             )
         },
+        containerColor = appPalette.backSecondary,
         onClick = onClick,
     )
+}
+
+@ComponentDayNightPreviews
+@Composable
+private fun Preview() {
+    PreviewBase {
+        Box(modifier = Modifier.padding(all = 8.dp)) {
+            TodoNetworkNotification(
+                isVisible = true,
+                onClick = {},
+            )
+        }
+    }
 }

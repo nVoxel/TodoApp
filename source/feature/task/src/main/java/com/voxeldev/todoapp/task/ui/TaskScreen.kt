@@ -1,5 +1,6 @@
 package com.voxeldev.todoapp.task.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -12,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.voxeldev.todoapp.api.model.TodoItemImportance
+import com.voxeldev.todoapp.designsystem.components.BottomAnimatedVisibility
 import com.voxeldev.todoapp.designsystem.components.ErrorSnackbarEffect
+import com.voxeldev.todoapp.designsystem.components.TodoCountdownSnackbar
 import com.voxeldev.todoapp.designsystem.components.TodoDivider
 import com.voxeldev.todoapp.designsystem.components.TodoTextField
 import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPreviews
@@ -39,6 +43,8 @@ import com.voxeldev.todoapp.task.ui.components.TaskScreenTopBar
 import com.voxeldev.todoapp.task.ui.preview.TaskScreenPreviewData
 import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
 import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
+
+private const val TASK_DELETE_COUNTDOWN_SECONDS = 5
 
 /**
  * @author nvoxel
@@ -75,6 +81,8 @@ fun TaskScreen(
             saveButtonActive = saveButtonActive,
             error = error?.getDisplayMessage(),
             onSnackbarHide = viewModel::onSnackbarHide,
+            onRequestShowNetworkNotification = viewModel::showNetworkNotification,
+            onRequestHideNetworkNotification = viewModel::hideNetworkNotification,
             onTextChanged = { updatedText -> viewModel.updateText(text = updatedText) },
             onImportanceChanged = { updatedImportance -> viewModel.updateImportance(importance = updatedImportance) },
             onDeadlineTimestampChanged = { updatedDeadlineTimestamp ->
@@ -98,6 +106,8 @@ private fun TaskScreen(
     saveButtonActive: Boolean,
     error: String?,
     onSnackbarHide: () -> Unit,
+    onRequestShowNetworkNotification: () -> Unit,
+    onRequestHideNetworkNotification: () -> Unit,
     onTextChanged: (String) -> Unit,
     onImportanceChanged: (TodoItemImportance) -> Unit,
     onDeadlineTimestampChanged: (Long) -> Unit,
@@ -109,14 +119,28 @@ private fun TaskScreen(
     val appPalette = LocalAppPalette.current
 
     val scrollState = rememberScrollState()
-    val snackbarHostState = remember { SnackbarHostState() }
+
+    var errorSnackbarVisible by rememberSaveable { mutableStateOf(true) }
+    val errorSnackbarHostState = remember { SnackbarHostState() }
 
     var importanceDropdownVisible by rememberSaveable { mutableStateOf(false) }
     var datePickerDialogVisible by rememberSaveable { mutableStateOf(false) }
 
+    var deleteCountdownActive by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = deleteCountdownActive) {
+        if (deleteCountdownActive) {
+            errorSnackbarVisible = false
+            onRequestHideNetworkNotification()
+        } else {
+            errorSnackbarVisible = true
+            onRequestShowNetworkNotification()
+        }
+    }
+
     ErrorSnackbarEffect(
         errorMessage = error,
-        snackbarHostState = snackbarHostState,
+        snackbarHostState = errorSnackbarHostState,
         onHide = onSnackbarHide,
     )
 
@@ -131,7 +155,23 @@ private fun TaskScreen(
             )
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            BottomAnimatedVisibility(isVisible = errorSnackbarVisible) {
+                SnackbarHost(hostState = errorSnackbarHostState)
+            }
+
+            Box(modifier = Modifier.padding(all = 16.dp)) {
+                TodoCountdownSnackbar(
+                    countdownActive = deleteCountdownActive,
+                    text = stringResource(id = R.string.delete_message),
+                    totalSeconds = TASK_DELETE_COUNTDOWN_SECONDS,
+                    color = appPalette.backSecondary,
+                    onContinue = {
+                        onDeleteClicked()
+                        deleteCountdownActive = false
+                    },
+                    onDismiss = { deleteCountdownActive = false },
+                )
+            }
         },
         containerColor = appPalette.backPrimary,
     ) { paddingValues ->
@@ -179,7 +219,7 @@ private fun TaskScreen(
 
             TaskScreenDeleteButton(
                 editTask = editTask,
-                onDeleteClicked = onDeleteClicked,
+                onDeleteClicked = { deleteCountdownActive = true },
             )
 
             Spacer(modifier = Modifier.imePadding())
@@ -200,6 +240,8 @@ private fun TaskScreenPreview() {
             saveButtonActive = true,
             error = null,
             onSnackbarHide = {},
+            onRequestShowNetworkNotification = {},
+            onRequestHideNetworkNotification = {},
             onTextChanged = {},
             onImportanceChanged = {},
             onDeadlineTimestampChanged = {},

@@ -5,4 +5,5 @@
     <string name="error">Error: %1$s</string>
     <string name="retry">Retry</string>
     <string name="network_lost">Network lost</string>
+    <string name="undo">UNDO</string>
 </resources>
