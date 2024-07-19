@@ -14,7 +14,7 @@ import dagger.Provides
  * @author nvoxel
  */
 @Module
-class SettingsFeatureDependenciesModule {
+internal class SettingsFeatureDependenciesModule {
 
     @Provides
     fun provideSettingsFeatureDependencies(

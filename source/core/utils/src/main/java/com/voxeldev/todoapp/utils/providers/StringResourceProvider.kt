@@ -6,5 +6,11 @@ package com.voxeldev.todoapp.utils.providers
  */
 interface StringResourceProvider {
 
+    fun getVersionName(): String
+
     fun getTodoApiBaseUrl(): String
+
+    fun getGitHubProfileUrl(): String
+
+    fun getGetHubRepoUrl(): String
 }

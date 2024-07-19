@@ -11,7 +11,7 @@ import com.voxeldev.todoapp.auth.di.DaggerAuthFeatureComponent
  * @author nvoxel
  */
 @Composable
-fun rememberAuthScreenContainer(): AuthScreenContainer {
+internal fun rememberAuthScreenContainer(): AuthScreenContainer {
     val application = LocalContext.current.applicationContext as TodoApp
     return remember {
         AuthScreenContainer().also { container ->

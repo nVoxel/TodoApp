@@ -10,4 +10,5 @@
     <string name="auto_refresh_interval_description">Change auto-refresh interval of the list</string>
     <string name="log_out">Log Out</string>
     <string name="log_out_description">Log Out of active account</string>
+    <string name="about">About</string>
 </resources>

@@ -9,6 +9,10 @@ internal sealed class NavigationScreen(
     val routeWithArguments: String,
 ) {
 
+    data object About : NavigationScreen(
+        routeWithArguments = "about",
+    )
+
     data object Auth : NavigationScreen(
         routeWithArguments = "auth",
     )
@@ -23,10 +27,12 @@ internal sealed class NavigationScreen(
     )
 
     data object Settings : NavigationScreen(
-        routeWithArguments = "settings",
+        route = "settings",
+        routeWithArguments = "settings/{$REVERSE_ARG}",
     )
 
     companion object {
         const val TASK_ID_ARG = "taskId"
+        const val REVERSE_ARG = "reverse"
     }
 }

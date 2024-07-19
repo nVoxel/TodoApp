@@ -11,7 +11,7 @@ import com.voxeldev.todoapp.list.di.ListScreenContainer
  * @author nvoxel
  */
 @Composable
-fun rememberListScreenContainer(): ListScreenContainer {
+internal fun rememberListScreenContainer(): ListScreenContainer {
     val application = LocalContext.current.applicationContext as TodoApp
     return remember {
         ListScreenContainer().also { container ->

@@ -72,6 +72,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = viewModel(
         factory = settingsScreenContainer.settingsViewModelProvider,
     ),
+    onAbout: () -> Unit,
     onClose: () -> Unit,
     onThemeChanged: (AppTheme) -> Unit,
     onLoggedOut: () -> Unit,
@@ -85,6 +86,7 @@ fun SettingsScreen(
         SettingsScreen(
             coroutineDispatcherProvider = settingsScreenContainer.coroutineDispatcherProvider,
             selectedAppTheme = selectedAppTheme,
+            onAboutClicked = onAbout,
             onCloseClicked = onClose,
             onThemeChanged = { newAppTheme ->
                 onThemeChanged(newAppTheme)
@@ -99,6 +101,7 @@ fun SettingsScreen(
 private fun SettingsScreen(
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
     selectedAppTheme: AppTheme,
+    onAboutClicked: () -> Unit,
     onCloseClicked: () -> Unit,
     onThemeChanged: (AppTheme) -> Unit,
     onLogOutClicked: () -> Unit,
@@ -140,6 +143,7 @@ private fun SettingsScreen(
             topBar = {
                 SettingsScreenTopBar(
                     scrollState = scrollState,
+                    onAboutClicked = onAboutClicked,
                     onCloseClicked = onCloseClicked,
                 )
             },
@@ -193,6 +197,7 @@ private fun SettingsScreen(
 @Composable
 private fun SettingsScreenTopBar(
     scrollState: ScrollState,
+    onAboutClicked: () -> Unit,
     onCloseClicked: () -> Unit,
 ) {
     Surface(
@@ -205,6 +210,9 @@ private fun SettingsScreenTopBar(
             onCloseClicked = onCloseClicked,
             displayTitle = true,
             titleText = stringResource(id = R.string.settings),
+            displayButton = true,
+            buttonText = stringResource(id = R.string.about),
+            onButtonClicked = onAboutClicked,
         )
     }
 }
@@ -247,6 +255,7 @@ private fun SettingsScreenPreview() {
         SettingsScreen(
             coroutineDispatcherProvider = CoroutineDispatcherProviderDefaultImpl(),
             selectedAppTheme = AppTheme.Auto,
+            onAboutClicked = {},
             onCloseClicked = {},
             onThemeChanged = {},
             onLogOutClicked = {},

@@ -63,6 +63,8 @@ private fun MainNavHost(
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
     ) {
+        aboutScreenComposable(navHostController = navHostController)
+
         authScreenComposable(
             navHostController = navHostController,
             onRequestOAuth = onRequestOAuth,

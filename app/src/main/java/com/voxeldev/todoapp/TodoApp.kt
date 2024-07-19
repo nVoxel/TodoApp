@@ -2,6 +2,7 @@ package com.voxeldev.todoapp
 
 import android.app.Application
 import androidx.work.Configuration
+import com.voxeldev.todoapp.about.compose.AboutFeatureDependencies
 import com.voxeldev.todoapp.auth.di.AuthFeatureDependencies
 import com.voxeldev.todoapp.di.app.AppComponent
 import com.voxeldev.todoapp.di.app.DaggerAppComponent
@@ -20,6 +21,9 @@ class TodoApp : Application(), Configuration.Provider {
     private val appComponent: AppComponent by lazyUnsafe {
         DaggerAppComponent.factory().create(applicationContext = applicationContext)
     }
+
+    @Inject
+    lateinit var aboutFeatureDependencies: AboutFeatureDependencies
 
     @Inject
     lateinit var authFeatureDependencies: AuthFeatureDependencies

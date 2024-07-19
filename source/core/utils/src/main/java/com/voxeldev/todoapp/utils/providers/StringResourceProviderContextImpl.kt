@@ -11,5 +11,11 @@ internal class StringResourceProviderContextImpl(context: Context) : StringResou
 
     private val resources = context.resources
 
+    override fun getVersionName(): String = resources.getString(R.string.version_name)
+
     override fun getTodoApiBaseUrl(): String = resources.getString(R.string.todo_api_base_url)
+
+    override fun getGitHubProfileUrl(): String = resources.getString(R.string.github_profile_url)
+
+    override fun getGetHubRepoUrl(): String = resources.getString(R.string.github_repo_url)
 }

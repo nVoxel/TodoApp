@@ -8,11 +8,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.voxeldev.todoapp.about.compose.AboutScreen
 import com.voxeldev.todoapp.api.model.AppTheme
 import com.voxeldev.todoapp.auth.ui.AuthScreen
 import com.voxeldev.todoapp.list.ui.ListScreen
 import com.voxeldev.todoapp.settings.ui.SettingsScreen
 import com.voxeldev.todoapp.task.ui.TaskScreen
+import com.voxeldev.todoapp.ui.navigation.containers.rememberAboutScreenContainer
 import com.voxeldev.todoapp.ui.navigation.containers.rememberAuthScreenContainer
 import com.voxeldev.todoapp.ui.navigation.containers.rememberListScreenContainer
 import com.voxeldev.todoapp.ui.navigation.containers.rememberSettingsScreenContainer
@@ -25,6 +27,24 @@ private const val TRANSITION_DURATION_MILLIS = 300
 /**
  * @author nvoxel
  */
+internal fun NavGraphBuilder.aboutScreenComposable(
+    navHostController: NavHostController,
+) = composable(
+    route = NavigationScreen.About.routeWithArguments,
+    enterTransition = { enterTransition() },
+    exitTransition = { exitTransition() },
+) {
+    AboutScreen(
+        aboutScreenContainer = rememberAboutScreenContainer(),
+        onClose = {
+            navHostController.popBackStack(
+                route = "${NavigationScreen.Settings.route!!}/true",
+                inclusive = false,
+            )
+        },
+    )
+}
+
 internal fun NavGraphBuilder.authScreenComposable(
     navHostController: NavHostController,
     onRequestOAuth: () -> Unit,
@@ -92,11 +112,20 @@ internal fun NavGraphBuilder.settingsScreenComposable(
     onThemeChanged: (AppTheme) -> Unit,
 ) = composable(
     route = NavigationScreen.Settings.routeWithArguments,
-    enterTransition = { enterTransition() },
-    exitTransition = { exitTransition() },
+    enterTransition = {
+        enterTransition(reverse = initialState.destination.route != NavigationScreen.List.routeWithArguments)
+    }, // false when navigating from list
+    exitTransition = {
+        exitTransition(
+        reverse = navHostController.currentDestination?.route == NavigationScreen.About.routeWithArguments,
+    )
+    },
 ) {
     SettingsScreen(
         settingsScreenContainer = rememberSettingsScreenContainer(),
+        onAbout = {
+            navHostController.navigate(route = NavigationScreen.About.routeWithArguments)
+        },
         onClose = {
             navHostController.popBackStack(
                 route = NavigationScreen.List.routeWithArguments,

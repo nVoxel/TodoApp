@@ -2,6 +2,7 @@ package com.voxeldev.todoapp.di.app
 
 import android.content.Context
 import com.voxeldev.todoapp.TodoApp
+import com.voxeldev.todoapp.di.dependencies.AboutFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.AuthFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.ListFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.SettingsFeatureDependenciesModule
@@ -21,6 +22,7 @@ import dagger.Component
         UtilsModule::class,
         LocalModule::class,
         RepositoryModule::class,
+        AboutFeatureDependenciesModule::class,
         AuthFeatureDependenciesModule::class,
         ListFeatureDependenciesModule::class,
         SettingsFeatureDependenciesModule::class,
