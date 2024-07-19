@@ -6,7 +6,6 @@ import androidx.security.crypto.MasterKey
 import com.voxeldev.todoapp.api.model.AuthToken
 import com.voxeldev.todoapp.api.repository.AuthTokenRepository
 import com.voxeldev.todoapp.utils.exceptions.TokenNotFoundException
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -16,7 +15,7 @@ import javax.inject.Inject
  * @author nvoxel
  */
 internal class AuthTokenRepositoryPrefsImpl @Inject constructor(
-    @ApplicationContext context: Context,
+    context: Context,
     private val storedTokenMapper: StoredTokenMapper,
 ) : AuthTokenRepository {
 

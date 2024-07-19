@@ -16,6 +16,7 @@ internal object ListScreenPreviewData {
             isComplete = false,
             creationTimestamp = 1715930496,
             modifiedTimestamp = 1715930496,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "2",
@@ -25,6 +26,7 @@ internal object ListScreenPreviewData {
             isComplete = false,
             creationTimestamp = 1715951200,
             modifiedTimestamp = 1715951200,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "3",
@@ -34,6 +36,7 @@ internal object ListScreenPreviewData {
             isComplete = true,
             creationTimestamp = 1715972800,
             modifiedTimestamp = 1716036800,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "4",
@@ -43,6 +46,7 @@ internal object ListScreenPreviewData {
             isComplete = false,
             creationTimestamp = 1715994400,
             modifiedTimestamp = 1715994400,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "5",
@@ -52,6 +56,7 @@ internal object ListScreenPreviewData {
             isComplete = false,
             creationTimestamp = 1716016000,
             modifiedTimestamp = 1716080000,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "6",
@@ -61,6 +66,7 @@ internal object ListScreenPreviewData {
             isComplete = true,
             creationTimestamp = 1716037600,
             modifiedTimestamp = 1716037600,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "7",
@@ -70,6 +76,7 @@ internal object ListScreenPreviewData {
             isComplete = false,
             creationTimestamp = 1716059200,
             modifiedTimestamp = 1716059200,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "8",
@@ -79,6 +86,7 @@ internal object ListScreenPreviewData {
             isComplete = false,
             creationTimestamp = 1716080800,
             modifiedTimestamp = 1716144800,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "9",
@@ -88,6 +96,7 @@ internal object ListScreenPreviewData {
             isComplete = false,
             creationTimestamp = 1716102400,
             modifiedTimestamp = 1716102400,
+            lastUpdatedBy = "TODO",
         ),
         TodoItem(
             id = "10",
@@ -97,6 +106,7 @@ internal object ListScreenPreviewData {
             isComplete = true,
             creationTimestamp = 1716124000,
             modifiedTimestamp = 1716124000,
+            lastUpdatedBy = "TODO",
         ),
     )
 }

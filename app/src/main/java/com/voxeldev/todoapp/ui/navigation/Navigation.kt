@@ -4,13 +4,15 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
+import com.voxeldev.todoapp.di.navigation.NavigationContainer
 import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
+import com.voxeldev.todoapp.ui.viewmodel.navigation.NavigationViewModel
 import com.yandex.authsdk.YandexAuthResult
 import kotlinx.coroutines.flow.StateFlow
 
@@ -19,12 +21,15 @@ import kotlinx.coroutines.flow.StateFlow
  */
 @Composable
 internal fun MainNavHost(
+    navigationContainer: NavigationContainer,
+    navigationViewModel: NavigationViewModel = viewModel(
+        factory = navigationContainer.navigationViewModelProvider,
+    ),
     navHostController: NavHostController = rememberNavController(),
     authResultFlow: StateFlow<YandexAuthResult?>,
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
 ) {
-    val navigationViewModel: NavigationViewModel = hiltViewModel()
     val authTokenState by navigationViewModel.authTokenState.collectAsStateWithLifecycle()
 
     if (authTokenState is AuthTokenState.Loading) {
@@ -54,13 +59,18 @@ private fun MainNavHost(
         enterTransition = { enterTransition(navHostController = navHostController) },
         exitTransition = { exitTransition(navHostController = navHostController) },
     ) {
-        authScreenComposable(navHostController, onRequestOAuth, onAuthSuccess, authResultFlow)
+        authScreenComposable(
+            navHostController = navHostController,
+            onRequestOAuth = onRequestOAuth,
+            onAuthSuccess = onAuthSuccess,
+            authResultFlow = authResultFlow,
+        )
 
-        listScreenComposable(navHostController)
+        listScreenComposable(navHostController = navHostController)
 
-        taskScreenComposable(navHostController)
+        taskScreenComposable(navHostController = navHostController)
 
-        settingsScreenComposable(navHostController)
+        settingsScreenComposable(navHostController = navHostController)
     }
 }
 

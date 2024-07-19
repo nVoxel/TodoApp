@@ -1,11 +1,10 @@
 package com.voxeldev.todoapp.network.di
 
 import com.voxeldev.todoapp.api.repository.AuthTokenRepository
+import com.voxeldev.todoapp.utils.di.scopes.AppScope
 import com.voxeldev.todoapp.utils.providers.StringResourceProvider
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
@@ -16,15 +15,13 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import javax.inject.Singleton
 
 /**
  * Remote data module.
  * @author nvoxel
  */
 @Module
-@InstallIn(SingletonComponent::class)
-class NetworkModule {
+internal class NetworkModule {
 
     @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
@@ -33,7 +30,7 @@ class NetworkModule {
     }
 
     @Provides
-    @Singleton
+    @AppScope
     fun provideHttpClient(
         stringResourceProvider: StringResourceProvider,
         authTokenRepository: AuthTokenRepository,

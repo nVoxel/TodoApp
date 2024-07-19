@@ -1,17 +1,18 @@
 package com.voxeldev.todoapp.ui.navigation
 
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.voxeldev.todoapp.auth.ui.AuthScreen
-import com.voxeldev.todoapp.auth.viewmodel.AuthViewModel
 import com.voxeldev.todoapp.list.ui.ListScreen
 import com.voxeldev.todoapp.settings.ui.SettingsScreen
 import com.voxeldev.todoapp.task.ui.TaskScreen
-import com.voxeldev.todoapp.task.viewmodel.TaskViewModel
+import com.voxeldev.todoapp.ui.navigation.containers.rememberAuthScreenContainer
+import com.voxeldev.todoapp.ui.navigation.containers.rememberListScreenContainer
+import com.voxeldev.todoapp.ui.navigation.containers.rememberSettingsScreenContainer
+import com.voxeldev.todoapp.ui.navigation.containers.rememberTaskScreenContainer
 import com.yandex.authsdk.YandexAuthResult
 import kotlinx.coroutines.flow.StateFlow
 
@@ -25,29 +26,26 @@ internal fun NavGraphBuilder.authScreenComposable(
     authResultFlow: StateFlow<YandexAuthResult?>,
 ) = composable(route = NavigationScreen.Auth.routeWithArguments) {
     AuthScreen(
+        authResultFlow = authResultFlow,
+        authScreenContainer = rememberAuthScreenContainer(),
         onRequestOAuth = onRequestOAuth,
         onAuthSuccess = {
             navHostController.navigateToList()
             onAuthSuccess()
         },
-        viewModel = hiltViewModel<AuthViewModel, AuthViewModel.Factory>(
-            creationCallback = { factory ->
-                factory.create(yandexAuthResultFlow = authResultFlow)
-            },
-        ),
     )
 }
 
 internal fun NavGraphBuilder.listScreenComposable(navHostController: NavHostController) =
     composable(route = NavigationScreen.List.routeWithArguments) {
         ListScreen(
+            listScreenContainer = rememberListScreenContainer(),
             onNavigateToTask = { taskId ->
                 navHostController.navigate(route = "${NavigationScreen.Task.route!!}/$taskId")
             },
             onNavigateToSettings = {
                 navHostController.navigate(route = NavigationScreen.Settings.routeWithArguments)
             },
-            viewModel = hiltViewModel(),
         )
     }
 
@@ -62,11 +60,8 @@ internal fun NavGraphBuilder.taskScreenComposable(navHostController: NavHostCont
         ),
     ) {
         TaskScreen(
-            viewModel = hiltViewModel<TaskViewModel, TaskViewModel.Factory>(
-                creationCallback = { factory ->
-                    factory.create(taskId = it.arguments?.getString(NavigationScreen.TASK_ID_ARG))
-                },
-            ),
+            taskId = it.arguments?.getString(NavigationScreen.TASK_ID_ARG),
+            taskScreenContainer = rememberTaskScreenContainer(),
             onClose = { navHostController.popBackStack() },
         )
     }
@@ -74,7 +69,7 @@ internal fun NavGraphBuilder.taskScreenComposable(navHostController: NavHostCont
 internal fun NavGraphBuilder.settingsScreenComposable(navHostController: NavHostController) =
     composable(route = NavigationScreen.Settings.routeWithArguments) {
         SettingsScreen(
-            viewModel = hiltViewModel(),
+            settingsScreenContainer = rememberSettingsScreenContainer(),
             onClose = { navHostController.popBackStack() },
             onLoggedOut = { navHostController.navigateToAuth() },
         )

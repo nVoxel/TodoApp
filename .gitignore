@@ -29,6 +29,7 @@ render.experimental.xml
 # Keystore files
 *.jks
 *.keystore
+*.asc
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
@@ -225,6 +226,9 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+# Secrets file
+secrets.properties
 
 ### AndroidStudio Patch ###
 

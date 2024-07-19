@@ -1,13 +1,17 @@
 package com.voxeldev.todoapp.api.request
 
-import com.voxeldev.todoapp.api.model.TodoItem
+import com.voxeldev.todoapp.api.model.TodoItemImportance
 
 /**
  * Request that is used to create or update task.
  * @author nvoxel
  */
 data class TodoItemModifyRequest(
-    val todoItem: TodoItem,
-    val revision: Int,
-    val deviceId: String,
+    val id: String,
+    val text: String,
+    val importance: TodoItemImportance,
+    val deadlineTimestamp: Long? = null,
+    val isComplete: Boolean,
+    val creationTimestamp: Long,
+    val modifiedTimestamp: Long,
 )

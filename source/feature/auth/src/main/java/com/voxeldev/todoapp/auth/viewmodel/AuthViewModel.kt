@@ -11,14 +11,11 @@ import com.voxeldev.todoapp.domain.usecase.todoitem.GetAllTodoItemsFlowUseCase
 import com.voxeldev.todoapp.domain.usecase.token.ClearAuthTokenUseCase
 import com.voxeldev.todoapp.domain.usecase.token.SetAuthTokenUseCase
 import com.voxeldev.todoapp.utils.base.BaseViewModel
+import com.voxeldev.todoapp.utils.exceptions.NetworkNotAvailableException
 import com.voxeldev.todoapp.utils.exceptions.TokenNotFoundException
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import com.yandex.authsdk.YandexAuthResult
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,13 +26,12 @@ import kotlinx.coroutines.launch
  * Stores [AuthScreen] current state and manages authentication state.
  * @author nvoxel
  */
-@HiltViewModel(assistedFactory = AuthViewModel.Factory::class)
-class AuthViewModel @AssistedInject constructor(
-    @Assisted val yandexAuthResultFlow: StateFlow<YandexAuthResult?>,
+class AuthViewModel(
+    private val yandexAuthResultFlow: StateFlow<YandexAuthResult?>,
     private val setAuthTokenUseCase: SetAuthTokenUseCase,
     private val clearAuthTokenUseCase: ClearAuthTokenUseCase,
     private val getAllTodoItemsFlowUseCase: GetAllTodoItemsFlowUseCase, // there is no other way to check auth
-    networkObserver: NetworkObserver,
+    private val networkObserver: NetworkObserver,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : BaseViewModel(
     networkObserver = networkObserver,
@@ -44,11 +40,6 @@ class AuthViewModel @AssistedInject constructor(
 
     private val _state: MutableStateFlow<AuthScreenState> = MutableStateFlow(value = AuthScreenState.ChooseMethod())
     val state: StateFlow<AuthScreenState> = _state.asStateFlow()
-
-    @AssistedFactory
-    interface Factory {
-        fun create(yandexAuthResultFlow: StateFlow<YandexAuthResult?>): AuthViewModel
-    }
 
     init {
         scope.launch {
@@ -66,6 +57,12 @@ class AuthViewModel @AssistedInject constructor(
 
                     else -> {}
                 }
+            }
+        }
+
+        scope.launch {
+            networkObserver.networkAvailability.collect { networkAvailable ->
+                if (networkAvailable) checkAuth()
             }
         }
     }
@@ -97,12 +94,20 @@ class AuthViewModel @AssistedInject constructor(
     }
 
     fun checkAuth() {
+        if (!networkObserver.networkAvailability.value) {
+            handleException(exception = NetworkNotAvailableException())
+            return
+        }
+
         _loading.update { true }
         setToken(successCallback = ::checkAuthInternal)
     }
 
     private fun setToken(successCallback: () -> Unit) {
-        val authToken = getAuthToken() ?: return
+        val authToken = getAuthToken() ?: run {
+            _loading.value = false
+            return
+        }
 
         if (authToken.token.isBlank()) {
             handleException(exception = FieldNotFilledException())
@@ -147,22 +152,28 @@ class AuthViewModel @AssistedInject constructor(
             scope = scope,
         ) { result ->
             result.fold(
-                onSuccess = {
-                    _state.update { AuthScreenState.Success }
-                    _loading.update { false }
+                onSuccess = { todoItemList ->
+                    onAuthSuccess()
                 },
-                onFailure = { exception ->
-                    _exception.update {
-                        if (exception is TokenNotFoundException) {
-                            FailedToAuthenticateException()
-                        } else {
-                            Exception(exception)
-                        }
-                    }
-                    clearToken()
-                },
+                onFailure = { exception -> onAuthFailure(exception = exception) },
             )
         }
+    }
+
+    private fun onAuthSuccess() {
+        _state.update { AuthScreenState.Success }
+        _loading.update { false }
+    }
+
+    private fun onAuthFailure(exception: Throwable) {
+        _exception.update {
+            if (exception is TokenNotFoundException) {
+                FailedToAuthenticateException()
+            } else {
+                exception as Exception
+            }
+        }
+        clearToken()
     }
 
     private fun clearToken() {
@@ -174,6 +185,4 @@ class AuthViewModel @AssistedInject constructor(
             _loading.update { false }
         }
     }
-
-    override fun onNetworkConnected() = checkAuth()
 }

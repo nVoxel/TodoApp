@@ -9,32 +9,40 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
+import com.voxeldev.todoapp.di.main.DaggerMainActivityComponent
+import com.voxeldev.todoapp.di.main.MainActivityComponent
 import com.voxeldev.todoapp.domain.usecase.preferences.GetAutoRefreshIntervalUseCase
 import com.voxeldev.todoapp.settings.work.setupAutoRefreshWork
 import com.voxeldev.todoapp.ui.navigation.MainNavHost
+import com.voxeldev.todoapp.ui.navigation.rememberNavigationContainer
 import com.voxeldev.todoapp.ui.viewmodel.MainActivityViewModel
+import com.voxeldev.todoapp.utils.extensions.lazyUnsafe
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdk
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
  * Main app activity.
  * @author nvoxel
  */
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var getAutoRefreshIntervalUseCase: GetAutoRefreshIntervalUseCase
+    private val mainActivityComponent: MainActivityComponent by lazyUnsafe {
+        DaggerMainActivityComponent.factory().create(applicationContext = applicationContext)
+    }
 
     private val viewModel: MainActivityViewModel by viewModels()
 
     private val loginOptions = YandexAuthLoginOptions()
 
+    @Inject
+    lateinit var getAutoRefreshIntervalUseCase: GetAutoRefreshIntervalUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mainActivityComponent.inject(this)
 
         setupAutoRefreshWork(
             getAutoRefreshIntervalUseCase = getAutoRefreshIntervalUseCase,
@@ -53,6 +61,7 @@ class MainActivity : ComponentActivity() {
 
             TodoAppTheme {
                 MainNavHost(
+                    navigationContainer = rememberNavigationContainer(),
                     authResultFlow = viewModel.authResultFlow,
                     onRequestOAuth = { launcher.launch(input = loginOptions) },
                     onAuthSuccess = viewModel::onAuthSuccess,

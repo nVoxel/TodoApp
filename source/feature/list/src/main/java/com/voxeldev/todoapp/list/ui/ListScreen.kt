@@ -31,6 +31,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.designsystem.components.ErrorSnackbarEffect
 import com.voxeldev.todoapp.designsystem.components.TodoSmallFAB
@@ -38,6 +39,7 @@ import com.voxeldev.todoapp.designsystem.preview.annotations.ScreenDayNightPrevi
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 import com.voxeldev.todoapp.designsystem.screens.BaseScreen
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
+import com.voxeldev.todoapp.list.di.ListScreenContainer
 import com.voxeldev.todoapp.list.ui.components.ListItem
 import com.voxeldev.todoapp.list.ui.components.ListScreenTopBar
 import com.voxeldev.todoapp.list.ui.components.NewListItem
@@ -52,9 +54,10 @@ import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
+    listScreenContainer: ListScreenContainer,
+    viewModel: ListViewModel = viewModel(factory = listScreenContainer.listViewModelProvider),
     onNavigateToTask: (String?) -> Unit,
     onNavigateToSettings: () -> Unit,
-    viewModel: ListViewModel,
 ) {
     val lazyColumnState = rememberLazyListState()
     val topBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = rememberTopAppBarState())
@@ -66,7 +69,7 @@ fun ListScreen(
     val completedItemsCount by viewModel.completedItemsCount.collectAsStateWithLifecycle()
     val error by viewModel.exception.collectAsStateWithLifecycle()
 
-    val displayFullscreenError = todoItems.isEmpty() // don't display after initial load
+    val displayFullscreenError = todoItems.list.isEmpty() // don't display after initial load
 
     BaseScreen(
         viewModel = viewModel,
@@ -84,7 +87,7 @@ fun ListScreen(
             onUncompletedVisibilityChanged = { updatedIsOnlyUncompletedVisible ->
                 isOnlyUncompletedVisible = updatedIsOnlyUncompletedVisible
             },
-            todoItems = todoItems,
+            todoItems = todoItems.list,
             completedItemsCount = completedItemsCount,
             onItemClicked = onNavigateToTask,
             onCheckClicked = { id, isChecked ->

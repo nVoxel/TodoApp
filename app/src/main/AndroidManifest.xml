@@ -23,12 +23,6 @@
             tools:node="merge">
 
             <meta-data
-                android:name="com.voxeldev.todoapp.initializer.DependencyGraphInitializer"
-                android:value="androidx.startup" />
-            <meta-data
-                android:name="com.voxeldev.todoapp.initializer.WorkManagerInitializer"
-                android:value="androidx.startup" />
-            <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
                 android:value="androidx.startup"
                 tools:node="remove" />

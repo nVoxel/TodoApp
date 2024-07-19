@@ -1,28 +1,23 @@
 package com.voxeldev.todoapp.network.todoapi.mapper
 
 import com.voxeldev.todoapp.api.model.TodoItem
-import com.voxeldev.todoapp.network.mapper.ResponseMapper
 import com.voxeldev.todoapp.network.todoapi.datasource.TodoItemData
-import com.voxeldev.todoapp.network.todoapi.mapper.converters.toImportance
+import com.voxeldev.todoapp.network.todoapi.mapper.converters.toRequest
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
- * Maps [TodoItemData] response to [TodoItem] model.
- * @author nvoxel
- */
-@Singleton
-internal class TodoItemDataMapper @Inject constructor() : ResponseMapper<TodoItemData, TodoItem> {
+* @author nvoxel
+*/
+internal class TodoItemDataMapper @Inject constructor() {
 
-    override fun toModel(response: TodoItemData): TodoItem =
-        TodoItem(
-            id = response.id,
-            text = response.text,
-            importance = response.importance.toImportance(),
-            deadlineTimestamp = response.deadlineTimestamp,
-            isComplete = response.isComplete,
-            creationTimestamp = response.creationTimestamp,
-            modifiedTimestamp = response.modifiedTimestamp,
-            lastUpdatedBy = response.lastUpdatedBy,
-        )
+    fun toRequest(model: TodoItem): TodoItemData = TodoItemData(
+        id = model.id,
+        text = model.text,
+        importance = model.importance.toRequest(),
+        deadlineTimestamp = model.deadlineTimestamp,
+        isComplete = model.isComplete,
+        creationTimestamp = model.creationTimestamp,
+        modifiedTimestamp = model.modifiedTimestamp,
+        lastUpdatedBy = model.lastUpdatedBy,
+    )
 }

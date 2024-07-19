@@ -1,7 +1,11 @@
-rootProject.name = "TodoApp"
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+rootProject.name = "TodoApp"
+
 pluginManagement {
+    includeBuild("build-logic")
+
     repositories {
         google {
             content {
@@ -33,3 +37,5 @@ include(":source:core:domain")
 include(":source:feature:auth")
 include(":source:data:local")
 include(":source:feature:settings")
+include(":source:data:database")
+include(":source:data:repository")

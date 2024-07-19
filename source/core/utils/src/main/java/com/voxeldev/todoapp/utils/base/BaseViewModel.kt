@@ -2,7 +2,6 @@ package com.voxeldev.todoapp.utils.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.voxeldev.todoapp.utils.exceptions.NetworkNotAvailableException
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineScope
@@ -38,18 +37,9 @@ open class BaseViewModel(
         viewModelScope.launch {
             networkObserver.networkAvailability.collect { networkAvailable ->
                 _networkNotification.update { !networkAvailable }
-
-                if (networkAvailable && exception.value is NetworkNotAvailableException) {
-                    onNetworkConnected()
-                }
             }
         }
     }
-
-    /**
-     * Called when a network connection appears, if the previous request was not completed due to network unavailability
-     */
-    protected open fun onNetworkConnected() {}
 
     protected fun handleException(exception: Throwable) {
         _exception.update {

@@ -60,7 +60,7 @@ private fun SettingsItemContent(
         tint = if (isDangerous) appPalette.colorRed else appPalette.labelPrimary,
     )
 
-    Spacer(modifier = Modifier.width(width = 12.dp))
+    Spacer(modifier = Modifier.width(width = 16.dp))
 
     SettingsItemTextContent(
         titleText = titleText,
