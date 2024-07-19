@@ -63,7 +63,6 @@ div = { group = "com.yandex.div", name = "div", version.ref = "div" }
 div-core = { group = "com.yandex.div", name = "div-core", version.ref = "div" }
 div-glide = { group = "com.yandex.div", name = "glide", version.ref = "div" }
 div-json = { group = "com.yandex.div", name = "div-json", version.ref = "div" }
-div-rive = { group = "com.yandex.div", name = "div-rive", version.ref = "div" }
 div-utils = { group = "com.yandex.div", name = "utils", version.ref = "div" }
 
 # Gradle
@@ -110,7 +109,6 @@ div = [
     "div-core",
     "div-glide",
     "div-json",
-    "div-rive",
     "div-utils",
 ]
 
