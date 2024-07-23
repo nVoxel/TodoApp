@@ -13,7 +13,7 @@ import dagger.Provides
  * @author nvoxel
  */
 @Module
-class TaskFeatureDependenciesModule {
+internal class TaskFeatureDependenciesModule {
 
     @Provides
     fun provideTaskFeatureDependencies(

@@ -11,7 +11,7 @@ import com.voxeldev.todoapp.settings.di.SettingsScreenContainer
  * @author nvoxel
  */
 @Composable
-fun rememberSettingsScreenContainer(): SettingsScreenContainer {
+internal fun rememberSettingsScreenContainer(): SettingsScreenContainer {
     val application = LocalContext.current.applicationContext as TodoApp
     return remember {
         SettingsScreenContainer().also { container ->

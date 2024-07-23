@@ -6,6 +6,7 @@ compose-bom = "2024.06.00"
 core-ktx = "1.13.1"
 dagger = "2.51.1"
 detekt = "1.23.6"
+div = "30.9.0"
 espresso-core = "3.5.1"
 junit = "4.13.2"
 kotlinx-coroutines = "1.8.0"
@@ -31,8 +32,6 @@ android-compileSdk = "34"
 
 version-name = "1.0"
 version-code = "1"
-appcompat = "1.7.0"
-material = "1.12.0"
 
 [libraries]
 
@@ -58,6 +57,13 @@ material-icons-extended = { group = "androidx.compose.material", name = "materia
 # Dagger
 dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
+
+# Div
+div = { group = "com.yandex.div", name = "div", version.ref = "div" }
+div-core = { group = "com.yandex.div", name = "div-core", version.ref = "div" }
+div-glide = { group = "com.yandex.div", name = "glide", version.ref = "div" }
+div-json = { group = "com.yandex.div", name = "div-json", version.ref = "div" }
+div-utils = { group = "com.yandex.div", name = "utils", version.ref = "div" }
 
 # Gradle
 agp = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -95,10 +101,16 @@ detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-form
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-junit" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [bundles]
+
+div = [
+    "div",
+    "div-core",
+    "div-glide",
+    "div-json",
+    "div-utils",
+]
 
 ktor = [
     "ktor-client-auth",

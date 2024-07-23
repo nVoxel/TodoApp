@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings">Настройки</string>
+    <string name="app_theme">Тема</string>
+    <string name="app_theme_description">Изменить тему приложения</string>
+    <string name="app_theme_auto">Автоматическая</string>
+    <string name="app_theme_light">Светлая</string>
+    <string name="app_theme_dark">Темная</string>
     <string name="auto_refresh_interval">Интервал автообновления</string>
     <string name="auto_refresh_interval_description">Изменить интервал автообновления списка</string>
     <string name="log_out">Выход</string>
     <string name="log_out_description">Выйти из активного аккаунта</string>
+    <string name="about">О приложении</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
 import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
+import com.voxeldev.todoapp.designsystem.theme.AppTypography
 
 /**
  * @author nvoxel
@@ -25,8 +26,8 @@ import com.voxeldev.todoapp.designsystem.preview.base.PreviewBase
 fun TodoInfoDialog(
     isVisible: Boolean,
     onDismiss: () -> Unit,
-    confirmButtonText: String,
-    onConfirmButtonClicked: () -> Unit,
+    confirmButtonText: String? = null,
+    onConfirmButtonClicked: () -> Unit = {},
     titleContent: @Composable () -> Unit? = {},
     dialogContent: @Composable ColumnScope.() -> Unit,
 ) {
@@ -41,6 +42,8 @@ fun TodoInfoDialog(
 
                         dialogContent()
                     }
+
+                    if (confirmButtonText == null) return@Column
 
                     Footer(
                         confirmButtonText = confirmButtonText,
@@ -80,6 +83,12 @@ private fun Preview() {
             onDismiss = {},
             confirmButtonText = "Done",
             onConfirmButtonClicked = {},
+            titleContent = {
+                Text(
+                    text = "Dialog Title",
+                    style = AppTypography.title,
+                )
+            },
         ) {
             repeat(times = 5) {
                 Text(text = "Dialog content")

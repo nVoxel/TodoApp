@@ -1,7 +1,7 @@
 package com.voxeldev.todoapp.ui.navigation
 
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.voxeldev.todoapp.api.model.AppTheme
 import com.voxeldev.todoapp.designsystem.components.FullscreenLoader
 import com.voxeldev.todoapp.di.navigation.NavigationContainer
 import com.voxeldev.todoapp.ui.navigation.state.AuthTokenState
@@ -29,6 +30,7 @@ internal fun MainNavHost(
     authResultFlow: StateFlow<YandexAuthResult?>,
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
+    onThemeChanged: (AppTheme) -> Unit,
 ) {
     val authTokenState by navigationViewModel.authTokenState.collectAsStateWithLifecycle()
 
@@ -41,6 +43,7 @@ internal fun MainNavHost(
             authResultFlow = authResultFlow,
             onRequestOAuth = onRequestOAuth,
             onAuthSuccess = onAuthSuccess,
+            onThemeChanged = onThemeChanged,
         )
     }
 }
@@ -52,13 +55,16 @@ private fun MainNavHost(
     authResultFlow: StateFlow<YandexAuthResult?>,
     onRequestOAuth: () -> Unit,
     onAuthSuccess: () -> Unit,
+    onThemeChanged: (AppTheme) -> Unit,
 ) {
     NavHost(
         navController = navHostController,
         startDestination = startDestination.routeWithArguments,
-        enterTransition = { enterTransition(navHostController = navHostController) },
-        exitTransition = { exitTransition(navHostController = navHostController) },
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
     ) {
+        aboutScreenComposable(navHostController = navHostController)
+
         authScreenComposable(
             navHostController = navHostController,
             onRequestOAuth = onRequestOAuth,
@@ -70,23 +76,9 @@ private fun MainNavHost(
 
         taskScreenComposable(navHostController = navHostController)
 
-        settingsScreenComposable(navHostController = navHostController)
+        settingsScreenComposable(
+            navHostController = navHostController,
+            onThemeChanged = onThemeChanged,
+        )
     }
 }
-
-private fun enterTransition(navHostController: NavHostController) =
-    slideInHorizontally { fullWidth ->
-        if (navHostController.currentDestination?.route == NavigationScreen.List.routeWithArguments) 0 else fullWidth
-    }
-
-private fun exitTransition(navHostController: NavHostController) =
-    slideOutHorizontally { fullWidth ->
-        if (
-            navHostController.currentDestination?.route == NavigationScreen.Task.routeWithArguments ||
-            navHostController.currentDestination?.route == NavigationScreen.Settings.routeWithArguments
-        ) {
-            0
-        } else {
-            fullWidth
-        }
-    }

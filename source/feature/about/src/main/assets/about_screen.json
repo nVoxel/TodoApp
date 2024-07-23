@@ -1,0 +1,541 @@
+{
+  "card": {
+    "log_id": "div2_sample_card",
+    "states": [
+      {
+        "state_id": 0,
+        "div": {
+          "items": [
+            {
+              "type": "container",
+              "width": {
+                "type": "match_parent"
+              },
+              "height": {
+                "type": "match_parent",
+                "value": 200
+              },
+              "alignment_horizontal": "center",
+              "alignment_vertical": "center",
+              "items": [
+                {
+                  "type": "_template_close",
+                  "alignment_horizontal": "start",
+                  "height": {
+                    "type": "fixed",
+                    "value": 24,
+                    "unit": "dp"
+                  },
+                  "width": {
+                    "type": "fixed",
+                    "value": 24,
+                    "unit": "dp"
+                  },
+                  "actions": [
+                    {
+                      "log_id": "close_screen",
+                      "url": "todo-action://close"
+                    }
+                  ]
+                },
+                {
+                  "type": "separator",
+                  "width": {
+                    "type": "match_parent"
+                  },
+                  "height": {
+                    "type": "fixed",
+                    "value": 24
+                  },
+                  "delimiter_style": {
+                    "color": "#00000000"
+                  }
+                },
+                {
+                  "type": "gallery",
+                  "width": {
+                    "type": "match_parent"
+                  },
+                  "height": {
+                    "type": "match_parent"
+                  },
+                  "items": [
+                    {
+                      "type": "image",
+                      "image_url": "@{getStringFromDict(strings, locale, 'banner')}",
+                      "width": {
+                        "type": "wrap_content",
+                        "max_size": {
+                          "value": 350,
+                          "unit": "dp"
+                        }
+                      },
+                      "height": {
+                        "type": "wrap_content",
+                        "max_size": {
+                          "value": 200,
+                          "unit": "dp"
+                        }
+                      },
+                      "preload_required": true,
+                      "border": {
+                        "corner_radius": 12
+                      },
+                      "alignment_horizontal": "center"
+                    },
+                    {
+                      "type": "text",
+                      "text": "V@{version}",
+                      "width": {
+                        "type": "wrap_content",
+                        "constrained": true
+                      },
+                      "background": [
+                        {
+                          "type": "solid",
+                          "color": "#B3B8CC"
+                        }
+                      ],
+                      "border": {
+                        "corner_radius": 4
+                      },
+                      "font_size": 12,
+                      "font_weight": "bold",
+                      "paddings": {
+                        "top": 4,
+                        "bottom": 4,
+                        "start": 4,
+                        "end": 4
+                      }
+                    },
+                    {
+                      "type": "state",
+                      "div_id": "tech_stack_list",
+                      "width": {
+                        "type": "match_parent"
+                      },
+                      "height": {
+                        "type": "wrap_content",
+                        "value": 200
+                      },
+                      "states": [
+                        {
+                          "state_id": "shrinked",
+                          "div": {
+                            "type": "container",
+                            "actions": [
+                              {
+                                "log_id": "expand",
+                                "url": "div-action://set_state?state_id=0/tech_stack_list/expanded"
+                              }
+                            ],
+                            "items": [
+                              {
+                                "type": "container",
+                                "width": {
+                                  "type": "match_parent"
+                                },
+                                "height": {
+                                  "type": "wrap_content"
+                                },
+                                "orientation": "horizontal",
+                                "items": [
+                                  {
+                                    "type": "text",
+                                    "text": "@{getStringFromDict(strings, locale, 'tech_stack')}",
+                                    "text_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "width": {
+                                      "type": "match_parent",
+                                      "constrained": true
+                                    },
+                                    "font_size": 14,
+                                    "font_weight": "bold",
+                                    "alignment_vertical": "center"
+                                  },
+                                  {
+                                    "type": "image",
+                                    "image_url": "https://nvoxel.github.io/chevron_down.png",
+                                    "tint_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "width": {
+                                      "type": "fixed",
+                                      "value": 24,
+                                      "unit": "sp"
+                                    },
+                                    "height": {
+                                      "type": "fixed",
+                                      "value": 24,
+                                      "unit": "sp"
+                                    },
+                                    "alignment_vertical": "center",
+                                    "margins": {
+                                      "start": 8
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "state_id": "expanded",
+                          "div": {
+                            "type": "container",
+                            "actions": [
+                              {
+                                "log_id": "shrink",
+                                "url": "div-action://set_state?state_id=0/tech_stack_list/shrinked"
+                              }
+                            ],
+                            "items": [
+                              {
+                                "type": "container",
+                                "width": {
+                                  "type": "match_parent"
+                                },
+                                "height": {
+                                  "type": "wrap_content"
+                                },
+                                "orientation": "horizontal",
+                                "items": [
+                                  {
+                                    "type": "text",
+                                    "text": "@{getStringFromDict(strings, locale, 'tech_stack')}:",
+                                    "text_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "width": {
+                                      "type": "match_parent",
+                                      "constrained": true
+                                    },
+                                    "font_size": 14,
+                                    "font_weight": "bold",
+                                    "alignment_vertical": "center"
+                                  },
+                                  {
+                                    "type": "image",
+                                    "image_url": "https://nvoxel.github.io/chevron_up.png",
+                                    "tint_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "width": {
+                                      "type": "fixed",
+                                      "value": 24,
+                                      "unit": "sp"
+                                    },
+                                    "height": {
+                                      "type": "fixed",
+                                      "value": 24,
+                                      "unit": "sp"
+                                    },
+                                    "alignment_vertical": "center",
+                                    "margins": {
+                                      "start": 8
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "container",
+                                "id": "visible_id",
+                                "transition_in": {
+                                  "type": "slide",
+                                  "edge": "left",
+                                  "duration": 500
+                                },
+                                "width": {
+                                  "type": "match_parent"
+                                },
+                                "height": {
+                                  "type": "wrap_content"
+                                },
+                                "items": [
+                                  {
+                                    "type": "separator",
+                                    "width": {
+                                      "type": "match_parent"
+                                    },
+                                    "height": {
+                                      "type": "fixed",
+                                      "value": 6
+                                    },
+                                    "delimiter_style": {
+                                      "color": "#00000000"
+                                    }
+                                  },
+                                  {
+                                    "list_text": "Jetpack Compose",
+                                    "list_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "list_text_size": 14,
+                                    "type": "_template_list_item"
+                                  },
+                                  {
+                                    "list_text": "DivKit",
+                                    "list_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "list_text_size": 14,
+                                    "type": "_template_list_item"
+                                  },
+                                  {
+                                    "list_text": "Dagger 2",
+                                    "list_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "list_text_size": 14,
+                                    "type": "_template_list_item"
+                                  },
+                                  {
+                                    "list_text": "Ktor",
+                                    "list_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "list_text_size": 14,
+                                    "type": "_template_list_item"
+                                  },
+                                  {
+                                    "list_text": "Room",
+                                    "list_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                                    "list_text_size": 14,
+                                    "type": "_template_list_item"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "container",
+                      "width": {
+                        "type": "match_parent"
+                      },
+                      "height": {
+                        "type": "wrap_content",
+                        "value": 200
+                      },
+                      "items": [
+                        {
+                          "type": "text",
+                          "text": "@{getStringFromDict(strings, locale, 'developed_by')}",
+                          "text_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                          "width": {
+                            "type": "wrap_content",
+                            "constrained": true
+                          },
+                          "font_size": 14,
+                          "font_weight": "bold",
+                          "ranges": [
+                            {
+                              "end": "@{getIntegerFromDict(ranges, locale, 'developed_by_link_end')}",
+                              "start": "@{getIntegerFromDict(ranges, locale, 'developed_by_link_start')}",
+                              "text_color": "#007AFF",
+                              "underline": "single"
+                            }
+                          ],
+                          "actions": [
+                            {
+                              "log_id": "open_profile",
+                              "url": "todo-action://profile"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "separator",
+                          "width": {
+                            "type": "match_parent"
+                          },
+                          "height": {
+                            "type": "fixed",
+                            "value": 12
+                          },
+                          "delimiter_style": {
+                            "color": "#00000000"
+                          }
+                        },
+                        {
+                          "type": "text",
+                          "width": {
+                            "type": "wrap_content",
+                            "constrained": true
+                          },
+                          "font_size": 14,
+                          "font_weight": "bold",
+                          "text": "@{getStringFromDict(strings, locale, 'check_github')}",
+                          "text_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+                          "ranges": [
+                            {
+                              "text_color": "#007AFF",
+                              "end": "@{getIntegerFromDict(ranges, locale, 'check_github_link_end')}",
+                              "start": "@{getIntegerFromDict(ranges, locale, 'check_github_link_start')}",
+                              "underline": "single"
+                            }
+                          ],
+                          "actions": [
+                            {
+                              "log_id": "open_repo",
+                              "url": "todo-action://repo"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "orientation": "vertical",
+                  "item_spacing": 24,
+                  "scroll_mode": "default",
+                  "scrollbar": "auto"
+                }
+              ],
+              "paddings": {
+                "top": 24,
+                "bottom": 24,
+                "start": 24,
+                "end": 24
+              }
+            }
+          ],
+          "background": [
+            {
+              "color": "@{getColorFromDict(palette, app_theme, 'background')}",
+              "type": "solid"
+            }
+          ],
+          "height": {
+            "type": "match_parent"
+          },
+          "orientation": "overlap",
+          "type": "container"
+        }
+      }
+    ],
+    "variables": [
+      {
+        "type": "dict",
+        "name": "palette",
+        "value": {
+          "light": {
+            "label_primary": "#FF000000",
+            "background": "#FFF7F6F2"
+          },
+          "dark": {
+            "label_primary": "#FFFFFFFF",
+            "background": "#FF161618"
+          }
+        }
+      },
+      {
+        "type": "dict",
+        "name": "strings",
+        "value": {
+          "ru": {
+            "banner": "https://nvoxel.github.io/banner-ru.png",
+            "tech_stack": "Набор технологий",
+            "developed_by": "👋 Создано nVoxel",
+            "check_github": "👉 Посмотреть исходный код на GitHub"
+          },
+          "en": {
+            "banner": "https://nvoxel.github.io/banner-en.png",
+            "tech_stack": "Tech stack",
+            "developed_by": "👋 Developed by nVoxel",
+            "check_github": "👉 Check project on GitHub"
+          }
+        }
+      },
+      {
+        "type": "dict",
+        "name": "ranges",
+        "value": {
+          "ru": {
+            "developed_by_link_start": 11,
+            "developed_by_link_end": 17,
+            "check_github_link_start": 3,
+            "check_github_link_end": 36
+          },
+          "en": {
+            "developed_by_link_start": 16,
+            "developed_by_link_end": 23,
+            "check_github_link_start": 3,
+            "check_github_link_end": 26
+          }
+        }
+      }
+    ]
+  },
+  "templates": {
+    "_template_lottie": {
+      "type": "gif",
+      "scale": "fit",
+      "extensions": [
+        {
+          "id": "lottie",
+          "params": {
+            "$lottie_url": "lottie_url"
+          }
+        }
+      ],
+      "gif_url": "https://empty"
+    },
+    "_template_button": {
+      "type": "text",
+      "content_alignment_horizontal": "center",
+      "border": {
+        "$corner_radius": "corners"
+      },
+      "paddings": {
+        "bottom": 24,
+        "left": 28,
+        "right": 28,
+        "top": 22
+      },
+      "width": {
+        "type": "wrap_content"
+      }
+    },
+    "_template_close": {
+      "accessibility": {
+        "description": "Закрыть",
+        "mode": "merge",
+        "type": "button"
+      },
+      "actions": [
+        {
+          "log_id": "close_popup",
+          "url": "div-screen://close"
+        }
+      ],
+      "image_url": "https://yastatic.net/s3/home/div/div_fullscreens/cross2.3.png",
+      "tint_color": "@{getColorFromDict(palette, app_theme, 'label_primary')}",
+      "type": "image",
+      "preload_required": true
+    },
+    "_template_list_item": {
+      "type": "container",
+      "orientation": "horizontal",
+      "items": [
+        {
+          "type": "image",
+          "image_url": "https://yastatic.net/s3/home/div/div_fullscreens/hyphen.4.png",
+          "$tint_color": "list_color",
+          "width": {
+            "type": "fixed",
+            "value": 28,
+            "unit": "sp"
+          },
+          "height": {
+            "type": "fixed",
+            "value": 28,
+            "unit": "sp"
+          },
+          "margins": {
+            "top": 2,
+            "right": 12,
+            "bottom": 2
+          }
+        },
+        {
+          "type": "text",
+          "$text": "list_text",
+          "$text_color": "list_color",
+          "$font_size": "list_text_size",
+          "line_height": 32,
+          "$font_weight": "list_font_weight",
+          "width": {
+            "type": "wrap_content",
+            "constrained": true
+          }
+        }
+      ]
+    }
+  }
+}

@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
  * @author nvoxel
  */
 open class BaseViewModel(
-    networkObserver: NetworkObserver,
+    private val networkObserver: NetworkObserver,
     coroutineDispatcherProvider: CoroutineDispatcherProvider,
 ) : ViewModel() {
 
@@ -46,6 +46,12 @@ open class BaseViewModel(
             if (exception is Exception) exception else Exception(exception)
         }
         _loading.update { false }
+    }
+
+    fun showNetworkNotification() {
+        if (!networkObserver.networkAvailability.value) {
+            _networkNotification.update { true }
+        }
     }
 
     fun hideNetworkNotification() {

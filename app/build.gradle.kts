@@ -48,6 +48,7 @@ dependencies {
     implementation(projects.source.data.local)
     implementation(projects.source.data.network)
     implementation(projects.source.data.repository)
+    implementation(projects.source.feature.about)
     implementation(projects.source.feature.auth)
     implementation(projects.source.feature.list)
     implementation(projects.source.feature.settings)

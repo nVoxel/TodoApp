@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.voxeldev.todoapp.api.model.AppTheme
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
 
@@ -12,7 +13,7 @@ import com.voxeldev.todoapp.designsystem.theme.TodoAppTheme
  */
 @Composable
 fun PreviewBase(previewContent: @Composable () -> Unit) {
-    TodoAppTheme {
+    TodoAppTheme(appTheme = AppTheme.Auto) {
         val appPalette = LocalAppPalette.current
 
         Surface(

@@ -11,7 +11,7 @@ import com.voxeldev.todoapp.task.di.TaskScreenContainer
  * @author nvoxel
  */
 @Composable
-fun rememberTaskScreenContainer(): TaskScreenContainer {
+internal fun rememberTaskScreenContainer(): TaskScreenContainer {
     val application = LocalContext.current.applicationContext as TodoApp
     return remember {
         TaskScreenContainer().also { container ->

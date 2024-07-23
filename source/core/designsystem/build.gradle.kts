@@ -7,5 +7,6 @@ android {
 }
 
 dependencies {
+    implementation(projects.source.core.api)
     implementation(projects.source.core.utils)
 }

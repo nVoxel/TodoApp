@@ -1,14 +1,15 @@
-package com.voxeldev.todoapp.auth.extensions
+package com.voxeldev.todoapp.designsystem.extensions
 
 import android.graphics.Color.TRANSPARENT
 import android.os.Build
 import android.view.Window
 import androidx.core.view.WindowInsetsControllerCompat
+import com.voxeldev.todoapp.api.model.AppTheme
 
 /**
  * @author nvoxel
  */
-internal fun Window.setTransparentBars() {
+fun Window.setTransparentBars() {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
     statusBarColor = TRANSPARENT
     navigationBarColor = TRANSPARENT
@@ -20,7 +21,17 @@ internal fun Window.setTransparentBars() {
     }
 }
 
-internal fun Window.setTranslucentBars(isSystemInDarkTheme: Boolean) {
+fun Window.setTranslucentBars(appTheme: AppTheme, systemInDarkTheme: Boolean) {
+    setTranslucentBars(
+        isSystemInDarkTheme = when (appTheme) {
+            AppTheme.Auto -> systemInDarkTheme
+            AppTheme.Light -> false
+            AppTheme.Dark -> true
+        },
+    )
+}
+
+fun Window.setTranslucentBars(isSystemInDarkTheme: Boolean) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
     isStatusBarContrastEnforced = false
     isNavigationBarContrastEnforced = true
