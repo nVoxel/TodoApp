@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.designsystem.components.TodoDatePicker
 import com.voxeldev.todoapp.designsystem.components.TodoSwitch
@@ -35,7 +37,14 @@ internal fun TaskScreenDeadlineButton(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onChangeDatePickerDialogVisibility(true) }
+            .clickable(
+                onClickLabel = if (deadlineTimestampString != null) {
+                    stringResource(id = R.string.change_deadline)
+                } else {
+                    stringResource(id = R.string.set_deadline)
+                },
+                onClick = { onChangeDatePickerDialogVisibility(true) },
+            )
             .padding(top = 16.dp, bottom = 24.dp, start = 16.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -58,7 +67,14 @@ internal fun TaskScreenDeadlineButton(
             }
         }
 
+        val switchStateDescription = if (deadlineTimestampString != null) {
+            stringResource(id = R.string.reset_deadline)
+        } else {
+            stringResource(id = R.string.set_deadline)
+        }
+
         TodoSwitch(
+            modifier = Modifier.semantics { stateDescription = switchStateDescription },
             checked = deadlineTimestampString != null,
             onCheckedChange = {
                 if (deadlineTimestampString == null) {

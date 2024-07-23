@@ -42,7 +42,7 @@ internal fun ListScreenTopBar(
         },
         titleSecondary = {
             Text(
-                text = stringResource(id = R.string.completed, completedItemsCount),
+                text = stringResource(id = R.string.completed_count, completedItemsCount),
                 style = AppTypography.body,
                 color = appPalette.labelTertiary,
             )
@@ -51,9 +51,20 @@ internal fun ListScreenTopBar(
             Icon(
                 modifier = Modifier
                     .clip(shape = CircleShape)
-                    .clickable { onUncompletedVisibilityChanged(!isOnlyUncompletedVisible) },
+                    .clickable(
+                        onClickLabel = if (isOnlyUncompletedVisible) {
+                            stringResource(id = R.string.show_completed)
+                        } else {
+                            stringResource(id = R.string.hide_completed)
+                        },
+                        onClick = { onUncompletedVisibilityChanged(!isOnlyUncompletedVisible) },
+                    ),
                 imageVector = if (isOnlyUncompletedVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                contentDescription = stringResource(id = R.string.toggle_complete),
+                contentDescription = if (isOnlyUncompletedVisible) {
+                    stringResource(id = R.string.hide_completed)
+                } else {
+                    stringResource(id = R.string.show_completed)
+                },
                 tint = appPalette.colorBlue,
             )
 
@@ -62,7 +73,10 @@ internal fun ListScreenTopBar(
             Icon(
                 modifier = Modifier
                     .clip(shape = CircleShape)
-                    .clickable(onClick = onSettingsClicked),
+                    .clickable(
+                        onClickLabel = stringResource(id = R.string.open),
+                        onClick = onSettingsClicked,
+                    ),
                 imageVector = Icons.Default.Settings,
                 contentDescription = stringResource(id = R.string.settings),
                 tint = appPalette.colorBlue,

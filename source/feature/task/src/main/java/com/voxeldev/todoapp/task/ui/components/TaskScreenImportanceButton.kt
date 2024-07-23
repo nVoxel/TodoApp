@@ -20,6 +20,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.api.model.TodoItemImportance
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
@@ -84,7 +86,10 @@ internal fun TaskScreenImportanceButton(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onChangeImportanceSheetVisibility(true) }
+            .clickable(
+                onClickLabel = stringResource(id = R.string.change_task_importance),
+                onClick = { onChangeImportanceSheetVisibility(true) },
+            )
             .drawBehind {
                 clipRect {
                     drawCircle(
@@ -103,9 +108,12 @@ internal fun TaskScreenImportanceButton(
             style = AppTypography.body,
         )
 
+        val importanceContentDescription = importance.getDisplayText(forTranscribe = true)
+
         Text(
             modifier = Modifier
-                .padding(top = 4.dp),
+                .padding(top = 4.dp)
+                .semantics { contentDescription = importanceContentDescription },
             text = importance.getDisplayText(),
             color = importance.getDisplayColor(forDropdown = false),
             style = AppTypography.subhead,

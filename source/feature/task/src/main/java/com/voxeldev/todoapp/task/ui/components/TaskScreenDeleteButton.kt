@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.voxeldev.todoapp.designsystem.components.conditional
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
 import com.voxeldev.todoapp.designsystem.theme.ripple.DangerRippleTheme
@@ -37,16 +36,17 @@ internal fun TaskScreenDeleteButton(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .conditional(
-                    condition = editTask,
-                    conditionMetModifier = Modifier.clickable(onClick = onDeleteClicked),
+                .clickable(
+                    enabled = editTask,
+                    onClickLabel = "Удалить задачу",
+                    onClick = onDeleteClicked,
                 )
                 .padding(vertical = 20.dp, horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = stringResource(id = R.string.delete),
+                contentDescription = null,
                 tint = if (editTask) appPalette.colorRed else appPalette.labelDisable,
             )
 

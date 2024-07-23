@@ -11,11 +11,15 @@ import com.voxeldev.todoapp.task.R
  * @author nvoxel
  */
 @Composable
-internal fun TodoItemImportance.getDisplayText(): String =
+internal fun TodoItemImportance.getDisplayText(forTranscribe: Boolean = false): String =
     when (this) {
         TodoItemImportance.Low -> stringResource(id = R.string.low_importance)
         TodoItemImportance.Normal -> stringResource(id = R.string.normal_importance)
-        TodoItemImportance.Urgent -> stringResource(id = R.string.high_importance)
+        TodoItemImportance.Urgent -> if (forTranscribe) {
+            stringResource(id = R.string.high_importance_transcribe)
+        } else {
+            stringResource(id = R.string.high_importance)
+        }
     }
 
 @Composable

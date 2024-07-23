@@ -24,6 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.api.model.TodoItem
@@ -55,14 +60,40 @@ internal fun ListItem(
         }
     }
 
+    val taskContentDescription = if (todoItem.isComplete) {
+        stringResource(id = R.string.completed_task)
+    } else {
+        stringResource(id = R.string.uncompleted_task)
+    }
+
+    val toggleCompletedActionLabel = stringResource(id = R.string.toggle_completed)
+    val taskInfoActionLabel = stringResource(id = R.string.view_task_info)
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(color = appPalette.backSecondary)
-            .clickable { onClicked(todoItem.id) }
+            .clickable(
+                onClickLabel = stringResource(id = R.string.edit),
+                onClick = { onClicked(todoItem.id) },
+            )
+            .semantics {
+                customActions = listOf(
+                    CustomAccessibilityAction(label = toggleCompletedActionLabel) {
+                        onCheckClicked(todoItem.id, !todoItem.isComplete)
+                        true
+                    },
+                    CustomAccessibilityAction(label = taskInfoActionLabel) {
+                        isInfoDialogVisible = true
+                        true
+                    },
+                )
+                contentDescription = taskContentDescription
+            }
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
         TodoCheckbox(
+            modifier = Modifier.clearAndSetSemantics { },
             isChecked = todoItem.isComplete,
             onCheckedChange = { checked -> onCheckClicked(todoItem.id, checked) },
             isImportant = todoItem.importance == TodoItemImportance.Urgent,
@@ -80,9 +111,10 @@ internal fun ListItem(
         Icon(
             modifier = Modifier
                 .clip(shape = CircleShape)
+                .clearAndSetSemantics { }
                 .clickable { isInfoDialogVisible = true },
             imageVector = Icons.Outlined.Info,
-            contentDescription = stringResource(id = R.string.info),
+            contentDescription = null,
             tint = appPalette.labelTertiary,
         )
     }
@@ -114,7 +146,11 @@ private fun RowScope.ListItemOverview(
                 } else {
                     AdditionalIcons.ImportanceLow
                 },
-                contentDescription = stringResource(id = R.string.importance),
+                contentDescription = if (todoItem.importance == TodoItemImportance.Urgent) {
+                    stringResource(id = R.string.with_high_importance)
+                } else {
+                    stringResource(id = R.string.with_low_importance)
+                },
                 tint = if (todoItem.importance == TodoItemImportance.Urgent) appPalette.colorRed else appPalette.colorGray,
             )
         }
@@ -129,9 +165,12 @@ private fun RowScope.ListItemOverview(
             )
 
             deadlineTimestamp?.let {
+                val deadlineContentDescription = stringResource(id = R.string.task_deadline, deadlineTimestamp)
+
                 Spacer(modifier = Modifier.height(height = 4.dp))
 
                 Text(
+                    modifier = Modifier.semantics { contentDescription = deadlineContentDescription },
                     text = deadlineTimestamp,
                     color = appPalette.labelTertiary,
                     style = AppTypography.subhead,
