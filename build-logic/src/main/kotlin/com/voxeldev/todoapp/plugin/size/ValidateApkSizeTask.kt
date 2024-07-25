@@ -22,7 +22,7 @@ import javax.inject.Inject
 /**
  * @author nvoxel
  */
-abstract class ValidateApkSizeTask @Inject constructor(
+internal abstract class ValidateApkSizeTask @Inject constructor(
     private val telegramApi: TelegramApi,
 ) : DefaultTask() {
 

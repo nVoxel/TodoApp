@@ -1,6 +1,5 @@
 package com.voxeldev.todoapp.network.todoapi
 
-import com.voxeldev.todoapp.api.model.TodoItem
 import com.voxeldev.todoapp.network.todoapi.datasource.response.TodoListResponse
 
 /**
@@ -10,6 +9,4 @@ import com.voxeldev.todoapp.network.todoapi.datasource.response.TodoListResponse
 interface TodoItemListRemoteDataSource {
 
     suspend fun getAll(): Result<TodoListResponse>
-
-    suspend fun patchList(list: List<TodoItem>): Result<TodoListResponse>
 }

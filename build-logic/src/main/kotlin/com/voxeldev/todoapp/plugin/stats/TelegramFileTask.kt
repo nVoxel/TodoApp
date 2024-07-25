@@ -19,7 +19,7 @@ import javax.inject.Inject
 /**
  * @author nvoxel
  */
-abstract class TelegramFileTask @Inject constructor(
+internal abstract class TelegramFileTask @Inject constructor(
     private val telegramApi: TelegramApi,
     private val buildVariant: String,
     private val versionCode: String,

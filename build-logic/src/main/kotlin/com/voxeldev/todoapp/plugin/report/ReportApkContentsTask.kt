@@ -18,7 +18,7 @@ import javax.inject.Inject
 /**
  * @author nvoxel
  */
-abstract class ReportApkContentsTask @Inject constructor(
+internal abstract class ReportApkContentsTask @Inject constructor(
     private val telegramApi: TelegramApi,
 ) : DefaultTask() {
 
