@@ -48,15 +48,15 @@ class DefaultTodoItemRemoteDataSourceTest : RemoteDataSourceTest() {
             todoItemRequestMapper = TodoItemRequestMapper(),
         )
 
-        val repositoryResult = dataSource.getSingle(id = taskId)
+        val dataSourceResult = dataSource.getSingle(id = taskId)
 
         assertTrue(
-            message = "DataSource should return success. Instead got: ${repositoryResult.exceptionOrNull()?.message}",
-        ) { repositoryResult.isSuccess }
+            message = "DataSource should return success. Instead got: ${dataSourceResult.exceptionOrNull()?.message}",
+        ) { dataSourceResult.isSuccess }
 
         assertEquals(
             expected = expectedResult,
-            actual = repositoryResult.getOrNull(),
+            actual = dataSourceResult.getOrThrow(),
             message = "DataSource should return the same item",
         )
     }
@@ -77,10 +77,10 @@ class DefaultTodoItemRemoteDataSourceTest : RemoteDataSourceTest() {
             todoItemRequestMapper = TodoItemRequestMapper(),
         )
 
-        val result = dataSource.getSingle(id = "task")
+        val dataSourceResult = dataSource.getSingle(id = "task")
 
         assertTrue(message = "DataSource should return Result.failure with JsonConvertException") {
-            result.isFailure && result.exceptionOrNull()!! is JsonConvertException
+            dataSourceResult.isFailure && dataSourceResult.exceptionOrNull()!! is JsonConvertException
         }
     }
 
@@ -102,12 +102,12 @@ class DefaultTodoItemRemoteDataSourceTest : RemoteDataSourceTest() {
             todoItemRequestMapper = TodoItemRequestMapper(),
         )
 
-        val result = dataSource.getSingle(id = "task")
+        val dataSourceResult = dataSource.getSingle(id = "task")
         assertTrue(message = "DataSource should return Result.failure with OtherNetworkException") {
-            result.isFailure && result.exceptionOrNull()!! is OtherNetworkException
+            dataSourceResult.isFailure && dataSourceResult.exceptionOrNull()!! is OtherNetworkException
         }
 
-        val exception = result.exceptionOrNull()!! as OtherNetworkException
+        val exception = dataSourceResult.exceptionOrNull()!! as OtherNetworkException
         assertTrue(message = "DataSource should return OtherNetworkException with 404 status code") {
             exception.responseCode == HttpStatusCode.NotFound.value
         }
@@ -131,10 +131,10 @@ class DefaultTodoItemRemoteDataSourceTest : RemoteDataSourceTest() {
             todoItemRequestMapper = TodoItemRequestMapper(),
         )
 
-        val result = dataSource.getSingle(id = "task")
+        val dataSourceResult = dataSource.getSingle(id = "task")
 
         assertTrue(message = "DataSource should return Result.failure with NetworkNotAvailableException") {
-            result.isFailure && result.exceptionOrNull()!! is NetworkNotAvailableException
+            dataSourceResult.isFailure && dataSourceResult.exceptionOrNull()!! is NetworkNotAvailableException
         }
     }
 }

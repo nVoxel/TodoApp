@@ -38,10 +38,10 @@ class DefaultTodoItemListRemoteDataSourceTest : RemoteDataSourceTest() {
             httpClient = httpClient,
         )
 
-        val result = dataSource.getAll()
+        val dataSourceResult = dataSource.getAll()
 
         assertTrue(message = "DataSource should return no items") {
-            result.isSuccess && result.getOrNull()!!.list.isEmpty()
+            dataSourceResult.isSuccess && dataSourceResult.getOrThrow().list.isEmpty()
         }
     }
 
@@ -63,15 +63,15 @@ class DefaultTodoItemListRemoteDataSourceTest : RemoteDataSourceTest() {
             httpClient = httpClient,
         )
 
-        val repositoryResult = dataSource.getAll()
+        val dataSourceResult = dataSource.getAll()
 
         assertTrue(message = "DataSource should return success") {
-            repositoryResult.isSuccess
+            dataSourceResult.isSuccess
         }
 
         assertEquals(
             expected = expectedResult,
-            actual = repositoryResult.getOrNull(),
+            actual = dataSourceResult.getOrThrow(),
             message = "DataSource should return all items",
         )
     }
@@ -91,10 +91,10 @@ class DefaultTodoItemListRemoteDataSourceTest : RemoteDataSourceTest() {
             httpClient = httpClient,
         )
 
-        val result = dataSource.getAll()
+        val dataSourceResult = dataSource.getAll()
 
         assertTrue(message = "DataSource should return Result.failure with JsonConvertException") {
-            result.isFailure && result.exceptionOrNull()!! is JsonConvertException
+            dataSourceResult.isFailure && dataSourceResult.exceptionOrNull()!! is JsonConvertException
         }
     }
 
@@ -115,12 +115,12 @@ class DefaultTodoItemListRemoteDataSourceTest : RemoteDataSourceTest() {
             httpClient = httpClient,
         )
 
-        val result = dataSource.getAll()
+        val dataSourceResult = dataSource.getAll()
         assertTrue(message = "DataSource should return Result.failure with OtherNetworkException") {
-            result.isFailure && result.exceptionOrNull()!! is OtherNetworkException
+            dataSourceResult.isFailure && dataSourceResult.exceptionOrNull()!! is OtherNetworkException
         }
 
-        val exception = result.exceptionOrNull()!! as OtherNetworkException
+        val exception = dataSourceResult.exceptionOrNull()!! as OtherNetworkException
         assertTrue(message = "DataSource should return OtherNetworkException with 502 status code") {
             exception.responseCode == HttpStatusCode.BadGateway.value
         }
@@ -143,10 +143,10 @@ class DefaultTodoItemListRemoteDataSourceTest : RemoteDataSourceTest() {
             httpClient = httpClient,
         )
 
-        val result = dataSource.getAll()
+        val dataSourceResult = dataSource.getAll()
 
         assertTrue(message = "DataSource should return Result.failure with NetworkNotAvailableException") {
-            result.isFailure && result.exceptionOrNull()!! is NetworkNotAvailableException
+            dataSourceResult.isFailure && dataSourceResult.exceptionOrNull()!! is NetworkNotAvailableException
         }
     }
 }
