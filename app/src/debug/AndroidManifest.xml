@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.voxeldev.todoapp">
+
+    <application>
+        <activity
+            android:name=".ui.AndroidTestActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TodoApp"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
+</manifest>

@@ -21,6 +21,7 @@ room = "2.6.1"
 runtime-livedata = "1.6.8"
 security-crypto = "1.1.0-alpha06"
 startup-runtime = "1.1.1"
+ui-test-junit4 = "1.6.8"
 ui-tooling = "1.6.8"
 yandex-authsdk = "3.1.0"
 
@@ -109,7 +110,7 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "ui-test-junit4" }
 
 [bundles]
 

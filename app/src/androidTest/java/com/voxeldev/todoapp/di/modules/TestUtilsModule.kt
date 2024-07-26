@@ -1,9 +1,10 @@
-package com.voxeldev.todoapp.utils.di
+package com.voxeldev.todoapp.di.modules
 
 import android.content.Context
+import com.voxeldev.todoapp.di.stubs.utils.StubNetworkHandler
+import com.voxeldev.todoapp.di.stubs.utils.StubNetworkObserver
+import com.voxeldev.todoapp.utils.di.UtilsModule
 import com.voxeldev.todoapp.utils.di.scopes.AppScope
-import com.voxeldev.todoapp.utils.platform.DefaultNetworkHandler
-import com.voxeldev.todoapp.utils.platform.DefaultNetworkObserver
 import com.voxeldev.todoapp.utils.platform.NetworkHandler
 import com.voxeldev.todoapp.utils.platform.NetworkObserver
 import com.voxeldev.todoapp.utils.providers.CoroutineDispatcherProvider
@@ -15,21 +16,27 @@ import dagger.Module
 import dagger.Provides
 
 /**
- * Utils module that stores auxiliary classes.
  * @author nvoxel
  */
-@Module(
-    includes = [
-        UtilsModule.Provide::class,
-        InternalUtilsModule::class,
-    ],
-)
-abstract class UtilsModule {
+@Module(includes = [UtilsModule.Provide::class])
+abstract class TestUtilsModule {
 
     @Binds
     abstract fun bindCoroutineDispatcherProvider(
         coroutineDispatcherProviderDefaultImpl: CoroutineDispatcherProviderDefaultImpl,
     ): CoroutineDispatcherProvider
+
+    @Binds
+    @AppScope
+    abstract fun bindNetworkHandler(
+        stubNetworkHandler: StubNetworkHandler,
+    ): NetworkHandler
+
+    @Binds
+    @AppScope
+    abstract fun bindNetworkObserver(
+        stubNetworkObserver: StubNetworkObserver,
+    ): NetworkObserver
 
     @Module
     class Provide {
@@ -38,20 +45,4 @@ abstract class UtilsModule {
         fun provideStringResourceProvider(context: Context): StringResourceProvider =
             StringResourceProviderContextImpl(context = context)
     }
-}
-
-@Module
-internal interface InternalUtilsModule {
-
-    @Binds
-    @AppScope
-    fun bindNetworkHandler(
-        defaultNetworkHandler: DefaultNetworkHandler,
-    ): NetworkHandler
-
-    @Binds
-    @AppScope
-    fun bindNetworkObserver(
-        defaultNetworkObserver: DefaultNetworkObserver,
-    ): NetworkObserver
 }

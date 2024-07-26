@@ -14,7 +14,8 @@ internal fun BaseExtension.commonAndroid(libs: LibrariesForLibs) {
 
         consumerProguardFiles("consumer-rules.pro")
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testApplicationId = "com.voxeldev.todoapp.android.test"
+        testInstrumentationRunner = "com.voxeldev.todoapp.testrunner.StubTestRunner"
     }
 
     buildTypes {

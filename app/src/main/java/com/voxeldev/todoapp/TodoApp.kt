@@ -16,9 +16,9 @@ import javax.inject.Inject
 /**
  * @author nvoxel
  */
-class TodoApp : Application(), Configuration.Provider {
+open class TodoApp : Application(), Configuration.Provider {
 
-    private val appComponent: AppComponent by lazyUnsafe {
+    open val appComponent: AppComponent by lazyUnsafe {
         DaggerAppComponent.factory().create(applicationContext = applicationContext)
     }
 

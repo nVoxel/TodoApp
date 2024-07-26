@@ -32,6 +32,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -50,6 +51,8 @@ import com.voxeldev.todoapp.list.ui.components.SwipeableListItem
 import com.voxeldev.todoapp.list.ui.preview.ListScreenPreviewData
 import com.voxeldev.todoapp.list.viewmodel.ListViewModel
 import com.voxeldev.todoapp.utils.extensions.getDisplayMessage
+
+const val TASK_LIST_TAG = "task_list"
 
 /**
  * @author nvoxel
@@ -174,6 +177,7 @@ private fun ListScreen(
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
+                .testTag(tag = TASK_LIST_TAG)
                 .padding(top = paddingValues.calculateTopPadding())
                 .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 4.dp)
                 .navigationBarsPadding()

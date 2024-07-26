@@ -1,15 +1,15 @@
 package com.voxeldev.todoapp.di.app
 
 import android.content.Context
-import com.voxeldev.todoapp.TodoApp
+import com.voxeldev.todoapp.TestTodoApp
 import com.voxeldev.todoapp.di.dependencies.AboutFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.AuthFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.ListFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.SettingsFeatureDependenciesModule
 import com.voxeldev.todoapp.di.dependencies.TaskFeatureDependenciesModule
-import com.voxeldev.todoapp.local.di.LocalModule
-import com.voxeldev.todoapp.repository.di.RepositoryModule
-import com.voxeldev.todoapp.utils.di.UtilsModule
+import com.voxeldev.todoapp.di.modules.TestLocalModule
+import com.voxeldev.todoapp.di.modules.TestRepositoryModule
+import com.voxeldev.todoapp.di.modules.TestUtilsModule
 import com.voxeldev.todoapp.utils.di.scopes.AppScope
 import dagger.BindsInstance
 import dagger.Component
@@ -19,9 +19,9 @@ import dagger.Component
  */
 @Component(
     modules = [
-        UtilsModule::class,
-        LocalModule::class,
-        RepositoryModule::class,
+        TestUtilsModule::class,
+        TestLocalModule::class,
+        TestRepositoryModule::class,
         AboutFeatureDependenciesModule::class,
         AuthFeatureDependenciesModule::class,
         ListFeatureDependenciesModule::class,
@@ -30,12 +30,12 @@ import dagger.Component
     ],
 )
 @AppScope
-interface AppComponent {
+interface TestAppComponent : AppComponent {
 
-    fun inject(todoApp: TodoApp)
+    fun inject(testTodoApp: TestTodoApp)
 
     @Component.Factory
-    interface AppComponentFactory {
-        fun create(@BindsInstance applicationContext: Context): AppComponent
+    interface TestAppComponentFactory {
+        fun create(@BindsInstance applicationContext: Context): TestAppComponent
     }
 }
