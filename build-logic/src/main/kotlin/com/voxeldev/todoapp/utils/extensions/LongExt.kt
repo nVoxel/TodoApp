@@ -9,7 +9,7 @@ private const val BYTES_IN_MB = 1_048_576.0
 /**
  * @author nvoxel
  */
-fun Long.convertSizeBytes(): String =
+internal fun Long.convertSizeBytes(): String =
     if (this > BYTES_IN_MB) {
         "${formatDouble(bytesToMegabytes())} MB"
     } else if (this > BYTES_IN_KB) {
@@ -18,8 +18,8 @@ fun Long.convertSizeBytes(): String =
         "$this bytes"
     }
 
-fun Long.bytesToMegabytes(): Double = this / BYTES_IN_MB
+internal fun Long.bytesToMegabytes(): Double = this / BYTES_IN_MB
 
-fun Long.bytesToKilobytes(): Double = this / BYTES_IN_KB
+internal fun Long.bytesToKilobytes(): Double = this / BYTES_IN_KB
 
 private fun formatDouble(double: Double): String = String.format(Locale.getDefault(), DOUBLE_FORMAT, double)

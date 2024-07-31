@@ -60,7 +60,17 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
 
-    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.ktor.client.mock)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.ui.test.manifest)
+
+    androidTestImplementation(libs.dagger)
+    kspAndroidTest(libs.dagger.compiler)
 }

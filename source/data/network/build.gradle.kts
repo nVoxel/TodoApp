@@ -1,5 +1,6 @@
 plugins {
     id("android-dagger-convention")
+    id("android-test-convention")
     alias(libs.plugins.kotlin.serialization)
 }
 

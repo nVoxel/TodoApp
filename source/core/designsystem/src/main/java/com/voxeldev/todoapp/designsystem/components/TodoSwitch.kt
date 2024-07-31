@@ -19,12 +19,14 @@ import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
  */
 @Composable
 fun TodoSwitch(
+    modifier: Modifier = Modifier,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
     val appPalette = LocalAppPalette.current
 
     Switch(
+        modifier = modifier,
         checked = checked,
         onCheckedChange = onCheckedChange,
         colors = SwitchDefaults.colors(

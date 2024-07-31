@@ -3,6 +3,6 @@ package com.voxeldev.todoapp.utils
 /**
  * @author nvoxel
  */
-const val APK_SUFFIX = ".apk"
+internal const val APK_SUFFIX = ".apk"
 
-const val DOUBLE_FORMAT = "%.2f"
+internal const val DOUBLE_FORMAT = "%.2f"

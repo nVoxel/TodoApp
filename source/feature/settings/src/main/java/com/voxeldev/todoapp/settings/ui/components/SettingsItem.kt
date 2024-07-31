@@ -56,7 +56,7 @@ private fun SettingsItemContent(
 
     Icon(
         imageVector = iconVector,
-        contentDescription = titleText,
+        contentDescription = null,
         tint = if (isDangerous) appPalette.colorRed else appPalette.labelPrimary,
     )
 

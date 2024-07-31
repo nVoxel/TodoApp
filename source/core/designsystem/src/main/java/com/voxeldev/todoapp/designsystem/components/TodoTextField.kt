@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.voxeldev.todoapp.designsystem.preview.annotations.ComponentDayNightPreviews
@@ -22,6 +23,8 @@ import com.voxeldev.todoapp.designsystem.preview.providers.TextPreviewParameterP
 import com.voxeldev.todoapp.designsystem.theme.AppPalette
 import com.voxeldev.todoapp.designsystem.theme.AppTypography
 import com.voxeldev.todoapp.designsystem.theme.LocalAppPalette
+
+const val TODO_TEXT_FIELD_TAG = "todo_text_field"
 
 /**
  * @author nvoxel
@@ -37,6 +40,7 @@ fun TodoTextField(
 
     OutlinedTextField(
         modifier = modifier
+            .testTag(tag = TODO_TEXT_FIELD_TAG)
             .fillMaxWidth()
             .defaultMinSize(minHeight = 104.dp)
             .shadow(

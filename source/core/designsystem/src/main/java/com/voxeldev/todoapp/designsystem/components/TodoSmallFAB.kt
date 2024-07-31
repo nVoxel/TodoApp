@@ -32,8 +32,7 @@ fun TodoSmallFAB(
         isVisible = isFabVisible,
     ) {
         SmallFloatingActionButton(
-            modifier = modifier
-                .size(size = 56.dp),
+            modifier = modifier.size(size = 56.dp),
             onClick = onClick,
             shape = CircleShape,
             containerColor = appPalette.colorBlue,

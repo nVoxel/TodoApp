@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="my_todos">Мои задачи</string>
-    <string name="completed">Выполнено — %1$s</string>
-    <string name="toggle_complete">Переключить статус выполнения</string>
+    <string name="completed_count">Выполнено — %1$s</string>
+    <string name="show_completed">Показывать выполненные задачи</string>
+    <string name="hide_completed">Скрывать выполненные задачи</string>
     <string name="task_actions">Действие с задачей</string>
     <string name="importance">Важность</string>
-    <string name="info">Информация</string>
     <string name="new_task">Новая</string>
     <string name="task_info">Информация о задаче</string>
+    <string name="view_task_info">Посмотреть информацию о задаче</string>
     <string name="done">Готово</string>
     <string name="task_id">Идентификатор</string>
     <string name="creation_date">Создана</string>
     <string name="modification_date">Изменена</string>
     <string name="modified_by">Кем изменена</string>
     <string name="settings">Настройки</string>
+    <string name="open">Открыть</string>
+    <string name="edit">Редактировать</string>
+    <string name="completed_task">Выполненная задача</string>
+    <string name="uncompleted_task">Невыполненная задача</string>
+    <string name="with_low_importance">С низкой важностью</string>
+    <string name="with_high_importance">С высокой важностью</string>
+    <string name="task_deadline">Сделать до: %1$s</string>
+    <string name="toggle_completed">Переключить статус выполнения</string>
 </resources>

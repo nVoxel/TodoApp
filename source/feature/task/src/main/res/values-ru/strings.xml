@@ -11,5 +11,10 @@
     <string name="low_importance">Низкий</string>
     <string name="normal_importance">Нет</string>
     <string name="high_importance">!! Высокий</string>
+    <string name="high_importance_transcribe">Высокий</string>
     <string name="delete_message">Задача будет удалена</string>
+    <string name="set_deadline">Назначить дату</string>
+    <string name="change_deadline">Изменить дату</string>
+    <string name="reset_deadline">Сбросить дату</string>
+    <string name="change_task_importance">Изменить важность задачи</string>
 </resources>

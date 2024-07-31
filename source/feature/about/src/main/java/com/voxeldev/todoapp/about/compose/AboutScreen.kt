@@ -81,7 +81,7 @@ fun AboutScreen(
             },
             onOpenRepo = {
                 context.startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse(stringResourceProvider.getGetHubRepoUrl())),
+                    Intent(Intent.ACTION_VIEW, Uri.parse(stringResourceProvider.getGitHubRepoUrl())),
                 )
             },
             onClose = onClose,

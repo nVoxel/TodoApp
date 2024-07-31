@@ -7,7 +7,7 @@ import com.voxeldev.todoapp.utils.R
  * Provides custom strings.
  * @author nvoxel
  */
-internal class StringResourceProviderContextImpl(context: Context) : StringResourceProvider {
+class StringResourceProviderContextImpl(context: Context) : StringResourceProvider {
 
     private val resources = context.resources
 
@@ -17,5 +17,5 @@ internal class StringResourceProviderContextImpl(context: Context) : StringResou
 
     override fun getGitHubProfileUrl(): String = resources.getString(R.string.github_profile_url)
 
-    override fun getGetHubRepoUrl(): String = resources.getString(R.string.github_repo_url)
+    override fun getGitHubRepoUrl(): String = resources.getString(R.string.github_repo_url)
 }

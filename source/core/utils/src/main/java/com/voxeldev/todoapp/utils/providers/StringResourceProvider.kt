@@ -12,5 +12,5 @@ interface StringResourceProvider {
 
     fun getGitHubProfileUrl(): String
 
-    fun getGetHubRepoUrl(): String
+    fun getGitHubRepoUrl(): String
 }

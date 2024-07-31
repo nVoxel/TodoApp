@@ -6,7 +6,7 @@ import org.gradle.api.JavaVersion
  * @author nvoxel
  */
 
-fun BaseExtension.commonAndroid(libs: LibrariesForLibs) {
+internal fun BaseExtension.commonAndroid(libs: LibrariesForLibs) {
     setCompileSdkVersion(libs.versions.android.compileSdk.get().toInt())
 
     defaultConfig {
@@ -14,7 +14,8 @@ fun BaseExtension.commonAndroid(libs: LibrariesForLibs) {
 
         consumerProguardFiles("consumer-rules.pro")
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testApplicationId = "com.voxeldev.todoapp.android.test"
+        testInstrumentationRunner = "com.voxeldev.todoapp.testrunner.StubTestRunner"
     }
 
     buildTypes {
@@ -25,8 +26,8 @@ fun BaseExtension.commonAndroid(libs: LibrariesForLibs) {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {

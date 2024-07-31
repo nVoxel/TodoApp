@@ -16,7 +16,7 @@ complexity:
     excludes: [ '**/test/**', '**/functionalTest/**', '**/*Mapper.kt', '**/components/swipedismiss/**', '**/*ThemePreview.kt' ]
   LongMethod:
     threshold: 30
-    ignoreAnnotated: [ 'Composable' ]
+    ignoreAnnotated: [ 'Composable', 'Test' ]
     excludes: [ '**/designsystem/components/**', '**/com/voxeldev/todoapp/plugin/**' ]
     ignoreFunction: [ 'synchronizeLists', 'checkLocalList' ]
   LongParameterList:

@@ -16,7 +16,7 @@ private const val TELEGRAM_API_URL = "https://api.telegram.org"
 /**
  * @author nvoxel
  */
-class TelegramApi(private val httpClient: HttpClient) {
+internal class TelegramApi(private val httpClient: HttpClient) {
 
     suspend fun sendFile(
         file: File,
